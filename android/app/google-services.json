@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "387245324127",
+    "project_id": "signalmeeting-8ee89",
+    "storage_bucket": "signalmeeting-8ee89.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387245324127:android:f336e996594ce3e0a3a8ea",
+        "android_client_info": {
+          "package_name": "com.signal.signalmeeting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnw8E0LXbk8cwCNbI8ujSWyMzLZ7iivMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
