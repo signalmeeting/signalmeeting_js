@@ -12,6 +12,7 @@ import 'package:signalmeeting/ui/meeting/make_meeting_page.dart';
 import 'package:signalmeeting/ui/widget/city_list_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/ui/widget/meeting/meetingGrid.dart';
+import 'package:signalmeeting/ui/widget/noCoin.dart';
 import 'package:smart_select/smart_select.dart';
 import '../widget/cached_image.dart';
 import 'meeting_detail_page.dart';
@@ -356,7 +357,7 @@ class _MeetingPageState extends State<MeetingPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
         ),
-        onPressed: () => (user.coin < 20) ? Get.defaultDialog(title: "aa") : Get.to(() => MakeMeetingPage()),
+        onPressed: () => (user.coin < 20) ? Get.dialog(NoCoinDialog()) : Get.to(() => MakeMeetingPage()),
       ),
     );
   }

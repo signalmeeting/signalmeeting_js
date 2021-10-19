@@ -15,6 +15,7 @@ import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/meeting/my_meeting_page.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/confirm_dialog.dart';
+import 'package:signalmeeting/ui/widget/noCoin.dart';
 
 import '../../controller/my_meeting_controller.dart';
 
@@ -82,11 +83,11 @@ class MeetingDetailPage extends StatelessWidget {
   // final MyMeetingController _myMeetingController = Get.put(MyMeetingController());
   final TextEditingController _selfIntroductionController = TextEditingController();
 
-
+  final MainController _mainController = Get.find();
+  UserModel get user => _mainController.user.value;
   bool get applied => meetingDetailController.applied.value;
   bool get buttonClicked => meetingDetailController.buttonClicked.value;
   UserModel get oppositeUser => meetingDetailController.oppositeUser.value;
-
   @override
   Widget build(BuildContext context) {
     int targetMeetingIndex;
@@ -329,7 +330,7 @@ class MeetingDetailPage extends StatelessWidget {
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(width: 1.5, color: Colors.red[200]), borderRadius: BorderRadius.circular(5)),
-                              onPressed: () async {
+                              onPressed: (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
                                 FocusScope.of(context).unfocus();
                                 await DatabaseService.instance.applyMeeting(
                                     this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
