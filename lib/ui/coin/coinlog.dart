@@ -23,25 +23,25 @@ class _CoinLogState extends State<CoinLog> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: DatabaseService.instance.getCoinLog(),
-        builder: (BuildContext context ,AsyncSnapshot<QuerySnapshot> snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator(),);
-          if(!snapshot.hasData)
-            return Center(child:Text("사용 기록이 없습니다"));
-          else
-          return SafeArea(
+      body: SafeArea(
             child: Column(
               children: <Widget>[
                 Obx(() => top()),
                 divider("사용 내역"),
-                bottom(snapshot.data.docs),
+                StreamBuilder<QuerySnapshot>(
+                  stream: DatabaseService.instance.getCoinLog(),
+                  builder: (BuildContext context ,AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting)
+                      return Center(child: CircularProgressIndicator(),);
+                    if(!snapshot.hasData)
+                      return Center(child:Text("사용 기록이 없습니다"));
+                    else
+                    return bottom(snapshot.data.docs);
+                  }
+                ),
               ],
             ),
-          );
-        },
-      ),
+          )
     );
   }
 
