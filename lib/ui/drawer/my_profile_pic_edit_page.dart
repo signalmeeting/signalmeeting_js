@@ -22,7 +22,7 @@ class _MyProfileImageEditPageState extends State<MyProfileImageEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: DrawerAppBar(context, '프로필 사진 수정'),
+        appBar: drawerAppBar(context, '프로필 사진 수정'),
         body: Stack(
           children: [
             Container(color: Colors.white),

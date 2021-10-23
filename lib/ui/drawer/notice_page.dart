@@ -10,7 +10,7 @@ class NoticePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: DrawerAppBar(context, '공지사항'),
+      appBar: drawerAppBar(context, '공지사항'),
       body: FutureBuilder<Object>(
           future: DatabaseService.instance.getNotices(),
           builder: (context, snapshot) {

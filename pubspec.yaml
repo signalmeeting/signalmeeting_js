@@ -47,7 +47,8 @@ dependencies:
   firebase_messaging: 6.0.16
   cloud_functions:
   flutter_local_notifications:
-  auto_animated: 
+  auto_animated:
+  in_app_review: 1.0.4
 
 
 dev_dependencies:

@@ -8,13 +8,19 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/services/database.dart';
 
-class InviteFriendsPage extends StatelessWidget {
+class InviteFriendsPage extends StatefulWidget {
+  @override
+  _InviteFriendsPageState createState() => _InviteFriendsPageState();
+}
+
+class _InviteFriendsPageState extends State<InviteFriendsPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _targetUIDController = TextEditingController();
 
   final MainController _controller = Get.find();
 
-  String get myUID => _controller.user.value.phoneNumber;
+  String get myUID => _controller.user.value.uid.substring(0,10);
 
   bool get firstTime => !(_controller.user.value.invite ?? false);
 
@@ -65,6 +71,8 @@ class InviteFriendsPage extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
+                              maxLength: 10,
+                              onChanged: (text) => setState(() {}),
                               controller: _targetUIDController,
                               decoration: InputDecoration(
                                 contentPadding: new EdgeInsets.fromLTRB(10, 20, 0, 20),
@@ -79,7 +87,7 @@ class InviteFriendsPage extends StatelessWidget {
                                 ),
                                 border: OutlineInputBorder(),
                                 labelStyle: TextStyle(color: Colors.grey),
-                                labelText: '상대방 추천인코드',
+                                labelText: firstTime ? '상대방 추천인코드' : '친구초대 완료',
                               ),
                               cursorColor: Colors.blue[100],
                               validator: (value) {
@@ -106,12 +114,13 @@ class InviteFriendsPage extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              onPressed: firstTime
+                              onPressed: firstTime && _targetUIDController.text.length == 10
                                   ? () async {
                                       bool result = await DatabaseService.instance.inviteFriend(_targetUIDController.text);
                                       if (result) {
                                         //한번만 입력 가능하게
                                         _controller.finishInvite();
+
                                         //완료 스낵바
                                         Flushbar(
                                           backgroundColor: Colors.black.withOpacity(0.7),

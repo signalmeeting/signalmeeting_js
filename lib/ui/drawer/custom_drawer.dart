@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:signalmeeting/ui/drawer/how_to_use_page.dart';
 import 'package:signalmeeting/ui/drawer/inquiry_page.dart';
 import 'package:signalmeeting/ui/drawer/invite_friends_page.dart';
@@ -10,6 +11,8 @@ import 'package:signalmeeting/ui/widget/cached_image.dart';
 
 //클래스화 시켜준 다음에 변수들 받지말고 오비엑스 달아야되나?
 Widget customDrawer(pic, nickName, loc1, loc2, career, BuildContext context) {
+  final InAppReview inAppReview = InAppReview.instance;
+
   return Drawer(
     child: ListView(
       children: <Widget>[
@@ -55,28 +58,29 @@ Widget customDrawer(pic, nickName, loc1, loc2, career, BuildContext context) {
           ),
           decoration: BoxDecoration(color: Colors.blue[100]),
         ),
-        DrawerTileForm('프로필', MyProfilePage()),
-        DrawerTileForm('진행방법', HowToUsePage()),
-        DrawerTileForm('스토어', StorePage()),
+        drawerTileForm('프로필', () => Get.to(MyProfilePage(), transition: Transition.native)),
+        drawerTileForm('진행 방법', () => Get.to(HowToUsePage(), transition: Transition.rightToLeftWithFade)),
+        drawerTileForm('스토어', () => Get.to(StorePage(), transition: Transition.rightToLeftWithFade)),
         Container(height: 2, color: Colors.blue[50]),
-        DrawerTileForm('공지사항', NoticePage()),
-        DrawerTileForm('친구초대', InviteFriendsPage()),
-        DrawerTileForm('문의 및 계정', InquiryPage()),
+        drawerTileForm('공지사항', () => Get.to(NoticePage(), transition: Transition.rightToLeftWithFade)),
+        drawerTileForm('친구 초대', () => Get.to(InviteFriendsPage(), transition: Transition.rightToLeftWithFade)),
+        drawerTileForm('리뷰 쓰기', () => inAppReview.openStoreListing()),
+        drawerTileForm('문의 및 계정', () => Get.to(InquiryPage(), transition: Transition.rightToLeftWithFade)),
       ],
     ),
   );
 }
 
-Widget DrawerTileForm(title, page) {
+Widget drawerTileForm(String title, VoidCallback onPressed) {
   return InkWell(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text('$title'),
       ),
-      onTap: () => Get.to(page, transition: title == '프로필' ? Transition.native : Transition.rightToLeftWithFade));
+      onTap: onPressed);
 }
 
-Widget DrawerAppBar(BuildContext context, title) {
+Widget drawerAppBar(BuildContext context, title) {
   return AppBar(
     backgroundColor: Colors.white,
     elevation: 0,

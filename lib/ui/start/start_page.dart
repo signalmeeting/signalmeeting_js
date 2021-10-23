@@ -20,12 +20,13 @@ class StartPage extends StatelessWidget {
             ),
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(child: Image.asset('assets/start_page.png')),
               //로고 이미지(임시)
               Padding(
-                padding: const EdgeInsets.only(bottom: 25),
+                padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25),
                 child: ButtonTheme(
                   minWidth: Get.width*0.9,
                   height: 50.0,

@@ -470,13 +470,18 @@ class DatabaseService {
   }
 
 //추천인
-  Future<bool> inviteFriend(String phone) async {
+  Future<bool> inviteFriend(String inviteCode) async {
     Get.dialog(Center(child: CircularProgressIndicator()));
-    QuerySnapshot snapshot = await userCollection.where("phone", isEqualTo: UiData().serverPhone(phone)).get();
-    if (snapshot.docs.length > 0) {
-      Map<String, dynamic> body = {"receiver": phone, "sender": _user.phoneNumber, "time": DateTime.now()};
+    print('inviteCode : $inviteCode');
+    QuerySnapshot snapshot = await userCollection.where("uid", isGreaterThan: inviteCode).get();
+    print('snapshot : ${snapshot.docs[0]}');
+    if (snapshot.docs.isNotEmpty && (inviteCode != _user.uid.substring(0, 10))) {
+      Map<String, dynamic> body = {"receiver": inviteCode, "sender": _user.uid, "time": DateTime.now()};
       await inviteCollection.doc().set(body);
       await userCollection.doc(_user.uid).update({"invite": true});
+
+      await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(50)});
+      await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(50)});
       Get.back();
       return Future.value(true);
     } else {

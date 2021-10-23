@@ -8,7 +8,7 @@ class HowToUsePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: DrawerAppBar(context, '진행방법'),
+      appBar: drawerAppBar(context, '진행방법'),
       body: Stack(
         children: <Widget>[
           Container(

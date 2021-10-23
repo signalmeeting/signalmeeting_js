@@ -31,7 +31,7 @@ class _MyProfileIntroduceEditPageState extends State<MyProfileIntroduceEditPage>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar:DrawerAppBar(context, '간단소개'),
+      appBar:drawerAppBar(context, '간단소개'),
       body: Stack(
         children: [
           Container(

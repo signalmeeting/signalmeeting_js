@@ -48,6 +48,7 @@ class MainController extends GetxController {
   finishInvite() {
     this.user.update((val) {
       val.invite = true;
+      val.coin = val.coin + 50;
     });
   }
 

@@ -20,7 +20,7 @@ class InquiryPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: DrawerAppBar(context, '문의 및 계정'),
+      appBar: drawerAppBar(context, '문의 및 계정'),
       body: Stack(
         children: <Widget>[
           Container(
