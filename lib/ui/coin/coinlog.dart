@@ -6,6 +6,7 @@ import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/drawer/store_page.dart';
+import 'package:signalmeeting/ui/widget/colored_button.dart';
 import 'package:signalmeeting/util/util.dart';
 
 class CoinLog extends StatefulWidget {
@@ -53,6 +54,21 @@ class _CoinLogState extends State<CoinLog> {
         Text(text),
         SizedBox(width: Get.width * 0.03,),
         Expanded(child: Container(height:1, color: Colors.black)),
+      ],
+    );
+  }
+
+  Widget rowText(String text1, String text2) {
+    return Row(
+      children: <Widget>[
+        Text(text1 + " :",
+          style: TextStyle(
+          ),
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        Text(text2),
       ],
     );
   }
@@ -109,9 +125,7 @@ class _CoinLogState extends State<CoinLog> {
             itemBuilder: (BuildContext context, int index){
               return GestureDetector(
                 onTap: (){
-                  (logList[index]['usage'] == '시그널 보내기') ?
-                  oppositeUserDialog(logList[index]["oppositeUserid"]) :
-                  showMeetingDialog(logList[index]["meeting"]);
+                  dialogCase(logList, index);
                 },
                 child: ListTile(
                   title: Text(logList[index]['usage']),
@@ -156,23 +170,31 @@ class _CoinLogState extends State<CoinLog> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("상대 정보"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          title: Column(
+            children: <Widget>[
+              Text("상대 정보",
+                style: TextStyle(
+                  fontWeight : FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5,),
+              Divider(height: 1, color: Colors.black,)
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text("이름 : " + oppositeUser.name),
-              Text("나이 : " + oppositeUser.age),
-              Text("전화번호 : " + oppositeUser.phone),
+              rowText("이름", oppositeUser.name),
+              rowText("나이", oppositeUser.age),
+              rowText("전화번호", phoneNumber(oppositeUser.phone)),
             ],
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text("확인"),
-              onPressed: () {
-                Get.back();
-              },
-            ),
+            ColoredButton(text: "확인", onPressed: () => Get.back(), color: Colors.blue[300],)
           ],
         );
       },
@@ -185,29 +207,37 @@ class _CoinLogState extends State<CoinLog> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("미팅 정보"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          title: Column(
+            children: <Widget>[
+              Text("미팅 정보",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5,),
+              Divider(height: 1, color: Colors.black,)
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("미팅 인원 : " + meeting["number"].toString()),
-              Text("위치 : " + location),
-              Text("상세 위치 : " + meeting['loc3']),
+              rowText("미팅 인원", meeting["number"].toString()),
+              rowText("위치", location),
+              rowText("상세 위치", meeting['loc3']),
             ],
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text("확인"),
-              onPressed: () {
-                Get.back();
-              },
-            ),
+            ColoredButton(text: "확인", onPressed: () => Get.back(), color: Colors.blue[300],)
           ],
         );
       },
     );
   }
-/*
+
   showMeetingDialog2(Map<String, dynamic> meeting, String uid) async{
     UserModel oppositeUser = await DatabaseService.instance.getOppositeUserInfo(uid);
     String location = meeting['loc1'] + " " + meeting['loc2'];
@@ -215,35 +245,40 @@ class _CoinLogState extends State<CoinLog> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("미팅 정보"),
+          title: Column(
+            children: <Widget>[
+              Text("미팅/상대 정보",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5,),
+              Divider(height: 1, color: Colors.black,)
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("미팅 인원 : " + meeting["number"].toString()),
-              Text("위치 : " + location),
-              Text("상세 위치 : " + meeting['loc3']),
-              Divider(
-                height: 1,
+              rowText("미팅 인원", meeting["number"].toString()),
+              rowText("위치", location),
+              rowText("상세 위치", meeting['loc3']),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                child: Divider(height: 1, color: Colors.black,),
               ),
-              Text("이름 : " + oppositeUser.name),
-              Text("나이 : " + oppositeUser.age),
-              Text("전화번호 : " + oppositeUser.phone),
+              rowText("이름", oppositeUser.name),
+              rowText("나이", oppositeUser.age),
+              rowText("전화번호", phoneNumber(oppositeUser.phone)),
             ],
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text("확인"),
-              onPressed: () {
-                Get.back();
-              },
-            ),
+            ColoredButton(text: "확인", onPressed: () => Get.back(), color: Colors.blue[300],)
           ],
         );
       },
     );
   }
-
 
   dialogCase(List logList, int index) {
     switch(logList[index]['usage']) {
@@ -258,6 +293,12 @@ class _CoinLogState extends State<CoinLog> {
       } break;
     }
   }
+  
+  phoneNumber(String phone) {
+    if(phone.contains("+"))
+      return "0" + phone.substring(3,5) +"-" + phone.substring(5,9) + "-" + phone.substring(9,13) ;
+    else
+      return "0" + phone.substring(2,4) +"-" + phone.substring(4,8) + "-" + phone.substring(8,12);
+  }
 
- */
 }
