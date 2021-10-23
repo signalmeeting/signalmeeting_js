@@ -8,6 +8,7 @@ import '../cached_image.dart';
 
 Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool isApply = false}) {
   return OpenContainer(
+      tappable: (item.process == 0 || item.process == 1) ? false : true,
       transitionDuration: Duration(milliseconds: 800),
       openShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.2),

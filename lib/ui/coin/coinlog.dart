@@ -130,10 +130,11 @@ class _CoinLogState extends State<CoinLog> {
                 child: ListTile(
                   title: Text(logList[index]['usage']),
                   subtitle: Text(Util.coinLogDateFormat(logList[index]['date'].toDate())),
-                  trailing: Text("-" + logList[index]['coin'].toString() + " 코인",// 코인 구매 => +
+                  trailing: Text(coinUsage(logList[index]['usage'], logList[index]['coin']),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue // 코인 구매 추가 하면  ? Colors.blue ? Colors.red
+                      color: (logList[index]['usage'] == "친구 초대" || logList[index]['usage'] == "코인 구매")
+                          ? Colors.red : Colors.blue
                     ),
                   ),
                 ),
@@ -291,6 +292,9 @@ class _CoinLogState extends State<CoinLog> {
       case '미팅 참여': {
         return showMeetingDialog2(logList[index]['meeting'], logList[index]['oppositeUserid']);
       } break;
+      case "친구 초대": {
+        return oppositeUserDialog(logList[index]['oppositeUserid']);
+      } break;
     }
   }
   
@@ -299,6 +303,14 @@ class _CoinLogState extends State<CoinLog> {
       return "0" + phone.substring(3,5) +"-" + phone.substring(5,9) + "-" + phone.substring(9,13) ;
     else
       return "0" + phone.substring(2,4) +"-" + phone.substring(4,8) + "-" + phone.substring(8,12);
+  }
+
+  coinUsage(String usage, int coin) {
+    if(usage == "친구 초대" || usage == "코인 구매") {
+      return "+" + coin.toString()  + " 코인";
+    } else {
+      return "-" + coin.toString()  + " 코인";
+    }
   }
 
 }

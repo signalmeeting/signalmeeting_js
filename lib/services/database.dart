@@ -479,7 +479,20 @@ class DatabaseService {
       Map<String, dynamic> body = {"receiver": inviteCode, "sender": _user.uid, "time": DateTime.now()};
       await inviteCollection.doc().set(body);
       await userCollection.doc(_user.uid).update({"invite": true});
-
+      await coinLogCollection.doc().set({
+        "userid" : _user.uid,
+        "coin" : 50,
+        "usage" : "친구 초대",
+        "oppositeUserid" : snapshot.docs[0].id,
+        "date" : DateTime.now(),
+      });
+      await coinLogCollection.doc().set({
+        "userid" : snapshot.docs[0].id,
+        "coin" : 50,
+        "usage" : "친구 초대",
+        "oppositeUserid" : _user.uid,
+        "date" : DateTime.now(),
+      });
       await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(50)});
       await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(50)});
       Get.back();
