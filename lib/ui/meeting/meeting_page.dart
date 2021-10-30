@@ -328,7 +328,7 @@ class _MeetingPageState extends State<MeetingPage> {
         child: GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
             color: Colors.red[50],
-            child: meetingGrid(meetingList)
+            child: meetingGrid(meetingList, user.uid)
         ),
       );
     } else

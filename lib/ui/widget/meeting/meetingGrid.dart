@@ -4,7 +4,7 @@ import 'package:signalmeeting/model/meetingModel.dart';
 
 import 'meetingGridItem.dart';
 
-Widget meetingGrid (List<MeetingModel> meetingList) {
+Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
   return LiveGrid(
     shrinkWrap: true,
     itemCount: meetingList.length,
@@ -12,6 +12,11 @@ Widget meetingGrid (List<MeetingModel> meetingList) {
       crossAxisCount: 2,
     ),
     itemBuilder: (context, index, animation) {
+      bool _isApply;
+      if(meetingList[index].apply != null)
+        _isApply = (meetingList[index].apply['userId'] == uid) ? true : false;
+      else
+        _isApply = false;
       return FadeTransition(
         opacity: Tween<double>(
           begin: 0,
@@ -22,7 +27,7 @@ Widget meetingGrid (List<MeetingModel> meetingList) {
             begin: Offset(0, -0.1),
             end: Offset.zero,
           ).animate(animation),
-          child: meetingGridItem(meetingList[index]),
+          child: meetingGridItem(meetingList[index], isApply: _isApply),
         ),
       );
     },

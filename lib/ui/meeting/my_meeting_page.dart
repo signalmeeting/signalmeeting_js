@@ -119,7 +119,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                   } else if (isMine) {
                     return meetingGridItem(itemList[index], isMine: true);
                   } else {
-                    return meetingGridItem(itemList[index]);
+                    return meetingGridItem(itemList[index], isApply: true);
                   }
                 },
               ),
@@ -353,8 +353,18 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
 
   Widget ProfileImageForm2(UserModel user) {
     return GestureDetector(
-      onTap: () async {
-//        Get.to(OppositeProfilePage(), arguments: whichProfile);
+      /* 데일리미팅 삭제
+      onLongPress: (){
+        Get.defaultDialog(
+            title: "삭제",
+            content: Text("삭제하시겠습니까?"),
+            onConfirm: (){},
+            onCancel: (){});
+      },
+       */
+      onTap: () {
+        //Get.to(OppositeProfilePage(), arguments: whichProfile);
+        Get.to(() => OppositeProfilePage(user));
       },
       child: Hero(
         tag: '${user.name}',
