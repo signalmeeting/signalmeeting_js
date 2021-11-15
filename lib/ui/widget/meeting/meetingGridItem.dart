@@ -3,27 +3,43 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
+import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 import '../cached_image.dart';
 
 Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool isApply = false}) {
-  return OpenContainer(
-      tappable: (isApply || item.isMine) ? true : false,
-      transitionDuration: Duration(milliseconds: 800),
-      openShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.2),
-      ),
-      closedColor: Colors.transparent,
-      closedShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.2),
-      ),
-      openElevation: 0,
-      closedElevation: 0,
-      closedBuilder: (context, action) => closedItem(item),
-      openBuilder: (context, action) {
-        MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item, false), tag: item.id);
-        return MeetingDetailPage(item, _meetingDetailController);
+  return InkWell(
+    onTap: () {
+
+      if(isApply || item.isMine || item.process == null) {
+        return;
       }
+
+      if(item.process == 0) {
+        CustomedFlushBar(Get.context, '신청이 진행중인 미팅입니다');
+      } else if(item.process == 1) {
+        CustomedFlushBar(Get.context, '이미 성사된 미팅입니다');
+      }
+
+    },
+    child: OpenContainer(
+        tappable: (isApply || item.isMine || item.process == null) ? true : false,
+        transitionDuration: Duration(milliseconds: 800),
+        openShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.2),
+        ),
+        closedColor: Colors.transparent,
+        closedShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.2),
+        ),
+        openElevation: 0,
+        closedElevation: 0,
+        closedBuilder: (context, action) => closedItem(item),
+        openBuilder: (context, action) {
+          MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item, false), tag: item.id);
+          return MeetingDetailPage(item, _meetingDetailController);
+        }
+    ),
   );
 }
 

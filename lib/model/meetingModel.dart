@@ -27,7 +27,6 @@ class MeetingModel {
   DocumentReference user; // user uid
   String userId;
   int number;
-  bool isJoinPossible; //인창, 이거 안쓰는듯?? 삭제 ㄱ?
   String loc1;
   String loc2;
   String loc3;
@@ -40,6 +39,7 @@ class MeetingModel {
   DateTime date;
   String meetingImageUrl;
   MeetingModel();
+  List<Map<String, dynamic>> banList = [];
 
   factory MeetingModel.fromJson(Map<String, dynamic> json) => _$MeetingModelFromJson(json);
 

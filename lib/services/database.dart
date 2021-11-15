@@ -139,6 +139,7 @@ class DatabaseService {
       "createdAt": DateTime.now(),
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl" : meetingImageUrl,
+      "banList" : [],
     };
 
     meetingDoc.set(newMeeting);
@@ -384,6 +385,27 @@ class DatabaseService {
     return result;
   }
 
+  Future<bool> updateBanList(String from, String to, bool isItDaily) async {
+    bool result;
+    if(isItDaily) {
+      userCollection
+        ..doc('$from/banList').set({'from': from, 'to': to, 'when': DateTime.now()})
+        ..doc('$to/banList').set({'from': from, 'to': to, 'when': DateTime.now()})
+            .whenComplete(() => result = true)
+            .catchError((e) {
+          result = false;
+        });
+    }else {
+      meetingCollection.doc('$to/banList').set({'from': from, 'when': DateTime.now()})
+            .whenComplete(() => result = true)
+            .catchError((e) {
+          result = false;
+        });
+    }
+
+    return result;
+  }
+
   Future<bool> uploadUserPic(List<dynamic> pics) async {
     bool result;
     await userCollection.doc(_user.uid).update({"profileInfo.pics": pics}).whenComplete(() => result = true).catchError((e) {
@@ -433,8 +455,7 @@ class DatabaseService {
 
   Future<bool> getTodayMatch() async {
     String today = Util.todayMatchDateFormat(DateTime.now());
-    QuerySnapshot snapshot =
-        await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
+    QuerySnapshot snapshot = await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
     // DocumentSnapshot userSnapshot = await userCollection.doc(_user.uid).collection("todayMatch").doc(today).get();
     // var matchIdList = userSnapshot.data()["documentId"];
     List<TodayMatch> todayMatchList = [];

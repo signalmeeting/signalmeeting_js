@@ -1,12 +1,13 @@
 import 'dart:ui';
 
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/services/database.dart';
+import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 class InviteFriendsPage extends StatefulWidget {
   @override
@@ -122,13 +123,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                                         _controller.finishInvite();
 
                                         //완료 스낵바
-                                        Flushbar(
-                                          backgroundColor: Colors.black.withOpacity(0.7),
-                                          margin: EdgeInsets.all(8),
-                                          borderRadius: 8,
-                                          message: "입력이 완료되었습니다",
-                                          duration: Duration(seconds: 2),
-                                        )..show(context);
+                                        CustomedFlushBar(Get.context, "입력이 완료되었습니다");
                                       } else {
                                         _formKey.currentState.validate();
                                       }
@@ -189,12 +184,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                           onPressed: () {
                             //클립보드로 복사
                             Clipboard.setData(ClipboardData(text: '$myUID'));
-                            Flushbar(
-                              margin: EdgeInsets.all(8),
-                              borderRadius: 8,
-                              message: "복사 되었습니다",
-                              duration: Duration(seconds: 3),
-                            )..show(context);
+                            CustomedFlushBar(Get.context, "복사 되었습니다");
                           },
                         ),
                       ),

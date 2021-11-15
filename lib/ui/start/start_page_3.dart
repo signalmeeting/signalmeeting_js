@@ -147,7 +147,7 @@ class _StartPage3State extends State<StartPage3> {
               child: TextFormField(
                 onChanged: (text) => _controller.updateUser(user..profileInfo['name'] = text),
                 //텍스트 수 10자 제한
-                maxLength: 10,
+                maxLength: 20,
                 controller: _nicknameController,
                 decoration: InputDecoration(
                   //counterText 지워줌

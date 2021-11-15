@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +5,11 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/controller/my_meeting_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/colored_button.dart';
-import 'package:signalmeeting/ui/widget/confirm_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
 
@@ -49,34 +47,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      width: width,
-                      height: height,
-                      color: Colors.white,
-                      child: Swiper(
-                        loop: false,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Hero(
-                              tag: 'today_signal' + widget.user.uid,
-                              child: cachedImage(
-                                widget.user.pics[index],
-                                width: width,
-                                height: height,
-                                radius: 0,
-                              ));
-                        },
-                        itemCount: widget.user.pics.length,
-                        pagination: new SwiperPagination(
-                          builder: new DotSwiperPaginationBuilder(color: Colors.white30, activeColor: Colors.white70),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                profileImage(),
                 //애니메이션 버튼
                 if (!_signalSent && widget.isTodayMatch)
                   FutureBuilder(
@@ -378,6 +349,53 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           Clipboard.setData(ClipboardData(text: widget.user.phoneNumber));
           CustomedFlushBar(context, '전화번호가 복사 되었습니다');
         },
+      ),
+    );
+  }
+
+  Widget profileImage() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: width,
+              height: height,
+              color: Colors.white,
+              child: Swiper(
+                loop: false,
+                itemBuilder: (BuildContext context, int index) {
+                  return Hero(
+                      tag: 'today_signal' + widget.user.uid,
+                      child: cachedImage(
+                        widget.user.pics[index],
+                        width: width,
+                        height: height,
+                        radius: 0,
+                      ));
+                },
+                itemCount: widget.user.pics.length,
+                pagination: new SwiperPagination(
+                  builder: new DotSwiperPaginationBuilder(color: Colors.white30, activeColor: Colors.white70),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            child: InkWell(
+              onTap: () => Get.dialog(ReportDialog(widget.user.uid, true)),
+              child: Container(
+                width: 20,
+                height: 20,
+                child: Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),),
+              ),
+            ),
+            top: 10,
+            right: 10,
+          ),
+        ],
       ),
     );
   }

@@ -6,12 +6,13 @@ part 'userModel.g.dart';
 class UserModel {
   String uid;
   String phone;
-  String authCode; //인증번호
+  String authCode;
   int coin;
   bool stop;
   Map<dynamic, dynamic> profileInfo;
   Map<dynamic, dynamic> pushInfo;
   bool invite;
+  List<Map<String, dynamic>> banList = []; //[{'from' : 'id', 'to' : 'id', 'time' : 'date'}, ...]
 
   UserModel(
       {this.uid,
@@ -20,15 +21,16 @@ class UserModel {
       this.coin,
       this.stop,
       this.profileInfo,
-      this.invite});
+      this.invite,
+      this.banList,
+      });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   static UserModel initUser() {
-    // 회원가입 할 때
-    return new UserModel(phone: '', coin: 0, stop: false, profileInfo: {"pics": []}, invite: false);
+    return new UserModel(phone: '', coin: 0, stop: false, profileInfo: {"pics": []}, invite: false, banList: []);
   }
 
   @override
@@ -50,7 +52,6 @@ class UserModel {
   String get loc1 => profileInfo['loc1'] ?? ''; //군희 loc1 로 바뀜
   String get loc2 => profileInfo['loc2'] ?? ''; //군희 loc2 로 바뀜
 
-  // '??' 연산자 빼고 null로 받음
   String get bodyType => profileInfo['bodyType'];
 
   String get smoke => profileInfo['smoke'];

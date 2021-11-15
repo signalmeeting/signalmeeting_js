@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 
 class MainController extends GetxController {
   var user = UserModel().obs;
@@ -96,5 +96,13 @@ class MainController extends GetxController {
     callback();
 
     if (!result) Get.defaultDialog(title: "알림", middleText: "죄송합니다. 수정에 실패했습니다.\n잠시 후 다시 시도해주세요");
+  }
+
+  updateBanList(String from, String to, bool isItDaily, MeetingDetailController meetingDetailController) {
+    if(isItDaily) {
+      user.update((val) => val.banList.add({'from': from, 'to': to, 'when': DateTime.now()}));
+    }else {
+      meetingDetailController.meeting.banList.add({'from': from, 'to': to, 'when': DateTime.now()});
+    }
   }
 }

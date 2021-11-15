@@ -1,5 +1,3 @@
-import 'package:animations/animations.dart';
-import 'package:auto_animated/auto_animated.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,13 +7,10 @@ import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/make_meeting_page.dart';
-import 'package:signalmeeting/ui/widget/city_list_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
+import 'package:signalmeeting/ui/widget/dialog/city_list_dialog.dart';
 import 'package:signalmeeting/ui/widget/meeting/meetingGrid.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
 import 'package:smart_select/smart_select.dart';
-import '../widget/cached_image.dart';
-import 'meeting_detail_page.dart';
 import 'my_meeting_page.dart';
 
 class MeetingPage extends StatefulWidget {

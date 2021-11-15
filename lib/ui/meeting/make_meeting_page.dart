@@ -1,16 +1,14 @@
 import 'dart:io';
 
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/widget/city_list_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/city_list_dialog.dart';
+import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/util/util.dart';
 import 'package:smart_select/smart_select.dart';
-import 'package:signalmeeting/ui/widget/noCoin.dart';
 
 class MakeMeetingPage extends StatefulWidget {
   @override
@@ -402,12 +400,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                             await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
                             FocusScope.of(context).unfocus();
                             Navigator.pop(context);
-                            Flushbar(
-                              margin: EdgeInsets.all(8),
-                              borderRadius: 8,
-                              message: "등록이 완료되었습니다!",
-                              duration: Duration(seconds: 3),
-                            )..show(context);
+                            CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
                           }
                         : null,
                   ),

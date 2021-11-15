@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/lobby.dart';
-import 'package:signalmeeting/ui/widget/confirm_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/main.dart';
 

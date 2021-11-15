@@ -33,7 +33,6 @@ class LobbyPage extends StatelessWidget {
 
   final MainController _mainController = Get.find();
   final LobbyController _lobbyController = Get.put(LobbyController());
-  final MyMeetingController _myMeetingController = Get.put(MyMeetingController());
 
   UserModel get _user => _mainController.user.value;
 
@@ -140,10 +139,6 @@ class LobbyPage extends StatelessWidget {
       color: Colors.grey[50],
       width: tabbarWidth,
       child: InkWell(
-//        highlightcolor: Colors.transparent,
-//        splashcolor: Colors.transparent,
-//        padding: 0,
-//        borderRadius: 0,
         onTap: () => _lobbyController.selectedIndex.value = index,
         child: Container(
           decoration: BoxDecoration(

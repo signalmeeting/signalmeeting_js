@@ -106,22 +106,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildTodayMatchColumn(list, docId) {
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: list.map<Widget>((e) => todayMatchItem(e, docId)).toList());
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: list.map<Widget>((e) => todayMatchItem(e, docId)).toList()),
+    );
   }
 
   Widget todayMatchItem(UserModel user, String docId) {
     bool sameGender = this.user.man == user.man;
     bool isMe = this.user.uid == user.uid;
+    double size = Get.height * 0.16;
+    bool banned = false;
+    user.banList?.forEach((banItem) {
+      if(banItem['from'] == this.user.uid || banItem['to'] == this.user.uid) {
+        banned = true;
+      }
+    });
+
     return InkWell(
       borderRadius: BorderRadius.circular(8.0),
-      onTap: sameGender
+      onTap: sameGender || banned
           ? null
-          : () {
-              Get.to(()=>OppositeProfilePage(user, docId: docId,));
-            },
+          : () => Get.to(()=>OppositeProfilePage(user, docId: docId,)),
       child: Container(
-        height: 90,
-        width: 90,
+        height: size,
+        width: size,
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -136,8 +147,16 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(8),
                   child: Hero(
                     tag: 'today_signal' + user.uid,
-                    child: cachedImage(
-                      user.firstPic,
+                    child: banned ? Container(width: size,
+                      height: size,
+                            color: user.man
+                                ? Colors.blue[100].withOpacity(0.1)
+                                : Colors.red[100].withOpacity(0.1),
+                          )
+                        : cachedImage(
+                            user.firstPic,
+                      width: size,
+                      height: size,
                     ),
                   ),
                 ),

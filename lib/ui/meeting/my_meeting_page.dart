@@ -7,7 +7,7 @@ import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/confirm_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/meeting/meetingGridItem.dart';
 
 import 'meeting_detail_page.dart';

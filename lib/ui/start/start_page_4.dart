@@ -126,6 +126,7 @@ class _StartPage4State extends State<StartPage4> {
         Util.replaceListElement(pics, index, {'url': image.path, 'pass': 0});
       } else
         pics.add(image.path);
+      print('pic : $pic');
       _controller.updateUserPics(pics);
     }
   }

@@ -15,7 +15,6 @@ MeetingModel _$MeetingModelFromJson(Map<String, dynamic> json) {
     ..user = firestoreDocRefFromJson(json['user'])
     ..userId = json['userId'] as String
     ..number = json['number'] as int
-    ..isJoinPossible = json['isJoinPossible'] as bool
     ..loc1 = json['loc1'] as String
     ..loc2 = json['loc2'] as String
     ..loc3 = json['loc3'] as String
@@ -29,7 +28,10 @@ MeetingModel _$MeetingModelFromJson(Map<String, dynamic> json) {
         : UserModel.fromJson(json['applyUser'] as Map<String, dynamic>)
     ..date =
         json['date'] == null ? null : DateTime.parse(json['date'] as String)
-    ..meetingImageUrl = json['meetingImageUrl'] as String;
+    ..meetingImageUrl = json['meetingImageUrl'] as String
+    ..banList = (json['banList'] as List)
+        ?.map((e) => e as Map<String, dynamic>)
+        ?.toList();
 }
 
 Map<String, dynamic> _$MeetingModelToJson(MeetingModel instance) =>
@@ -40,7 +42,6 @@ Map<String, dynamic> _$MeetingModelToJson(MeetingModel instance) =>
       'user': firestoreDocRefToJson(instance.user),
       'userId': instance.userId,
       'number': instance.number,
-      'isJoinPossible': instance.isJoinPossible,
       'loc1': instance.loc1,
       'loc2': instance.loc2,
       'loc3': instance.loc3,
@@ -52,4 +53,5 @@ Map<String, dynamic> _$MeetingModelToJson(MeetingModel instance) =>
       'applyUser': instance.applyUser,
       'date': instance.date?.toIso8601String(),
       'meetingImageUrl': instance.meetingImageUrl,
+      'banList': instance.banList,
     };
