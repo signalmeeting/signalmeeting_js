@@ -385,7 +385,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           ),
           Positioned(
             child: InkWell(
-              onTap: () => Get.dialog(ReportDialog(widget.user.uid, true)),
+              onTap: () => Get.dialog(ReportDialog(widget.user.uid, ReportType.daily)),
               child: Container(
                 width: 20,
                 height: 20,

@@ -1,14 +1,15 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
-
+import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
 import 'opposite_profile.dart';
+import 'package:signalmeeting/services/database.dart';
 
 const SCALE_FRACTION = 0.75;
 const FULL_SCALE = 1.0;
@@ -110,7 +111,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: list.map<Widget>((e) => todayMatchItem(e, docId)).toList()),
+          children: list.map<Widget>((e) => Obx(() => todayMatchItem(e, docId))).toList()),
     );
   }
 
@@ -119,8 +120,9 @@ class _HomePageState extends State<HomePage> {
     bool isMe = this.user.uid == user.uid;
     double size = Get.height * 0.16;
     bool banned = false;
-    user.banList?.forEach((banItem) {
-      if(banItem['from'] == this.user.uid || banItem['to'] == this.user.uid) {
+    this.user.banList?.forEach((banItem) {
+      if ((user.uid != this.user.uid) &&
+          (banItem['from'] == user.uid || banItem['to'] == user.uid)) {
         banned = true;
       }
     });
@@ -147,17 +149,24 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(8),
                   child: Hero(
                     tag: 'today_signal' + user.uid,
-                    child: banned ? Container(width: size,
-                      height: size,
-                            color: user.man
-                                ? Colors.blue[100].withOpacity(0.1)
-                                : Colors.red[100].withOpacity(0.1),
-                          )
+                    child: banned ? InkWell(
+                      onTap: () {
+                        Get.defaultDialog(title: '시그널팅', middleText: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다');
+                      },
+                      child: Container(
+                              width: size,
+                              height: size,
+                              color: user.man
+                                  ? Colors.blue[100].withOpacity(0.1)
+                                  : Colors.red[100].withOpacity(0.1),
+                              child: Icon(Icons.favorite, color: Colors.red[50], size: size*0.4,),
+                            ),
+                    )
                         : cachedImage(
-                            user.firstPic,
-                      width: size,
-                      height: size,
-                    ),
+                                  user.firstPic,
+                          width: size,
+                          height: size,
+                        ),
                   ),
                 ),
                 if (sameGender)

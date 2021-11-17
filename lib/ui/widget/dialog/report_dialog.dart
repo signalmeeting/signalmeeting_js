@@ -6,13 +6,15 @@ import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:get/get.dart';
 import 'main_dialog.dart';
 
+enum ReportType {daily, meeting}
+
 class ReportDialog extends StatelessWidget {
   final MainController _mainController = Get.find();
   final MeetingDetailController meetingDetailController;
 
   final String uidOrId;
-  final bool isItDaily;
-  ReportDialog(this.uidOrId, this.isItDaily, {this.meetingDetailController});
+  final ReportType reportType;
+  ReportDialog(this.uidOrId, this.reportType, {this.meetingDetailController});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +24,10 @@ class ReportDialog extends StatelessWidget {
       contents: reportContents(),
       onPressed: () async {
         Get.back();
+        Get.back();
+        DatabaseService.instance.updateBanList(_mainController.user.value.uid, uidOrId, reportType);
+        _mainController.updateBanList(_mainController.user.value.uid, uidOrId, reportType, meetingDetailController);
         CustomedFlushBar(Get.context, '신고가 접수되었습니다');
-        DatabaseService.instance.updateBanList(_mainController.user.value.uid, uidOrId, isItDaily);
-        _mainController.updateBanList(_mainController.user.value.uid, uidOrId, isItDaily, meetingDetailController);
       },
     );
   }

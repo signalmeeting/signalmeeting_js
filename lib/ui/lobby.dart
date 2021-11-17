@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,16 +8,13 @@ import 'package:signalmeeting/controller/my_meeting_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/coin/coinlog.dart';
-import 'package:signalmeeting/ui/drawer/store_page.dart';
 import 'package:signalmeeting/ui/meeting/meeting_page.dart';
 import 'package:signalmeeting/util/util.dart';
 
 import 'alarm/alarmPage.dart';
-import 'chat/chat_page.dart';
 import 'drawer/custom_drawer.dart';
 import 'home/home_page.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LobbyController extends GetxController {
   RxInt selectedIndex = 0.obs;
@@ -33,6 +29,7 @@ class LobbyPage extends StatelessWidget {
 
   final MainController _mainController = Get.find();
   final LobbyController _lobbyController = Get.put(LobbyController());
+  final MyMeetingController _myMeetingController = Get.put(MyMeetingController());
 
   UserModel get _user => _mainController.user.value;
 

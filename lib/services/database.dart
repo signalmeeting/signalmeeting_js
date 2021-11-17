@@ -12,6 +12,7 @@ import 'package:signalmeeting/model/alarmModel.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/todayMatch.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/util/uiData.dart';
 import 'dart:math';
 
@@ -385,25 +386,19 @@ class DatabaseService {
     return result;
   }
 
-  Future<bool> updateBanList(String from, String to, bool isItDaily) async {
-    bool result;
-    if(isItDaily) {
-      userCollection
-        ..doc('$from/banList').set({'from': from, 'to': to, 'when': DateTime.now()})
-        ..doc('$to/banList').set({'from': from, 'to': to, 'when': DateTime.now()})
-            .whenComplete(() => result = true)
-            .catchError((e) {
-          result = false;
-        });
-    }else {
-      meetingCollection.doc('$to/banList').set({'from': from, 'when': DateTime.now()})
-            .whenComplete(() => result = true)
-            .catchError((e) {
-          result = false;
-        });
+  updateBanList(String from, String to, ReportType reportType) async {
+    if(reportType == ReportType.daily) {
+      await userCollection.doc(from).update({
+        'banList': FieldValue.arrayUnion([<String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}]),
+      });
+      await userCollection.doc(to).update({
+        'banList': FieldValue.arrayUnion([<String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}]),
+      });
+    } else if(reportType == ReportType.meeting) {
+      await meetingCollection.doc(to).update({
+        'banList': FieldValue.arrayUnion([<String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}]),
+      });
     }
-
-    return result;
   }
 
   Future<bool> uploadUserPic(List<dynamic> pics) async {

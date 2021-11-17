@@ -518,11 +518,12 @@ class MeetingDetailPage extends StatelessWidget {
           child: InkWell(
             onTap: () => banned
                 ? Get.defaultDialog(title: '이미 신고 했습니다')
-                : Get.dialog(ReportDialog(id, false, meetingDetailController: meetingDetailController)),
+                : Get.dialog(ReportDialog(id, ReportType.meeting, meetingDetailController: meetingDetailController)),
             child: Container(
               width: 20,
               height: 20,
-              child: Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),),
+              child: !meeting.isMine ?
+                Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),) : Container(),
             ),
           ),
           top: 10,
