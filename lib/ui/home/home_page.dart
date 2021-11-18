@@ -149,8 +149,7 @@ class _HomePageState extends State<HomePage> {
                     tag: 'today_signal' + user.uid,
                     child: banned ? GestureDetector(
                       onTap: () {
-                        Get.dialog(SimpleAlarmDialog('asd','asd','asd'));
-                        print('test');
+                        print("pull test");
                       },
                           // Get.defaultDialog(title: '시그널팅',
                           //     middleText: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다'),
