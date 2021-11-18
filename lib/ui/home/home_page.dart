@@ -151,11 +151,8 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         Get.dialog(SimpleAlarmDialog('asd','asd','asd'));
                         print('test');
-<<<<<<< HEAD
-=======
                         print('test2');
                         print('test3');
->>>>>>> ddfd6afa66a58fbfddb1e895e9c1175c972e6235
                       },
                           // Get.defaultDialog(title: '시그널팅',
                           //     middleText: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다'),
