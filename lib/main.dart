@@ -23,7 +23,7 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseFunctions.instance.useFunctionsEmulator(origin: 'https://asia-northeast3-signalmeeting-8ee89.cloudfunctions.net');
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  print("pull test1");
+  print("pull test2");
   runApp(MyApp());
 }
 
