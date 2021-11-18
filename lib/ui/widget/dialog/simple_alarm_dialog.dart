@@ -4,8 +4,9 @@ import 'main_dialog.dart';
 class SimpleAlarmDialog extends StatelessWidget {
   final String title;
   final String buttonText;
+  final String mainText;
 
-  const SimpleAlarmDialog({Key key, this.title, this.buttonText}) : super(key: key);
+  const SimpleAlarmDialog(this.title, this.buttonText, this.mainText) : super(key: key);
 
 
   @override
@@ -13,29 +14,22 @@ class SimpleAlarmDialog extends StatelessWidget {
     return MainDialog(
       title: title,
       buttonText: buttonText,
-      contents: reportContents(),
+      contents: contents(mainText),
       onPressed: () {},
     );
   }
 
-  Widget reportContents() {
+  Widget contents(String mainText) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10)
-          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                reportReasonText('개별 연락처 기재'),
-                reportReasonText('개인정보 노출'),
-                reportReasonText('부적절한 사진 업로드'),
-                reportReasonText('기타 적절하지 않은 내용 포함'),
+                Text(mainText)
               ],
             ),
           ),
@@ -49,19 +43,4 @@ class SimpleAlarmDialog extends StatelessWidget {
     );
   }
 
-  Widget reportReasonText(String text) {
-    Widget dot = Padding(
-      padding: const EdgeInsets.all(10),
-      child: Container(
-          width: 5,
-          height: 5,
-          decoration: new BoxDecoration(
-            color: Colors.black.withOpacity(0.7),
-            shape: BoxShape.circle,
-          )),
-    );
-    return Row(
-      children: [dot, Text(text, style: TextStyle(color: Colors.black.withOpacity(0.7)),),],
-    );
-  }
 }
