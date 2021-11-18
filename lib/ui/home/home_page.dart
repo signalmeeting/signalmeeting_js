@@ -6,10 +6,7 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
 import 'opposite_profile.dart';
-import 'package:signalmeeting/services/database.dart';
 
 const SCALE_FRACTION = 0.75;
 const FULL_SCALE = 1.0;
@@ -149,10 +146,10 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(8),
                   child: Hero(
                     tag: 'today_signal' + user.uid,
-                    child: banned ? InkWell(
-                      onTap: () {
-                        Get.defaultDialog(title: '시그널팅', middleText: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다');
-                      },
+                    child: banned ? GestureDetector(
+                      onTap: () =>
+                          Get.defaultDialog(title: '시그널팅',
+                              middleText: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다'),
                       child: Container(
                               width: size,
                               height: size,

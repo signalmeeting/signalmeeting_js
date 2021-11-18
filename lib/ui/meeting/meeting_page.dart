@@ -303,6 +303,12 @@ class _MeetingPageState extends State<MeetingPage> {
         Map<String, dynamic> meeting = e.data();
         meeting["_id"] = e.id;
         meeting["isMine"] = meeting["userId"] == user.uid;
+
+        //신고 3번 먹으면 노출 안되게
+        if(meeting['banList'].length > 2) {
+          return;
+        }
+
         //인창 수정
         if (isFiltered) {
           if ((this._loc1 == '전체' || this._loc1 == meeting["loc1"]) &&
@@ -313,10 +319,9 @@ class _MeetingPageState extends State<MeetingPage> {
             {
               meetingList.add(MeetingModel.fromJson(meeting));
             }
-        } else
-          {
-            return meetingList.add(MeetingModel.fromJson(meeting));
-          }
+        } else {
+          return meetingList.add(MeetingModel.fromJson(meeting));
+        }
       }).toList();
       return ScrollConfiguration(
         behavior: ScrollBehavior(),
