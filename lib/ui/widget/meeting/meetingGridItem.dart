@@ -2,7 +2,9 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
+import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
+import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 import '../cached_image.dart';
@@ -21,6 +23,23 @@ Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool isApply = fa
         CustomedFlushBar(Get.context, '이미 성사된 미팅입니다');
       }
 
+    },
+    onLongPress: (){
+      if(item.isMine && item.apply == null){
+        Get.dialog(
+            MainDialog(
+              title: "알림",
+              contents: Padding(
+                padding: const EdgeInsets.only(left: 18, bottom : 18.0),
+                child: Text("삭제하시겠습니까?"),
+              ),
+              buttonText: "삭제",
+              onPressed: () {
+                DatabaseService.instance.deleteMeeting(item.id);
+                Get.back();
+                CustomedFlushBar(Get.context, "삭제가 완료되었습니다!");
+              },));
+      }
     },
     child: OpenContainer(
         tappable: (isApply || item.isMine || item.process == null) ? true : false,
@@ -81,7 +100,7 @@ Widget closedItem(MeetingModel item) {
                   SizedBox(width: 10,),
                   Expanded(
                     child: Text(
-                      '${item.man ? '남' : '여'}ㅣ${item.loc1} ${item.loc2} - ${item.loc3}',
+                      '${item.man ? '남' : '여'}ㅣ${item.loc1} ${item.loc2} ${(item.loc3 != "")? "- " + item.loc3 : ""}',
                       style: TextStyle(color: Colors.grey[600], fontSize: 12),
                       overflow: TextOverflow.ellipsis,
                     ),

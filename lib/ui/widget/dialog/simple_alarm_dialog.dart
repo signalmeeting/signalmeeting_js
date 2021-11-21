@@ -6,7 +6,7 @@ class SimpleAlarmDialog extends StatelessWidget {
   final String buttonText;
   final String mainText;
 
-  const SimpleAlarmDialog(this.title, this.buttonText, this.mainText) : super(key: key);
+  const SimpleAlarmDialog({Key key, this.title, this.buttonText, this.mainText}) : super(key: key);
 
 
   @override

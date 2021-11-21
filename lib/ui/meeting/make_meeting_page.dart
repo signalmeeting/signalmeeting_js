@@ -18,7 +18,7 @@ class MakeMeetingPage extends StatefulWidget {
 class _MakeMeetingPageState extends State<MakeMeetingPage> {
   MainController _mainController = Get.find();
   UserModel get user => _mainController.user.value;
-  
+
   final GlobalKey<FormState> _formKeyTitle = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
 
@@ -228,7 +228,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                         }
                                       });
                                     },
-                                    child: Row(
+                                    child: city2 == "미정" ? Container() : Row(
                                       //validator 실행시, 아이콘과 같은 높이 유지
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,10 +247,13 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 children: <Widget>[
+                                                  /*
                                                   Icon(
                                                     Icons.check_circle_outline,
                                                     color: confirmLocation ? Colors.red[400] : Colors.grey[400],
                                                   ),
+
+                                                   */
                                                 ],
                                               ),
                                               //사용가능일 때, border 색 지정(안해주면 theme color로 지정)
@@ -264,12 +267,15 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                               hintText: '세부 위치',
                                             ),
                                             style: TextStyle(fontFamily: "AppleSDGothicNeoM",),
+                                            /*
                                             validator: (value) {
                                               if (value.isEmpty) {
                                                 return '세부 위치를 입력해주세요';
                                               }
                                               return null;
                                             },
+
+                                             */
                                           ),
                                         ),
                                       ],
@@ -287,7 +293,16 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                     ),
                                   ),
                                 ),
-                                photoBox(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    photoBox(),
+                                    Icon(
+                                      Icons.check_circle_outline,
+                                      color: imageFile != null ? Colors.red[400] : Colors.grey[400],
+                                    ),
+                                  ],
+                                ),
                                 //미팅 소개
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15.0, bottom: 8),
@@ -343,65 +358,65 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                   minWidth: Get.width - 16,
                   child: RaisedButton(
                     elevation: 2,
-                    child: confirmTitle && confirmLocation && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
+                    child: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
                         ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                '20',
-                                style: TextStyle(
-                                  color: Colors.red[200],
-                                  fontSize: 18,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.favorite,
-                                color: Colors.red[200],
-                                size: 20,
-                              ),
-                            ],
-                          )
-                        : Text(
-                            '미팅 만들기',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "AppleSDGothicNeoB",
-                              fontSize: 16,
-                            ),
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '20',
+                          style: TextStyle(
+                            color: Colors.red[200],
+                            fontSize: 18,
                           ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Icon(
+                          Icons.favorite,
+                          color: Colors.red[200],
+                          size: 20,
+                        ),
+                      ],
+                    )
+                        : Text(
+                      '미팅 만들기',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "AppleSDGothicNeoB",
+                        fontSize: 16,
+                      ),
+                    ),
                     color: Colors.white,
-                    shape: confirmTitle && confirmLocation && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
+                    shape: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
                         ? RoundedRectangleBorder(
-                            side: BorderSide(width: 1.5, color: Colors.red[200]), borderRadius: BorderRadius.circular(5))
+                        side: BorderSide(width: 1.5, color: Colors.red[200]), borderRadius: BorderRadius.circular(5))
                         : null,
-                    onPressed:  confirmTitle && confirmLocation && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
+                    onPressed:  confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
                         ? () async {
-                            await DatabaseService.instance.makeMeeting(
-                                title: this._titleController.text,
-                                number: int.parse(this.number.split(':')[0]),
-                                loc1: this.city1,
-                                loc2: this.city2,
-                                loc3: this._locationController.text,
-                                introduce: this._introduceController.text,
-                                imageFile: imageFile,
-                            );
-                            Map<String, dynamic> meeting = {
-                              "title": this._titleController.text,
-                              "number": int.parse(this.number.split(':')[0]),
-                              "loc1": this.city1,
-                              "loc2": this.city2,
-                              "loc3": this._locationController.text,
-                              "introduce": this._introduceController.text,
-                            };
-                            await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
-                            FocusScope.of(context).unfocus();
-                            Navigator.pop(context);
-                            CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
-                          }
+                      await DatabaseService.instance.makeMeeting(
+                        title: this._titleController.text,
+                        number: int.parse(this.number.split(':')[0]),
+                        loc1: this.city1,
+                        loc2: this.city2,
+                        loc3: this._locationController.text,
+                        introduce: this._introduceController.text,
+                        imageFile: imageFile,
+                      );
+                      Map<String, dynamic> meeting = {
+                        "title": this._titleController.text,
+                        "number": int.parse(this.number.split(':')[0]),
+                        "loc1": this.city1,
+                        "loc2": this.city2,
+                        "loc3": this._locationController.text,
+                        "introduce": this._introduceController.text,
+                      };
+                      await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
+                      FocusScope.of(context).unfocus();
+                      Navigator.pop(context);
+                      CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
+                    }
                         : null,
                   ),
                 ),
@@ -693,13 +708,13 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                   Text('(파티 소개에\n쓰일 이미지)',
                       style: TextStyle(color: Colors.grey))
                 ]) : ClipRRect(
-                  borderRadius: new BorderRadius.circular(7.0),
-                  child: Image(
+              borderRadius: new BorderRadius.circular(7.0),
+              child: Image(
                   image: FileImage(imageFile),
                   width: Get.width*0.3,
                   height: Get.width*0.3,
                   fit: BoxFit.cover),
-                )
+            )
         ),
       ),
     );

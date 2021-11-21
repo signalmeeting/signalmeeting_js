@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                     tag: 'today_signal' + user.uid,
                     child: banned ? GestureDetector(
                       onTap: () {
-                        Get.dialog(SimpleAlarmDialog('asd','asd','asd'));
+                        Get.dialog(SimpleAlarmDialog());
                         print('test');
                         print('test2');
                         print('test3');

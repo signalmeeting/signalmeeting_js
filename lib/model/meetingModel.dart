@@ -40,6 +40,7 @@ class MeetingModel {
   String meetingImageUrl;
   MeetingModel();
   List<Map<String, dynamic>> banList = [];
+  DateTime deletedTime;
 
   factory MeetingModel.fromJson(Map<String, dynamic> json) => _$MeetingModelFromJson(json);
 
