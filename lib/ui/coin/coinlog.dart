@@ -206,7 +206,7 @@ class _CoinLogState extends State<CoinLog> {
   }
 
   showMeetingDialog(Map<String, dynamic> meeting) {
-    String location = meeting['loc1'] + " " + meeting['loc2'];
+    String location = meeting['loc1'] + " " + meeting['loc2'] + " " + meeting['loc3'];
     Get.dialog(MainDialog(
       title: "미팅 정보",
       contents: Padding(
@@ -226,7 +226,6 @@ class _CoinLogState extends State<CoinLog> {
                   children: [
                     rowText("미팅 인원", meeting["number"].toString()),
                     rowText("위치", location),
-                    (meeting['loc3'].length != 0 ) ? rowText("상세 위치", meeting['loc3']) : Container(),
                   ],
                 ),
               ),
