@@ -6,11 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/controller/my_meeting_controller.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
+import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/meeting/my_meeting_page.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
@@ -222,6 +224,35 @@ class MeetingDetailPage extends StatelessWidget {
                   color: Colors.grey[300],
                   height: 1,
                 ),
+                if (meeting.process == 1 && meeting.applyUser != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: ButtonTheme(
+                      height: 45,
+                      minWidth: Get.width - 16,
+                      child: RaisedButton(
+                          highlightElevation: 0,
+                          elevation: 0,
+                          child: Text(
+                            '채팅방',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "AppleSDGothicNeoB",
+                              fontSize: 18,
+                            ),
+                          ),
+                          color: Colors.blue[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          onPressed: () {
+                            print("onpress chat page");
+                            Get.to(() => ChatPage(), binding: BindingsBuilder(() => {
+                              Get.put(ChatController(meeting.id), tag: meeting.id)
+                            }), arguments: meeting.id);
+                          }),
+                    ),
+                  ),
                 if ((meeting.process == 0 || meeting.process == 1) && (applied == false) && (meeting.applyUser != null))
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

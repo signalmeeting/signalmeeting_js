@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,9 @@ import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 
 class MainController extends GetxController {
+  final FirebaseApp app;
+  MainController(this.app);
+  
   var user = UserModel().obs;
   RxList todayMatchList = [].obs;
   RxBool isLogOut = false.obs;
