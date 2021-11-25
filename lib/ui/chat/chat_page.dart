@@ -58,16 +58,23 @@ class ChatPage extends StatelessWidget {
   }
 
   FirebaseAnimatedList buildFirebaseList() {
+    _chatController.messageList.clear();
     return FirebaseAnimatedList(
         query: reference,
         sort: (a, b) => b.key.compareTo(a.key),
         padding: EdgeInsets.all(8.0),
         reverse: true,
-        itemBuilder: (_, DataSnapshot snapshot, Animation<double> animation, __) {
+        itemBuilder: (_, DataSnapshot snapshot, Animation<double> animation, int index) {
           MessageModel message = MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value)));
-          print(message);
           bool _isComing = message.sender == oppositeId;
-          return ChatMessage(message: message, animation: animation, isComing: _isComing);
+          if (_chatController.messageList.length < index + 1) {
+            _chatController.messageList.add(message.obs);
+            if(index != 0 && message.theDay != _chatController.messageList[index - 1].value.theDay)
+              _chatController.messageList[index - 1].update((val) {
+                val.showDate = true;
+              });
+          }
+          return ChatMessage(message: _chatController.messageList[index], animation: animation, isComing: _isComing);
         });
   }
 
@@ -154,7 +161,7 @@ class ChatPage extends StatelessWidget {
 }
 
 class ChatMessage extends StatelessWidget {
-  final MessageModel message;
+  final Rx<MessageModel> message;
   final Animation animation;
   final bool isComing;
 
@@ -165,9 +172,26 @@ class ChatMessage extends StatelessWidget {
     return SizeTransition(
         sizeFactor: CurvedAnimation(parent: animation, curve: Curves.easeOut),
         axisAlignment: 0.0,
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-          child: buildMessageRow(),
+        child: Obx(
+          () => Container(
+            margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+            child: Column(
+              children: [
+                if (message.value.showDate ?? false)
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max, children: [
+                        Container(
+                            padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12)), color: Colors.grey[400]),
+                            child: Text(message.value.theDay,
+                                style: const TextStyle(
+                                    color: const Color(0xffffffff), fontWeight: FontWeight.w600, fontFamily: "AppleSDGothicNeo", fontStyle: FontStyle.normal, fontSize: 13.0)))
+                      ])),
+                buildMessageRow(),
+              ],
+            ),
+          ),
         ));
   }
 
@@ -184,7 +208,7 @@ class ChatMessage extends StatelessWidget {
         SizedBox(width: 8.0),
         Column(
           crossAxisAlignment: isComing ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-          children: <Widget>[buildMessageBody(), Opacity(opacity: 0.5, child: Text(message.timeString, style: TextStyle(color: Color(0xff131415), fontSize: 12)))],
+          children: <Widget>[buildMessageBody(), Opacity(opacity: 0.5, child: Text(message.value.timeString, style: TextStyle(color: Color(0xff131415), fontSize: 12)))],
         )
       ],
     );
@@ -207,7 +231,7 @@ class ChatMessage extends StatelessWidget {
       opacity: 0.8,
       child: Container(
           padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
-          child: Container(constraints: BoxConstraints(maxWidth: Get.width * .58), child: Text(message.text, style: TextStyle(color: Colors.black, fontSize: 16))),
+          child: Container(constraints: BoxConstraints(maxWidth: Get.width * .58), child: Text(message.value.text, style: TextStyle(color: Colors.black, fontSize: 16))),
           decoration: new BoxDecoration(
               color: Colors.grey[300],
               borderRadius: BorderRadius.only(

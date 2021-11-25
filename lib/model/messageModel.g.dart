@@ -11,7 +11,8 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) {
     ..sender = json['sender'] as String
     ..text = json['text'] as String
     ..time =
-        json['time'] == null ? null : DateTime.parse(json['time'] as String);
+        json['time'] == null ? null : DateTime.parse(json['time'] as String)
+    ..showDate = json['showDate'] as bool ?? false;
 }
 
 Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
@@ -19,4 +20,5 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
       'sender': instance.sender,
       'text': instance.text,
       'time': instance.time?.toIso8601String(),
+      'showDate': instance.showDate,
     };

@@ -22,6 +22,7 @@ class ChatController extends GetxController {
   Rx<String> error = null.obs;
   RxBool isComposing = false.obs;
   Rx<MessageModel> newMessage = MessageModel().obs;
+  RxList<Rx<MessageModel>> messageList = <Rx<MessageModel>>[].obs;
 
   @override
   void onInit() {
