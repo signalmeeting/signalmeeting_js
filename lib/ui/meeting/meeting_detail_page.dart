@@ -248,7 +248,7 @@ class MeetingDetailPage extends StatelessWidget {
                           onPressed: () {
                             print("onpress chat page");
                             Get.to(() => ChatPage(), binding: BindingsBuilder(() => {
-                              Get.put(ChatController(meeting.id), tag: meeting.id)
+                              Get.put(ChatController(meeting.id, meeting.applyUser.uid, meeting.applyUser.name), tag: meeting.id)
                             }), arguments: meeting.id);
                           }),
                     ),

@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/alarmModel.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
@@ -354,6 +355,7 @@ class DatabaseService {
         data["phone"] = data["phone"].toString();
         UserModel user = UserModel.fromJson(data);
         _controller.updateUser(user);
+        await Jiffy.locale('ko');
         return Future.value(true);
       } else {
         UserModel user = UserModel.initUser();

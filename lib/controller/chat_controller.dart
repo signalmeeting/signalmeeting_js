@@ -8,15 +8,19 @@ import 'package:signalmeeting/model/messageModel.dart';
 
 class ChatController extends GetxController {
   final String roomId;
+  final String oppositeId;
+  final String oppositeName;
 
-  ChatController(this.roomId);
+  ChatController(this.roomId, this.oppositeId, this.oppositeName);
 
   final MainController _mainController = Get.find();
 
+  
   DatabaseReference messagesRef;
-  StreamSubscription<Event> _messagesSubscription;
+  // StreamSubscription<Event> _messagesSubscription;
 
   Rx<String> error = null.obs;
+  RxBool isComposing = false.obs;
   Rx<MessageModel> newMessage = MessageModel().obs;
 
   @override

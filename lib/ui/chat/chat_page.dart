@@ -11,74 +11,45 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/model/messageModel.dart';
-import 'package:signalmeeting/services/database.dart';
 
-class Themes {
-  static final ThemeData kIOSTheme = new ThemeData(
-      primarySwatch: Colors.orange,
-      primaryColor: Colors.grey[100],
-      primaryColorBrightness: Brightness.light);
+class ChatPage extends StatelessWidget {
+  ChatController get _chatController => Get.find(tag: Get.arguments);
 
-  static final ThemeData kDefaultTheme = new ThemeData(
-      primaryColor: Colors.purple, accentColor: Colors.orangeAccent[400]);
+  String get oppositeId => _chatController.oppositeId;
 
-  static ThemeData getTheme(BuildContext context) {
-    return isiOS(context) ? Themes.kIOSTheme : Themes.kDefaultTheme;
-  }
-
-  static double getElevation(BuildContext context) =>
-      isiOS(context) ? 0.0 : 4.0;
-
-  static bool isiOS(BuildContext context) =>
-      Theme.of(context).platform == TargetPlatform.iOS;
-}
-
-class Constants {
-  static const String APP_NAME = "FlutterChat";
-  static const String MESSAGES_TABLE = "messages";
-  static const String SEND_MESSAGE_HINT = "Send a message";
-  static const String SEND = "Send";
-}
-
-class Message {
-  static const String TEXT = 'text';
-  static const String IMAGE_URL = 'imageUrl';
-  static const String SENDER_NAME = 'senderName';
-  static const String SENDER_PHOTO_URL = 'senderPhotoUrl';
-}
-
-class Analytics {
-  static const String SEND_MESSAGE_EVENT = "send_message";
-}
-
-class ChatPage extends StatefulWidget {
-
-  @override
-  _ChatPageState createState() => _ChatPageState();
-}
-
-class _ChatPageState extends State<ChatPage> {
-  ChatController _chatController = Get.find(tag: Get.arguments);
-
+  String get oppositeName => _chatController.oppositeName;
   final TextEditingController _textController = new TextEditingController();
 
   DatabaseReference get reference => _chatController.messagesRef;
 
-  bool _isComposing = false;
+  bool get _isComposing => _chatController.isComposing.value;
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        body: new Container(
-          child: new Column(
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          leading: IconButton(
+            highlightColor: Colors.black,
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: Colors.white,
+          title: Text(oppositeName, style: TextStyle(color: Colors.black)),
+          centerTitle: true,
+        ),
+        body: Container(
+          child: Column(
             children: <Widget>[
-              new Flexible(
+              Flexible(
                 child: buildFirebaseList(),
               ),
-              new Divider(height: 1.0),
-              new Container(
-                decoration:
-                new BoxDecoration(color: Theme.of(context).cardColor),
+              Divider(height: 1.0),
+              Container(
+                decoration: BoxDecoration(color: Theme.of(context).cardColor),
                 child: _buildTextComposer(),
               ),
             ],
@@ -87,32 +58,34 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   FirebaseAnimatedList buildFirebaseList() {
-    return new FirebaseAnimatedList(
+    return FirebaseAnimatedList(
         query: reference,
         sort: (a, b) => b.key.compareTo(a.key),
-        padding: new EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         reverse: true,
         itemBuilder: (_, DataSnapshot snapshot, Animation<double> animation, __) {
-          print(snapshot.value);
-          return ChatMessage(message: MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value))), animation: animation);
+          MessageModel message = MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value)));
+          print(message);
+          bool _isComing = message.sender == oppositeId;
+          return ChatMessage(message: message, animation: animation, isComing: _isComing);
         });
   }
 
   Widget _buildTextComposer() {
-    return new IconTheme(
-      data: new IconThemeData(),
-      child: new Container(
+    return IconTheme(
+      data: IconThemeData(),
+      child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: new Row(children: <Widget>[
-            new Container(
-              margin: new EdgeInsets.symmetric(horizontal: 4.0),
+          child: Row(children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.0),
               child: buildTakePhotoButton(),
             ),
-            new Flexible(
+            Flexible(
               child: buildSendTextField(),
             ),
-            new Container(
-              margin: new EdgeInsets.symmetric(horizontal: 4.0),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.0),
               child: buildSendButton(),
             ),
           ])),
@@ -120,29 +93,22 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget buildTakePhotoButton() {
-    return new IconButton(
-        icon: new Icon(Icons.photo_camera),
-        onPressed: onTakePhotoButtonPressed);
+    return IconButton(icon: Icon(Icons.photo_camera), onPressed: onTakePhotoButtonPressed);
   }
 
-  TextField buildSendTextField() {
-    return new TextField(
-      controller: _textController,
-      onSubmitted: _isComposing ? _onSendMessageButtonPressed : null,
-      onChanged: _handleChanged,
-      decoration:
-      new InputDecoration.collapsed(hintText: Constants.SEND_MESSAGE_HINT),
+  Widget buildSendTextField() {
+    return Obx(
+      () => TextField(
+        controller: _textController,
+        onSubmitted: _isComposing ? _onSendMessageButtonPressed : null,
+        onChanged: _handleChanged,
+        decoration: InputDecoration.collapsed(hintText: "메세지 입력"),
+      ),
     );
   }
 
   Widget buildSendButton() {
-    return Themes.isiOS(context)
-        ? new CupertinoButton(
-        child: new Text(Constants.SEND),
-        onPressed: () => _onSendMessageButtonPressed(_textController.text))
-        : new IconButton(
-        icon: new Icon(Icons.send),
-        onPressed: () => _onSendMessageButtonPressed(_textController.text));
+    return IconButton(icon: Icon(Icons.send), onPressed: () => _onSendMessageButtonPressed(_textController.text));
   }
 
   Future onTakePhotoButtonPressed() async {
@@ -153,8 +119,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<String> uploadPhoto(String imageFileName, File imageFile) async {
-    Reference reference =
-    FirebaseStorage.instance.ref().child(imageFileName);
+    Reference reference = FirebaseStorage.instance.ref().child(imageFileName);
     UploadTask uploadTask = reference.putFile(imageFile);
     String downloadUrl;
     await uploadTask.whenComplete(() async {
@@ -168,10 +133,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<Null> _onSendMessageButtonPressed(String text) async {
     if (_isComposing) {
       _textController.clear();
-      setState(() {
-        _isComposing = false;
-      });
-      // await _ensureLoggedIn();
+      _chatController.isComposing.value = false;
       _sendMessage(text: text);
     }
   }
@@ -182,13 +144,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleChanged(String text) {
-    setState(() {
-      _isComposing = text.length > 0;
-    });
+    _chatController.isComposing.value = text.length > 0;
   }
 
   String createImageFileName() {
-    int random = new Random().nextInt(100000);
+    int random = Random().nextInt(100000);
     return "image_$random.jpg";
   }
 }
@@ -196,66 +156,65 @@ class _ChatPageState extends State<ChatPage> {
 class ChatMessage extends StatelessWidget {
   final MessageModel message;
   final Animation animation;
+  final bool isComing;
 
-  ChatMessage({this.message, this.animation});
+  ChatMessage({this.message, this.animation, this.isComing});
 
   @override
   Widget build(BuildContext context) {
-    return new SizeTransition(
-        sizeFactor:
-        new CurvedAnimation(parent: animation, curve: Curves.easeOut),
+    return SizeTransition(
+        sizeFactor: CurvedAnimation(parent: animation, curve: Curves.easeOut),
         axisAlignment: 0.0,
-        child: new Container(
-          margin: const EdgeInsets.symmetric(vertical: 10.0),
-          child: buildMessageRow(context),
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+          child: buildMessageRow(),
         ));
   }
 
-  Row buildMessageRow(BuildContext context) {
-    return new Row(
+  Row buildMessageRow() {
+    return Row(
+      mainAxisAlignment: isComing ? MainAxisAlignment.start : MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        // new Container(
-        //   margin: const EdgeInsets.only(right: 16.0),
-        //   child: buildAvatar(),
-        // ),
-        new Expanded(
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              buildSenderNameText(context),
-              buildMessageBody()
-            ],
+        if (isComing)
+          Container(
+            margin: const EdgeInsets.only(right: 16.0),
+            child: buildAvatar(),
           ),
+        SizedBox(width: 8.0),
+        Column(
+          crossAxisAlignment: isComing ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: <Widget>[buildMessageBody(), Opacity(opacity: 0.5, child: Text(message.timeString, style: TextStyle(color: Color(0xff131415), fontSize: 12)))],
         )
       ],
     );
   }
 
-  CircleAvatar buildAvatar() {
-    return new CircleAvatar(
-      // backgroundImage:
-      // new NetworkImage(message),
+  CircleAvatar buildAvatar({String pic = ""}) {
+    return pic.length > 0
+        ? CircleAvatar(
+            radius: 15,
+            backgroundImage: NetworkImage(pic),
+          )
+        : CircleAvatar(
+            radius: 15,
+            backgroundColor: Colors.grey[300],
+          );
+  }
+
+  Widget buildMessageBody() {
+    return Opacity(
+      opacity: 0.8,
+      child: Container(
+          padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
+          child: Container(constraints: BoxConstraints(maxWidth: Get.width * .58), child: Text(message.text, style: TextStyle(color: Colors.black, fontSize: 16))),
+          decoration: new BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(isComing ? 0 : 12), topRight: Radius.circular(isComing ? 12 : 0), bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)))),
     );
   }
-
-  Text buildSenderNameText(BuildContext context) {
-    return new Text(message.sender,
-        style: Theme.of(context).textTheme.subhead);
-  }
-
-  Container buildMessageBody() {
-    return new Container(
-      margin: const EdgeInsets.only(top: 5.0),
-      child:
-      // message.value[Message.IMAGE_URL] != null
-      //     ? buildMessagePhoto():
-      buildMessageText(),
-    );
-  }
-
-  Text buildMessageText() => new Text(message.text);
 
 // Widget buildMessagePhoto() =>
-//     new Image.network(snapshot.value[Message.IMAGE_URL], width: 250.0);
+//     Image.network(snapshot.value[Message.IMAGE_URL], width: 250.0);
 }
