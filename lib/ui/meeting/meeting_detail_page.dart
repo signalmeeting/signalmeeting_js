@@ -77,10 +77,10 @@ class MeetingDetailController extends GetxController {
 
 class MeetingDetailPage extends StatelessWidget {
   final MeetingModel meeting;
-  final bool isApplied;
+  final bool isApply;
   final MeetingDetailController meetingDetailController;
-
-  MeetingDetailPage(this.meeting, this.meetingDetailController, {this.isApplied = false});
+  
+  MeetingDetailPage(this.meeting, this.meetingDetailController, {this.isApply = false});
 
 
   // final MyMeetingController _myMeetingController = Get.put(MyMeetingController());
@@ -224,7 +224,7 @@ class MeetingDetailPage extends StatelessWidget {
                   color: Colors.grey[300],
                   height: 1,
                 ),
-                if (meeting.process == 1 && meeting.applyUser != null)
+                if (meeting.process == 1 && (meeting.applyUser != null || isApply))
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: ButtonTheme(
@@ -248,7 +248,7 @@ class MeetingDetailPage extends StatelessWidget {
                           onPressed: () {
                             print("onpress chat page");
                             Get.to(() => ChatPage(), binding: BindingsBuilder(() => {
-                              Get.put(ChatController(meeting.id, meeting.applyUser.uid, meeting.applyUser.name), tag: meeting.id)
+                              Get.put(ChatController(meeting.id, isApply ? oppositeUser.uid : meeting.applyUser.uid, meeting.title), tag: meeting.id)
                             }), arguments: meeting.id);
                           }),
                     ),

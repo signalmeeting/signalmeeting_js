@@ -56,7 +56,7 @@ Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool isApply = fa
         closedBuilder: (context, action) => closedItem(item),
         openBuilder: (context, action) {
           MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item, false), tag: item.id);
-          return MeetingDetailPage(item, _meetingDetailController);
+          return MeetingDetailPage(item, _meetingDetailController, isApply : isApply);
         }
     ),
   );

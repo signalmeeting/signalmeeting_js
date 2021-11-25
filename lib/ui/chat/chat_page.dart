@@ -66,15 +66,17 @@ class ChatPage extends StatelessWidget {
         reverse: true,
         itemBuilder: (_, DataSnapshot snapshot, Animation<double> animation, int index) {
           MessageModel message = MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value)));
+          print("message : $message");
           bool _isComing = message.sender == oppositeId;
-          if (_chatController.messageList.length < index + 1) {
+          print("index : $index" + " length : ${_chatController.messageList.length}");
+          if (_chatController.messageList.length < index + 1 || index ==0) {
             _chatController.messageList.add(message.obs);
-            if(index != 0 && message.theDay != _chatController.messageList[index - 1].value.theDay)
+            if(index != 0 && message.theDay != _chatController.messageList[_chatController.messageList.indexWhere((element) => element.value == message) - 1].value.theDay)
               _chatController.messageList[index - 1].update((val) {
                 val.showDate = true;
               });
           }
-          return ChatMessage(message: _chatController.messageList[index], animation: animation, isComing: _isComing);
+          return ChatMessage(message: _chatController.messageList.firstWhere((element) => element.value == message), animation: animation, isComing: _isComing);
         });
   }
 
