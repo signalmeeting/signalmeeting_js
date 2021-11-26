@@ -86,10 +86,6 @@ class ChatPage extends StatelessWidget {
       child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(children: <Widget>[
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 4.0),
-              child: buildTakePhotoButton(),
-            ),
             Flexible(
               child: buildSendTextField(),
             ),
@@ -99,10 +95,6 @@ class ChatPage extends StatelessWidget {
             ),
           ])),
     );
-  }
-
-  Widget buildTakePhotoButton() {
-    return IconButton(icon: Icon(Icons.photo_camera), onPressed: onTakePhotoButtonPressed);
   }
 
   Widget buildSendTextField() {
