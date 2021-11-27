@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:signalmeeting/model/applyModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 
 part 'meetingModel.g.dart';
@@ -34,7 +35,7 @@ class MeetingModel {
   String phone;
   bool isMine = false; // 내가 만들었으면 true
   int process; // null: 신청 가능 0: 신청중, 1: 연결, 2: 거절 (null 이거나 2 이면 신청 가능)
-  Map<dynamic, dynamic> apply; //msg, createdAt, id, +phone
+  ApplyModel apply; //msg, user(id), createdAt, +phone
   UserModel applyUser;
   DateTime date;
   String meetingImageUrl;

@@ -36,7 +36,7 @@ dependencies:
   get: ^3.24.0
   intl: ^0.16.1
   flutter_swiper: ^1.1.6
-  another_flushbar: ^1.10.5
+  another_flushbar: 1.10.25
   flutter_material_pickers: ^1.8.1
   dots_indicator: ^1.2.0 #오늘의 소개팅 dot
   smart_select: ^4.2.1

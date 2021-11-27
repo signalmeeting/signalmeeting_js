@@ -12,11 +12,11 @@ Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
       crossAxisCount: 2,
     ),
     itemBuilder: (context, index, animation) {
-      bool _isApply;
+      bool _didIApplied;
       if(meetingList[index].apply != null)
-        _isApply = (meetingList[index].apply['userId'] == uid) ? true : false;
+        _didIApplied = (meetingList[index].apply.userId == uid) ? true : false;
       else
-        _isApply = false;
+        _didIApplied = false;
       return FadeTransition(
         opacity: Tween<double>(
           begin: 0,
@@ -27,7 +27,7 @@ Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
             begin: Offset(0, -0.1),
             end: Offset.zero,
           ).animate(animation),
-          child: meetingGridItem(meetingList[index], isApply: _isApply),
+          child: meetingGridItem(meetingList[index], didIApplied: _didIApplied),
         ),
       );
     },

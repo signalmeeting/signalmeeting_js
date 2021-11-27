@@ -7,23 +7,19 @@ import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 import '../cached_image.dart';
 
-Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool isApply = false}) {
+Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool didIApplied = false}) {
   return InkWell(
     onTap: () {
 
-      if(isApply || item.isMine || item.process == null) {
-        return;
-      }
-
-      if(item.process == 0) {
+      if(item.process == 0 && !item.isMine && didIApplied) {
         CustomedFlushBar(Get.context, '신청이 진행중인 미팅입니다');
-      } else if(item.process == 1) {
+      } else if(item.process == 1 && !item.isMine && didIApplied) {
         CustomedFlushBar(Get.context, '이미 성사된 미팅입니다');
       }
 
     },
     child: OpenContainer(
-        tappable: (isApply || item.isMine || item.process == null) ? true : false,
+        tappable: (didIApplied || item.isMine || item.process == null) ? true : false,
         transitionDuration: Duration(milliseconds: 800),
         openShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.2),
@@ -35,9 +31,13 @@ Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool isApply = fa
         openElevation: 0,
         closedElevation: 0,
         closedBuilder: (context, action) => closedItem(item),
+        onClosed: (Null) async {
+          await 1.delay();
+          Get.delete<MeetingDetailController>(tag: item.id);
+        },
         openBuilder: (context, action) {
-          MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item, false), tag: item.id);
-          return MeetingDetailPage(item, _meetingDetailController);
+          MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item), tag: item.id);
+          return MeetingDetailPage(_meetingDetailController);
         }
     ),
   );

@@ -8,6 +8,7 @@ import 'package:signalmeeting/controller/my_meeting_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/coin/coinlog.dart';
+import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/meeting/meeting_page.dart';
 import 'package:signalmeeting/util/util.dart';
 

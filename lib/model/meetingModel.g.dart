@@ -22,7 +22,9 @@ MeetingModel _$MeetingModelFromJson(Map<String, dynamic> json) {
     ..phone = json['phone'] as String
     ..isMine = json['isMine'] as bool
     ..process = json['process'] as int
-    ..apply = json['apply'] as Map<String, dynamic>
+    ..apply = json['apply'] == null
+        ? null
+        : ApplyModel.fromJson(json['apply'] as Map<String, dynamic>)
     ..applyUser = json['applyUser'] == null
         ? null
         : UserModel.fromJson(json['applyUser'] as Map<String, dynamic>)

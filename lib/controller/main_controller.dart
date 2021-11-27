@@ -103,7 +103,7 @@ class MainController extends GetxController {
     if(reportType == ReportType.daily) {
       user.update((val) => val.banList.add({'from': from, 'to': to, 'when': DateTime.now()}));
     } else if((reportType == ReportType.meeting)) {
-      meetingDetailController.meeting.banList.add({'from': from, 'to': to, 'when': DateTime.now()});
+      meetingDetailController.meeting.value.banList.add({'from': from, 'to': to, 'when': DateTime.now()});
     }
   }
 }

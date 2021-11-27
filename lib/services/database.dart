@@ -195,13 +195,6 @@ class DatabaseService {
   //   return snapshot;
   // }
 
-  Future<bool> getMyApply(String meetingId) async {
-    QuerySnapshot snapshot = await meetingApplyCollection.where("meeting", isEqualTo: meetingId).where("user", isEqualTo: _user.uid).get();
-    if (snapshot.docs.length > 0) {
-      return Future.value(true);
-    } else return Future.value(false);
-  }
-
   Future<List<QueryDocumentSnapshot>> getTodayConnectionList() async {
     print("getTodayConnectionList");
     QuerySnapshot snapshot = _user.man
@@ -300,9 +293,21 @@ class DatabaseService {
         print("내가 신청중");
         Get.defaultDialog(title: "알림", middleText: "신청한 미팅입니다.");
       } else {
+        DocumentReference apply = await meetingApplyCollection.add({
+          "user": userCollection.doc(_user.uid),
+          "userId": _user.uid,
+          "meeting": meetingId,
+          "msg": msg,
+          "createdAt": DateTime.now(),
+          "process": 0
+        }); // process 0 : 신청중 , 1 : 연결, 2: 거절
+
+        alarmCollection.doc().set({"body": title, "receiver": receiver, "time": DateTime.now(), "type": "apply"});
+
         await meetingCollection.doc(meetingId).update({
           "process": 0,
           "apply": {
+            "applyId" : apply.id,
             "user": userCollection.doc(_user.uid),
             "userId": _user.uid,
             "msg": msg,
@@ -310,16 +315,7 @@ class DatabaseService {
             "phone": _user.phoneNumber
           }
         });
-        await meetingApplyCollection.doc().set({
-          "user": userCollection.doc(_user.uid),
-          "userId": _user.uid,
-          "meeting": meetingId,
-          "msg": msg,
-          "createdAt": DateTime.now(),
-          "process": 0
-        }).then((value) => alarmCollection
-            .doc()
-            .set({"body": title, "receiver": receiver, "time": DateTime.now(), "type": "apply"})); // process 0 : 신청중 , 1 : 연결, 2: 거절
+
         Get.back();
 //        Get.defaultDialog(title: "신청 완료", middleText: "성공적으로 신청되었습니다!");
         return Future.value(true);
