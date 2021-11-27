@@ -53,22 +53,30 @@ class LobbyPage extends StatelessWidget {
     AlarmPage(),
   ];
 
-  Future<bool> _onWillPop() {
+  GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+
+  Future<bool> _onWillPop(BuildContext context) {
+    if (_key.currentState.isDrawerOpen){
+      Get.back();
+      return Future.value(false);
+    }
     if (_selectedIndex != 0) {
       _lobbyController.selectedIndex.value = 0;
       return Future.value(false);
     }
     return Util.onWillPop();
+
   }
 
   @override
   Widget build(BuildContext context) {
     print('build lobby');
     return WillPopScope(
-      onWillPop: () => _onWillPop(),
+      onWillPop: () => _onWillPop(context),
       child: SafeArea(
         bottom: false,
         child: Scaffold(
+          key: _key,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,
           appBar: buildAppBar(context),

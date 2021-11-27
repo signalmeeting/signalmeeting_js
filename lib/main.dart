@@ -20,17 +20,37 @@ import 'services/push_notification_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  FirebaseApp app;
+
+  try {
+    app = await Firebase.initializeApp(
+      name: 'signalmeeting',
+      options: FirebaseOptions(
+        appId: '1:387245324127:android:f336e996594ce3e0a3a8ea',
+        apiKey: 'AIzaSyDnw8E0LXbk8cwCNbI8ujSWyMzLZ7iivMA',
+        messagingSenderId: '387245324127',
+        projectId: 'signalmeeting-8ee89',
+        databaseURL: 'https://signalmeeting-8ee89-default-rtdb.asia-southeast1.firebasedatabase.app/',
+      ),
+    );
+  } on FirebaseException catch (e) {
+    if (e.code == 'duplicate-app') {
+      app = Firebase.app('signalmeeting');
+    } else {
+      throw e;
+    }
+  } catch (e) {
+    rethrow;
+  }
+
   FirebaseFunctions.instance.useFunctionsEmulator(origin: 'https://asia-northeast3-signalmeeting-8ee89.cloudfunctions.net');
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  print('asdasd2');
-  print('asdasd');
-  print("pull test1");
-  runApp(MyApp());
+  runApp(MyApp(app));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final FirebaseApp app;
+  MyApp(this.app);
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -41,7 +61,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialBinding: BindingsBuilder(() => {
-            Get.put(MainController()),
+            Get.put(MainController(app)),
           }),
       home: Splash(),
     );

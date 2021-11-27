@@ -49,6 +49,8 @@ dependencies:
   flutter_local_notifications:
   auto_animated:
   in_app_review: 1.0.4
+  firebase_database: 6.0.0
+  firebase_core: 0.7.0
 
 
 dev_dependencies:

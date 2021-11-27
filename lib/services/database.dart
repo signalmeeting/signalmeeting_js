@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/alarmModel.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
@@ -141,6 +142,7 @@ class DatabaseService {
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl" : meetingImageUrl,
       "banList" : [],
+      'deletedTime' : '',
     };
 
     meetingDoc.set(newMeeting);
@@ -148,8 +150,13 @@ class DatabaseService {
     Get.back();
   }
 
+  deleteMeeting(String docId) async{
+    await meetingCollection.doc(docId).update({"deletedTime" : DateTime.now()});
+  }
+
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
+        .where("deletedTime", isEqualTo: '')
         .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 31)))
         .orderBy("createdAt", descending: true)
         .snapshots();
@@ -206,6 +213,7 @@ class DatabaseService {
 
   Future<List<QueryDocumentSnapshot>> getMyMeetingList() async {
     QuerySnapshot snapshot = await meetingCollection
+        .where("deletedTime", isEqualTo: '')
         .where("userId", isEqualTo: _user.uid)
         .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 7)))
         .orderBy("createdAt", descending: true)
@@ -343,6 +351,7 @@ class DatabaseService {
         data["phone"] = data["phone"].toString();
         UserModel user = UserModel.fromJson(data);
         _controller.updateUser(user);
+        await Jiffy.locale('ko');
         return Future.value(true);
       } else {
         UserModel user = UserModel.initUser();
@@ -577,5 +586,6 @@ class DatabaseService {
         .orderBy('date', descending : true)
         .snapshots();
   }
+
 
 }
