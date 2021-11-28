@@ -10,6 +10,8 @@ import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import '../cached_image.dart';
 
 Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool isApply = false}) {
+
+  print('??? : $isMine');
   return InkWell(
     onTap: () {
 

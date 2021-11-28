@@ -9,6 +9,8 @@ import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/coin/coinlog.dart';
 import 'package:signalmeeting/ui/meeting/meeting_page.dart';
+import 'package:signalmeeting/ui/test/dailymeetingtest2.dart';
+import 'package:signalmeeting/ui/test/dailymeetingtest3.dart';
 import 'package:signalmeeting/util/util.dart';
 
 import 'alarm/alarmPage.dart';
@@ -108,6 +110,10 @@ class LobbyPage extends StatelessWidget {
           style: TextStyle(color: Colors.black, fontFamily: "AppleSDGothicNeoM"),
         ),
         actions: <Widget>[
+          TextButton(
+            child: Text("test"),
+            onPressed: () => Get.to(DailyMeetingTest3()),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: GestureDetector(

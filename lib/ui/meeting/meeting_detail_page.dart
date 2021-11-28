@@ -45,32 +45,6 @@ class MeetingDetailController extends GetxController {
       bool result = await DatabaseService.instance.getMyApply(meeting.id);
       this.applied.value = result;
     }
-
-    if (meeting.process == 1 && meeting.isMine && meeting.applyUser != null) {
-      Get.dialog(ConfirmDialog(
-        title: '성사된 미팅입니다!',
-        text: '${meeting.applyUser.phoneNumber}',
-        onConfirmed: () {},
-        confirmText: '확인',
-      ));
-    } else if (meeting.process == 1 && !meeting.isMine && meeting.apply != null) {
-      Get.dialog(ConfirmDialog(
-        title: '성사된 미팅입니다',
-        text: '다른 미팅에 신청해주세요', // '${meeting.apply['phone']}' => '다른 미팅에 신청해주세요'
-        onConfirmed: () => Get.back(),
-        confirmText: '확인',
-      ));
-    } else if (meeting.process == 1 && (meeting.applyUser == null || meeting.apply == null)) {
-      Get.dialog(ConfirmDialog(
-        title: '성사된 미팅입니다!',
-        text: '내 미팅 페이지에서 확인해주세요',
-        onConfirmed: () {
-          Get.back();
-          Get.to(() => MyMeetingPage());
-        },
-        confirmText: '확인',
-      ));
-    }
     super.onInit();
   }
 }
@@ -82,8 +56,6 @@ class MeetingDetailPage extends StatelessWidget {
   
   MeetingDetailPage(this.meeting, this.meetingDetailController, {this.isApply = false});
 
-
-  // final MyMeetingController _myMeetingController = Get.put(MyMeetingController());
   final TextEditingController _selfIntroductionController = TextEditingController();
 
   final MainController _mainController = Get.find();
@@ -91,8 +63,11 @@ class MeetingDetailPage extends StatelessWidget {
   bool get applied => meetingDetailController.applied.value;
   bool get buttonClicked => meetingDetailController.buttonClicked.value;
   UserModel get oppositeUser => meetingDetailController.oppositeUser.value;
+
+
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () async {
         if(buttonClicked) {
@@ -253,7 +228,7 @@ class MeetingDetailPage extends StatelessWidget {
                           }),
                     ),
                   ),
-                if ((meeting.process == 0 || meeting.process == 1) && (applied == false) && (meeting.applyUser != null))
+                if ((meeting.process == 0 || meeting.process == 1) && (meeting.isMine))
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: ButtonTheme(
@@ -274,7 +249,9 @@ class MeetingDetailPage extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          onPressed: () {
+                          onPressed: () async{
+                            UserModel user = await DatabaseService.instance.getOppositeUserInfo(meeting.apply['userId']);
+                            meeting.applyUser = user;
                             print('meeting.applyUser @@@@@@@@@@@@@ : ${meeting.applyUser}');
                             Navigator.push(
                                 context,

@@ -299,11 +299,11 @@ class _MeetingPageState extends State<MeetingPage> {
   Widget buildMeetingList(List<QueryDocumentSnapshot> docs) {
     if (docs.length > 0) {
       List<MeetingModel> meetingList = [];
-      docs.map((QueryDocumentSnapshot e) {
+      docs.map((QueryDocumentSnapshot e) async{
         Map<String, dynamic> meeting = e.data();
         meeting["_id"] = e.id;
         meeting["isMine"] = meeting["userId"] == user.uid;
-
+        //
         //신고 3번 먹으면 노출 안되게
         if(meeting['banList'].length > 2) {
           return;

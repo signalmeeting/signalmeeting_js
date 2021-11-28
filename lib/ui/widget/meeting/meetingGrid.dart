@@ -27,7 +27,7 @@ Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
             begin: Offset(0, -0.1),
             end: Offset.zero,
           ).animate(animation),
-          child: meetingGridItem(meetingList[index], isApply: _isApply),
+          child: meetingGridItem(meetingList[index], isApply: _isApply, isMine: meetingList[index].isMine),
         ),
       );
     },
