@@ -90,7 +90,6 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
     {"name" : "10" , "banList" : [],},
     {"name" : "11" , "banList" : [],},
     {"name" : "12" , "banList" : [],},
-
      */
   ];
 
@@ -105,6 +104,8 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
   void initState() {
     dummyManForTest.assignAll(dummyMan);
     dummyWomanForTest.assignAll(dummyWoman);
+    dummyManForTest.shuffle();
+    dummyWomanForTest.shuffle();
     super.initState();
   }
 
@@ -135,8 +136,8 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
                           .toList()
                       +
                       _totalGroupList
-                      .map((item) => Text("${_totalGroupList.indexOf(item)} ${item[0]} \n  ${item[1]}"))
-                    .toList()
+                          .map((item) => Text("${_totalGroupList.indexOf(item)} ${item[0]} \n  ${item[1]}"))
+                          .toList()
                 // [
                 // totalUser(),
                 // Divider(height: 1, color: Colors.black,),
@@ -160,6 +161,7 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
       //TODO 남은 여자가 다 banList 일 때 예외 처리 해줘야됨 => 전체 여자에서 한 번 돌려줌
       if (dummyWomanForTest.length == 0) {
         dummyWomanForTest.assignAll(_dummyWoman);
+        dummyWomanForTest.shuffle();
       }
       //
       List _possibleWomanList = dummyWomanForTest.where((element) => !_banList.contains(element["name"])).toList();
@@ -192,19 +194,26 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
   Function _groupMatch() {
     bool finish = false;
     List _matchedListCopy = [];
+    List _matchedListCopy2 = [];
     _matchedListCopy.assignAll(_matchedList);
     List _matchIndex = List.generate(_matchedList.length, (index) => 0);
     // print("_matchIndex : $_matchIndex");
     Map _match;
     Map _oppositeMatch;
-    while(_matchedListCopy.length > 1) {
+    while(_matchedListCopy.length > 0) {
       //TODO 마지막에 남는 한 팀 => 앞에서부터 banList 안걸리는애 하나 가져옴
+      if(_matchedListCopy.length == 1){
+        finish = true;
+      }
       _match = _matchedListCopy[0];
       _matchedListCopy.remove(_match);
       List _userList = [_match["man"]["name"], _match["woman"]["name"]];
       List<String> _manBanList = _match["man"]["banList"].map<String>((e) => e.toString()).toList();
       List<String> _womanBanList = _match["woman"]["banList"].map<String>((e) => e.toString()).toList();
       List _banList = _manBanList..addAll(_womanBanList);
+      if(finish){
+        _matchedListCopy.assignAll(_matchedList);
+      }
       for (int i = 0; i < _matchedListCopy.length; i++) {
         _oppositeMatch = _matchedListCopy[i];
         print("_oppositeMatch : $_oppositeMatch");
@@ -214,35 +223,35 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
         List _oppositeBanList = _oppositeManBanList..addAll(_oppositeWomanBanList);
         //서로가 banList 에 있는지 확인
         if (_banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
-            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0) {
+            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 &&
+            _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0
+        ) {
           _matchedGroupList.add([_match, _oppositeMatch]);
           _matchedListCopy.remove(_oppositeMatch);
           break;
+        } else if ( i == _matchedListCopy.length - 1){
+          _matchedListCopy2.assignAll(_matchedList);
+          _matchedListCopy2.shuffle();
+          for (int j = 0 ; j < _matchedListCopy2.length ; j++){
+            _oppositeMatch = _matchedListCopy2[j];
+            List _oppositeUserList = [_oppositeMatch["man"]["name"], _oppositeMatch["woman"]["name"]];
+            List<String> _oppositeManBanList = _oppositeMatch["man"]["banList"].map<String>((e) => e.toString()).toList();
+            List<String> _oppositeWomanBanList = _oppositeMatch["woman"]["banList"].map<String>((e) => e.toString()).toList();
+            List _oppositeBanList = _oppositeManBanList..addAll(_oppositeWomanBanList);
+            if (_banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
+                _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 &&
+                _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0
+            ) {
+              _matchedGroupList.add([_match, _oppositeMatch]);
+              print('match success');
+              break;
+            }
+          }
+          print('All Ban');
         }
       }
-    }
-    if(_matchedListCopy.length != 0){
-      List _matchedListCopy2 = [];
-      _matchedListCopy2.assignAll(_matchedList);
-      _match = _matchedListCopy[0];
-      _matchedListCopy.remove(_match);
-      List _userList = [_match["man"]["name"], _match["woman"]["name"]];
-      List<String> _manBanList = _match["man"]["banList"].map<String>((e) => e.toString()).toList();
-      List<String> _womanBanList = _match["woman"]["banList"].map<String>((e) => e.toString()).toList();
-      List _banList = _manBanList..addAll(_womanBanList);
-      for (int i = 0; i < _matchedListCopy2.length; i++) {
-        _oppositeMatch = _matchedListCopy2[i];
-        print("_oppositeMatch : $_oppositeMatch");
-        List _oppositeUserList = [_oppositeMatch["man"]["name"], _oppositeMatch["woman"]["name"]];
-        List<String> _oppositeManBanList = _oppositeMatch["man"]["banList"].map<String>((e) => e.toString()).toList();
-        List<String> _oppositeWomanBanList = _oppositeMatch["woman"]["banList"].map<String>((e) => e.toString()).toList();
-        List _oppositeBanList = _oppositeManBanList..addAll(_oppositeWomanBanList);
-        //서로가 banList 에 있는지 확인
-        if (_banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
-            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0) {
-          _matchedGroupList.add([_match, _oppositeMatch]);
-          break;
-        }
+      if(finish){
+        break;
       }
     }
     finalMatch();
@@ -250,52 +259,20 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
   }
 
   Function finalMatch(){
+    bool finish = false;
     List _matchedGroupListCopy = [];
+    List _matchedGroupListCopy2 = [];
     _matchedGroupListCopy.assignAll(_matchedGroupList);
     print('## ${_matchedGroupList.length}');
 
     List _match;
     List _oppositeMatch;
 
-    while(_matchedGroupListCopy.length > 1){
-      _match = _matchedGroupListCopy[0];
-      _matchedGroupListCopy.remove(_match);
-      List _userList = [_match[0]["man"]["name"], _match[1]["man"]["name"], _match[0]["woman"]["name"], _match[1]["woman"]["name"]];
-
-      List<String> _manBanList = _match[0]["man"]["banList"].map<String>((e) => e.toString()).toList()
-        + _match[1]["man"]["banList"].map<String>((e) => e.toString()).toList()
-      ;
-      List<String> _womanBanList = _match[0]["woman"]["banList"].map<String>((e) => e.toString()).toList()
-        + _match[1]["woman"]["banList"].map<String>((e) => e.toString()).toList()
-      ;
-
-      List _banList = _manBanList..addAll(_womanBanList);
-      for (int i = 0; i < _matchedGroupListCopy.length; i++) {
-        _oppositeMatch = _matchedGroupListCopy[i];
-        List _oppositeUserList = [_oppositeMatch[0]["man"]["name"], _oppositeMatch[1]["man"]["name"], _oppositeMatch[0]["woman"]["name"], _oppositeMatch[1]["woman"]["name"]];
-        List<String> _oppositeManBanList = _oppositeMatch[0]["man"]["banList"].map<String>((e) => e.toString()).toList()
-            + _oppositeMatch[1]["man"]["banList"].map<String>((e) => e.toString()).toList()
-        ;
-        List<String> _oppositeWomanBanList = _oppositeMatch[0]["woman"]["banList"].map<String>((e) => e.toString()).toList()
-            + _oppositeMatch[1]["woman"]["banList"].map<String>((e) => e.toString()).toList()
-        ;
-        List _oppositeBanList = _oppositeManBanList..addAll(_oppositeWomanBanList);
-        //서로가 banList 에 있는지 확인
-        if (_banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
-            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 //&&
-           // _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0
-        ) {
-          _totalGroupList.add([_match, _oppositeMatch]);
-          _matchedGroupListCopy.remove(_oppositeMatch);
-          break;
-        }
+    while(_matchedGroupListCopy.length > 0){
+      if(_matchedGroupListCopy.length == 1){
+        print('finish');
+        finish = true;
       }
-    }
-    if(_matchedGroupListCopy.length != 0){
-      List _matchedGroupListCopy2 = [];
-      _matchedGroupListCopy2.assignAll(_matchedGroupList);
-      List _match;
-      List _oppositeMatch;
       _match = _matchedGroupListCopy[0];
       _matchedGroupListCopy.remove(_match);
       List _userList = [_match[0]["man"]["name"], _match[1]["man"]["name"], _match[0]["woman"]["name"], _match[1]["woman"]["name"]];
@@ -308,6 +285,9 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
       ;
 
       List _banList = _manBanList..addAll(_womanBanList);
+      if(finish){
+        _matchedGroupListCopy.assignAll(_matchedGroupList);
+      }
       for (int i = 0; i < _matchedGroupListCopy.length; i++) {
         _oppositeMatch = _matchedGroupListCopy[i];
         List _oppositeUserList = [_oppositeMatch[0]["man"]["name"], _oppositeMatch[1]["man"]["name"], _oppositeMatch[0]["woman"]["name"], _oppositeMatch[1]["woman"]["name"]];
@@ -318,14 +298,48 @@ class _DailyMeetingTest3State extends State<DailyMeetingTest3> {
             + _oppositeMatch[1]["woman"]["banList"].map<String>((e) => e.toString()).toList()
         ;
         List _oppositeBanList = _oppositeManBanList..addAll(_oppositeWomanBanList);
-        //서로가 banList 에 있는지 확인
         if (_banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
-            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 && 
-            _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 // 유저 안겹치게
+            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 &&
+            _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0
         ) {
           _totalGroupList.add([_match, _oppositeMatch]);
+          _matchedGroupListCopy.remove(_oppositeMatch);
           break;
         }
+        if(i == (_matchedGroupListCopy.length - 1) &&
+            _banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
+            _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 &&
+            _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0){
+          print('adfadfa');
+          _matchedGroupListCopy2.assignAll(_matchedGroupList);
+          _matchedGroupListCopy2.shuffle();
+          for(int j = 0; j < _matchedGroupListCopy2.length; j++){
+            _oppositeMatch = _matchedGroupListCopy2[j];
+            List _oppositeUserList = [_oppositeMatch[0]["man"]["name"], _oppositeMatch[1]["man"]["name"], _oppositeMatch[0]["woman"]["name"], _oppositeMatch[1]["woman"]["name"]];
+            List<String> _oppositeManBanList = _oppositeMatch[0]["man"]["banList"].map<String>((e) => e.toString()).toList()
+                + _oppositeMatch[1]["man"]["banList"].map<String>((e) => e.toString()).toList()
+            ;
+            List<String> _oppositeWomanBanList = _oppositeMatch[0]["woman"]["banList"].map<String>((e) => e.toString()).toList()
+                + _oppositeMatch[1]["woman"]["banList"].map<String>((e) => e.toString()).toList()
+            ;
+            List _oppositeBanList = _oppositeManBanList..addAll(_oppositeWomanBanList);
+            if (_banList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0 &&
+                _oppositeBanList.toSet().intersection(_userList.toSet()).toList().length == 0 &&
+                _userList.toSet().intersection(_oppositeUserList.toSet()).toList().length == 0
+            ) {
+              _totalGroupList.add([_match, _oppositeMatch]);
+              print('add succeess');
+              break;
+            }
+            print('add fail');
+          }
+
+        }
+      }
+
+      print('_matchedGroupList : ${_matchedGroupListCopy.length}');
+      if(finish){
+        break;
       }
     }
 
