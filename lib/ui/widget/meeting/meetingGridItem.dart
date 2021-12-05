@@ -12,7 +12,6 @@ import '../cached_image.dart';
 Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool didIApplied = false}) {
   return InkWell(
     onTap: () {
-
       if(item.process == 0 && !item.isMine && didIApplied) {
         CustomedFlushBar(Get.context, '신청이 진행중인 미팅입니다');
       } else if(item.process == 1 && !item.isMine && didIApplied) {
@@ -20,7 +19,7 @@ Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool didIApplied 
       }
     },
     onLongPress: (){
-      if(item.isMine && item.didIApplied == null){
+      if(item.isMine && item.apply == null){
         Get.dialog(
             MainDialog(
               title: "알림",
@@ -54,6 +53,7 @@ Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool didIApplied 
           Get.delete<MeetingDetailController>(tag: item.id);
         },
         openBuilder: (context, action) {
+          print(item);
           MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item), tag: item.id);
           return MeetingDetailPage(_meetingDetailController);
         }

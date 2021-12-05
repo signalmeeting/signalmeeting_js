@@ -29,7 +29,6 @@ class MeetingDetailController extends GetxController {
   @override
   void onInit() async {
     meeting.value = initialMeeting;
-
     //meetingOwner init
     DocumentSnapshot snapshot = await meeting.value.user.get();
     Map<String, dynamic> data = snapshot.data();

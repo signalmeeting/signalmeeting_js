@@ -40,7 +40,6 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('### ${widget.meetingData}');
     return Scaffold(
       body: SafeArea(
         child: ScrollConfiguration(
