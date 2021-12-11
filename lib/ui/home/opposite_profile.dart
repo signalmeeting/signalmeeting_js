@@ -25,7 +25,7 @@ class OppositeProfilePage extends StatefulWidget {
 }
 
 class _OppositeProfilePageState extends State<OppositeProfilePage> {
-  MeetingDetailController get meetingDetailController => Get.find(tag: Get.arguments);
+  MeetingDetailController meetingDetailController;
   MeetingModel get meeting => meetingDetailController.meeting.value;
   double width = Get.width * 0.9;
   double height = Get.width * 0.9;
@@ -39,94 +39,96 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   UserModel get myuser => _controller.user.value;
 
   @override
+  void initState() {
+    meetingDetailController = Get.find(tag: Get.arguments);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('### ${widget.meetingData}');
     return Scaffold(
       body: SafeArea(
         child: ScrollConfiguration(
           behavior: ScrollBehavior(),
           child: SingleChildScrollView(
-            child: Obx(
-              () => Column(
-                children: <Widget>[
-                  profileImage(),
-                  //애니메이션 버튼
-                  if (!_signalSent && widget.isTodayMatch)
-                    FutureBuilder(
-                      future: DatabaseService.instance.checkConnectionAndSignal(widget.user.uid),
-                      builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Something went wrong');
-                        }
-                        if (!snapshot.hasData)
-                          return Container(
-                          );
-                        //인창, 시그널 보냈으면 보냈습니다 표시 추가 예정,,
-                        else {
-                          print(snapshot.data);
-                          return AnimatedCrossFade(
-                              firstChild: AnimatedCrossFade(
-                                  firstChild: _SignalButton(false),
-                                  secondChild: _SignalButton(true),
-                                  crossFadeState: _buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                  duration: const Duration(milliseconds: 400)),
-                              secondChild: SizedBox(),
-                              crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                              // data == 2일 때 번호 떠야됨
-                              duration: const Duration(milliseconds: 400));
-                        }
-                      },
-                    ),
-                  //divider
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-                    child: Container(
-                      height: 10,
-                      color: Colors.grey[200],
-                    ),
+            child: Column(
+              children: <Widget>[
+                profileImage(),
+                //애니메이션 버튼
+                if (!_signalSent && widget.isTodayMatch)
+                  FutureBuilder(
+                    future: DatabaseService.instance.checkConnectionAndSignal(widget.user.uid),
+                    builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Something went wrong');
+                      }
+                      if (!snapshot.hasData)
+                        return Container(
+                        );
+                      //인창, 시그널 보냈으면 보냈습니다 표시 추가 예정,,
+                      else {
+                        print(snapshot.data);
+                        return AnimatedCrossFade(
+                            firstChild: AnimatedCrossFade(
+                                firstChild: _SignalButton(false),
+                                secondChild: _SignalButton(true),
+                                crossFadeState: _buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                duration: const Duration(milliseconds: 400)),
+                            secondChild: SizedBox(),
+                            crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                            // data == 2일 때 번호 떠야됨
+                            duration: const Duration(milliseconds: 400));
+                      }
+                    },
                   ),
-                  if (!widget.isTodayMatch && meeting.process == 0)
-                    acceptOrNot(),
-                  //닉네임
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: Get.width * 0.05, top: 25, bottom: 5),
-                        child: Text(
-                          widget.user.name,
-                          style: TextStyle(
-                            fontSize: 23,
-                            color: Colors.black,
-                          ),
+                //divider
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                  child: Container(
+                    height: 10,
+                    color: Colors.grey[200],
+                  ),
+                ),
+                Obx(() => !widget.isTodayMatch && meeting.process == 0 ? acceptOrNot() : Container()),
+                //닉네임
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: Get.width * 0.05, top: 25, bottom: 5),
+                      child: Text(
+                        widget.user.name,
+                        style: TextStyle(
+                          fontSize: 23,
+                          color: Colors.black,
                         ),
                       ),
-                    ],
-                  ),
-                  //나이, 직업
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: Get.width * 0.05, bottom: 25),
-                        child: Text(
-                          '${widget.user.age}, ${widget.user.career}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
+                    ),
+                  ],
+                ),
+                //나이, 직업
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: Get.width * 0.05, bottom: 25),
+                      child: Text(
+                        '${widget.user.age}, ${widget.user.career}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
                         ),
                       ),
-                    ],
-                  ),
-                  _InfoForm('지역', '${widget.user.loc1} ${widget.user.loc2}'),
-                  _InfoForm('키', widget.user.tall),
-                  _InfoForm('체형', widget.user.bodyType),
-                  _InfoForm('흡연', widget.user.smoke),
-                  _InfoForm('음주', widget.user.drink),
-                  _InfoForm('종교', widget.user.religion),
-                  _InfoForm('mbti', widget.user.mbti),
-                  _InfoForm('간단소개', widget.user.introduce),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                _InfoForm('지역', '${widget.user.loc1} ${widget.user.loc2}'),
+                _InfoForm('키', widget.user.tall),
+                _InfoForm('체형', widget.user.bodyType),
+                _InfoForm('흡연', widget.user.smoke),
+                _InfoForm('음주', widget.user.drink),
+                _InfoForm('종교', widget.user.religion),
+                _InfoForm('mbti', widget.user.mbti),
+                _InfoForm('간단소개', widget.user.introduce),
+              ],
             ),
           ),
         ),
@@ -276,6 +278,34 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
     );
   }
 
+  _onPressAccept() async {
+    await DatabaseService.instance.acceptApply(
+        meetingId: meeting.id,
+        applyId: meeting.apply.applyId,
+        meetingTitle: meeting.title,
+        receiver: widget.user.uid);
+    meetingDetailController.meeting.update((meeting) {
+    meeting.process = 1;
+  });
+    // print('Get.arguments : ${meetingDetailController}');
+
+
+
+    // print('Get.arguments : ${meetingDetailController}');
+    CustomedFlushBar(Get.context, '축하합니다! 미팅이 성사되었습니다!');
+    //바깥으로 보내버리는건 좀 아닌듯
+    //수락 시 - 수락 거절 부분 없애고,(오픈 컨테이너로?)
+    //거절 시  - 바깥으로 보내고 플러시 한번 띄워주??
+
+    1.delay(() {
+      for(int i = 0; i < _myMeetingController.myMeetingList.length; i++) {
+        if(_myMeetingController.myMeetingList[i].id == meetingDetailController.meeting.value.id) {
+          _myMeetingController.myMeetingList[i].process = 1;
+        }
+      }
+    });
+  }
+
   Widget acceptOrNotButtons() {
     return Row(
       children: [
@@ -284,25 +314,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           child: ColoredButton(
             text: '수락',
             color: Colors.red[200],
-            onPressed: () {
-              DatabaseService.instance.acceptApply(
-                  meetingId: meeting.id,
-                  applyId: meeting.apply.applyId,
-                  meetingTitle: meeting.title,
-                  receiver: widget.user.uid);
-
-              for(int i = 0; i < _myMeetingController.myMeetingList.length; i++) {
-                if(_myMeetingController.myMeetingList[i].id == meeting.id) {
-                  return _myMeetingController.myMeetingList[i].process = 1;
-                }
-              }
-
-              meetingDetailController.meeting.update((meeting) => meeting.process = 1);
-              CustomedFlushBar(context, '축하합니다! 미팅이 성사되었습니다!');
-              //바깥으로 보내버리는건 좀 아닌듯
-              //수락 시 - 수락 거절 부분 없애고,(오픈 컨테이너로?)
-              //거절 시  - 바깥으로 보내고 플러시 한번 띄워주??
-            },
+            onPressed: () => _onPressAccept(),
           ),
         ),
         SizedBox(width: Get.width*0.05,),
@@ -324,8 +336,6 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                 }
               }
               meetingDetailController.meeting.update((meeting) => meeting.process = null);
-              Get.back();
-              Get.back();
             },
           ),
         ),

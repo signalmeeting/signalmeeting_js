@@ -5,10 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
+import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
@@ -22,6 +24,7 @@ class MeetingDetailController extends GetxController {
   RxBool userLoaded = false.obs;
   UserModel meetingOwner = UserModel();
   Rx<MeetingModel> meeting = MeetingModel().obs;
+  UserModel oppositeUser;
 
   final MeetingModel initialMeeting;
   MeetingDetailController(this.initialMeeting);
@@ -53,6 +56,7 @@ class MeetingDetailPage extends StatelessWidget {
   bool get buttonClicked => meetingDetailController.buttonClicked.value;
   UserModel get meetingOwner => meetingDetailController.meetingOwner;
   MeetingModel get meeting => meetingDetailController.meeting.value;
+
 
   @override
   Widget build(BuildContext context) {
@@ -240,42 +244,72 @@ class MeetingDetailPage extends StatelessWidget {
   }
 
   Widget seeTheOppositeBt() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: ButtonTheme(
-        height: 45,
-        minWidth: Get.width - 16,
-        child: RaisedButton(
-            highlightElevation: 0,
-            elevation: 0,
-            child: Text(
-              '상대방 확인',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: "AppleSDGothicNeoB",
-                fontSize: 18,
-              ),
-            ),
-            color: Colors.red[200],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            onPressed: () async{
-              UserModel oppositeUser;
-              if(meeting.isMine) {
-                DocumentSnapshot snapshot = await meeting.user.get();
-                Map<String, dynamic> data = snapshot.data();
-                oppositeUser = UserModel.fromJson(data);
-              } else {
-                DocumentSnapshot snapshot = await meeting.apply.user.get();
-                Map<String, dynamic> data = snapshot.data();
-                oppositeUser = UserModel.fromJson(data);
-              }
-              Get.to(() => OppositeProfilePage(oppositeUser, isTodayMatch: false),
-                  binding: BindingsBuilder(() => Get.put(MeetingDetailController(meeting), tag: meeting.id,)),
-              arguments: meeting.id);
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () async {
+            DocumentSnapshot snapshot;
+            if(meeting.isMine) {
+              snapshot = await meeting.apply.user.get();
+            } else {
+              snapshot = await meeting.user.get();
+            }
+            Map<String, dynamic> data = snapshot.data();
+            meetingDetailController.oppositeUser = UserModel.fromJson(data);
+
+            print('meeting.id : ${meeting.id}');
+            print('meetingDetailController.oppositeUser : ${meetingDetailController.oppositeUser.name}');
+            Get.to(() => ChatPage(),
+            binding: BindingsBuilder(() {
+              Get.put(ChatController(
+                    meeting.id,
+                    meetingDetailController.oppositeUser.uid,
+                    meetingDetailController.oppositeUser.name),
+                tag: meeting.id);
             }),
-      ),
+                arguments: meeting.id,
+              preventDuplicates: false,
+          );
+          },
+          child: Text('asd'),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: ButtonTheme(
+            height: 45,
+            minWidth: Get.width - 16,
+            child: RaisedButton(
+                highlightElevation: 0,
+                elevation: 0,
+                child: Text(
+                  '상대방 확인',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "AppleSDGothicNeoB",
+                    fontSize: 18,
+                  ),
+                ),
+                color: Colors.red[200],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                onPressed: () async {
+                  DocumentSnapshot snapshot;
+                  if(meeting.isMine) {
+                    snapshot = await meeting.apply.user.get();
+                  } else {
+                    snapshot = await meeting.user.get();
+                  }
+                  Map<String, dynamic> data = snapshot.data();
+                  meetingDetailController.oppositeUser = UserModel.fromJson(data);
+                  Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
+                    arguments: meeting.id,
+                    preventDuplicates: false);
+
+                }),
+          ),
+        ),
+      ],
     );
   }
 
@@ -292,15 +326,14 @@ class MeetingDetailPage extends StatelessWidget {
           height: 25,
           color: Colors.black12,
           child: Center(
-              child: Text(
-            meeting.process == 0 ? '상대방의 수락을 기다리고 있습니다' : '성사된 미팅입니다!',
+              child: Text('미팅 수락을 기다리고 있습니다',
             style: TextStyle(
               color: Colors.white70,
               fontFamily: "AppleSDGothicNeoM",
             ),
           )),
         ),
-        crossFadeState: this.applied ?? false ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        crossFadeState: meeting.process == 0 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         duration: const Duration(milliseconds: 500));
   }
 

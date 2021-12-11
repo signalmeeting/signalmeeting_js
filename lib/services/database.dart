@@ -150,7 +150,7 @@ class DatabaseService {
     Get.back();
   }
 
-  deleteMeeting(String docId) async{
+  deleteMeeting(String docId) async {
     await meetingCollection.doc(docId).update({"deletedTime" : DateTime.now()});
   }
 
@@ -235,16 +235,13 @@ class DatabaseService {
   }
 
   Future<bool> acceptApply({String meetingId, String applyId, String meetingTitle, String receiver}) {
-    Get.dialog(Center(child: CircularProgressIndicator()));
     try {
       meetingCollection.doc(meetingId).update({"process": 1});
       meetingApplyCollection.doc(applyId).update({"process": 1});
       alarmCollection.doc().set({"body": meetingTitle, "receiver": receiver, "time": DateTime.now(), "type": "accept"});
-      Get.back();
       return Future.value(true);
     } catch (e) {
       print(e);
-      Get.back();
       return Future.value(false);
     }
   }
@@ -253,7 +250,7 @@ class DatabaseService {
     Get.dialog(Center(child: CircularProgressIndicator()));
     try {
       meetingCollection.doc(meetingId).update({"process": null, "apply": null});
-      meetingApplyCollection.doc(applyId).delete();
+      meetingApplyCollection.doc(applyId).update({"process": 2});
       //인창 "type": "refuse",, 일케 해둠
       alarmCollection.doc().set({"body": meetingTitle, "receiver": receiver, "time": DateTime.now(), "type": "refuse"});
       Get.back();
@@ -267,9 +264,28 @@ class DatabaseService {
 
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
     print('_user.uid : ${_user.uid}');
-    QuerySnapshot snapshot = await meetingApplyCollection.where("userId", isEqualTo: _user.uid).get();
+
+    QuerySnapshot snapshot = await meetingApplyCollection
+        .where("userId", isEqualTo: _user.uid)
+        .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 7)))
+        .orderBy("createdAt", descending: true)
+        .get();
+
+    print('???? : ${snapshot.docs.length}');
+    for(int i = 0; i < snapshot.docs.length; i++) {
+      print('process : ${snapshot.docs[i]['process']}');
+    }
+
     if (snapshot.docs != null) {
-      List meetingIdList = snapshot.docs.map((e) => e.data()["meeting"]).toList();
+      List meetingIdList = [];
+      for(int i = 0; i < snapshot.docs.length; i++) {
+        if(snapshot.docs[i].data()['process'] != null) {
+          print('??@@@@ : ${snapshot.docs[i].data()['process']}');
+          meetingIdList.add(snapshot.docs[i].data()['meeting']);
+          print('process is not null');
+        } else print('process is null');
+      }
+      // List meetingIdList = snapshot.docs.map((e) => e.data()["meeting"]).toList();
       print('meetingIdList : $meetingIdList');
       List<MeetingModel> meetingList = [];
       for (int i = 0; i < meetingIdList.length; i++) {
@@ -296,11 +312,13 @@ class DatabaseService {
         print("타인 신청중");
         Get.defaultDialog(title: "알림", middleText: "이미 신청중인 미팅입니다.");
         return Future.value(false);
-      } else if (applySnapshot.docs.length > 0) {
-        Get.back();
-        print("내가 신청중");
-        Get.defaultDialog(title: "알림", middleText: "신청한 미팅입니다.");
-      } else {
+      }
+      // else if (applySnapshot.docs.length > 0) {
+      //   Get.back();
+      //   print("내가 신청중");
+      //   Get.defaultDialog(title: "알림", middleText: "신청한 미팅입니다.");
+      // }
+      else {
         DocumentReference apply = await meetingApplyCollection.add({
           "user": userCollection.doc(_user.uid),
           "userId": _user.uid,
@@ -331,6 +349,17 @@ class DatabaseService {
     } catch (e) {
       return Future.value(false);
     }
+  }
+
+  checkRefused(String meetingId) async {
+    QuerySnapshot snapshot = await meetingApplyCollection
+        .where("userId", isEqualTo: _user.uid)
+        .where("meeting", isEqualTo: meetingId)
+        .where("process", isEqualTo: 2)
+        .get();
+    QueryDocumentSnapshot doc = snapshot.docs[0];
+    DocumentReference docRef = doc.reference;
+    await docRef.update({"process": null});
   }
 
   Future<UserModel> getOppositeUserInfo(String uid) async {

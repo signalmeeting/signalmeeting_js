@@ -1,32 +1,45 @@
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:signalmeeting/controller/my_meeting_controller.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
+import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 import '../cached_image.dart';
 
-Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool didIApplied = false}) {
+Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied = false, bool refused = false}) {
   return InkWell(
     onTap: () {
 
-      if(item.process == 0 && !item.isMine && didIApplied) {
+      print('is it refused ? : $refused');
+
+      if(refused) {
+        Get.defaultDialog(title: '거절된 미팅\n미팅이 거절되었습니다');
+        DatabaseService.instance.checkRefused(item.id);
+        MyMeetingController _controller = Get.find();
+        _controller.myMeetingApplyList.remove(item);
+      }
+
+      if(item.process == 0 && !item.isMine && !didIApplied) {
         CustomedFlushBar(Get.context, '신청이 진행중인 미팅입니다');
-      } else if(item.process == 1 && !item.isMine && didIApplied) {
+      } else if(item.process == 1 && !item.isMine && !didIApplied) {
         CustomedFlushBar(Get.context, '이미 성사된 미팅입니다');
       }
+
     },
-    onLongPress: (){
-      if(item.isMine && item.didIApplied == null){
+    onLongPress: () {
+      if(item.isMine && item.apply == null){
         Get.dialog(
             MainDialog(
               title: "알림",
               contents: Padding(
                 padding: const EdgeInsets.only(left: 18, bottom : 18.0),
-                child: Text("삭제하시겠습니까?"),
+                child: Text("미팅을 삭제하시겠습니까?", textAlign: TextAlign.center,),
               ),
               buttonText: "삭제",
               onPressed: () {
@@ -37,7 +50,8 @@ Widget meetingGridItem(MeetingModel item,{bool isMine = false, bool didIApplied 
       }
     },
     child: OpenContainer(
-        tappable: (didIApplied || item.isMine || item.process == null) ? true : false,
+        useRootNavigator: true,
+        tappable: ((didIApplied || item.isMine || item.process == null) && !refused) ? true : false,
         transitionDuration: Duration(milliseconds: 800),
         openShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.2),
