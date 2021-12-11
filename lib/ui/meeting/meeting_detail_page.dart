@@ -27,6 +27,7 @@ class MeetingDetailController extends GetxController {
   UserModel oppositeUser;
 
   final MeetingModel initialMeeting;
+
   MeetingDetailController(this.initialMeeting);
 
   @override
@@ -50,21 +51,26 @@ class MeetingDetailPage extends StatelessWidget {
 
   final TextEditingController _selfIntroductionController = TextEditingController();
   final MainController _mainController = Get.find();
-  UserModel get user => _mainController.user.value;
-  bool get applied => meetingDetailController.applied.value;
-  bool get buttonClicked => meetingDetailController.buttonClicked.value;
-  UserModel get meetingOwner => meetingDetailController.meetingOwner;
-  MeetingModel get meeting => meetingDetailController.meeting.value;
 
+  UserModel get user => _mainController.user.value;
+
+  bool get applied => meetingDetailController.applied.value;
+
+  bool get buttonClicked => meetingDetailController.buttonClicked.value;
+
+  UserModel get meetingOwner => meetingDetailController.meetingOwner;
+
+  MeetingModel get meeting => meetingDetailController.meeting.value;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if(buttonClicked) {
+        if (buttonClicked) {
           meetingDetailController.buttonClicked.value = false;
           return false;
-        } return true;
+        }
+        return true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -101,10 +107,8 @@ class MeetingDetailPage extends StatelessWidget {
                   mainCard(),
                   Container(color: Colors.grey[300], height: 1),
                   //전자는 들어 갔을 때, 수락 거절 버튼이 있어야됨 //후자는 상대방 프로필만
-                  if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1)
-                    seeTheOppositeBt(),
-                  if (!meeting.isMine && meeting.process == null)
-                    buildApplyButton(context)
+                  if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1) seeTheOppositeBt(),
+                  if (!meeting.isMine && meeting.process == null) buildApplyButton(context)
                 ],
               ),
             ),
@@ -174,20 +178,23 @@ class MeetingDetailPage extends StatelessWidget {
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                             side: BorderSide(width: 1.5, color: Colors.red[200]), borderRadius: BorderRadius.circular(5)),
-                        onPressed: (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
-                          FocusScope.of(context).unfocus();
-                          await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                          meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                          Map<String, dynamic> applyMeeting = {
-                            "title" : meeting.title,
-                            "loc1" : meeting.loc1,
-                            "loc2" : meeting.loc2,
-                            "loc3" : meeting.loc3,
-                            "number" : meeting.number,
-                            "introduce" : meeting.introduce,
-                          };
-                          await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
-                        }),
+                        onPressed: (user.coin < 5)
+                            ? () => Get.dialog(NoCoinDialog())
+                            : () async {
+                                FocusScope.of(context).unfocus();
+                                await DatabaseService.instance.applyMeeting(
+                                    this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
+                                meetingDetailController.meeting.update((meeting) => meeting.process = 0);
+                                Map<String, dynamic> applyMeeting = {
+                                  "title": meeting.title,
+                                  "loc1": meeting.loc1,
+                                  "loc2": meeting.loc2,
+                                  "loc3": meeting.loc3,
+                                  "number": meeting.number,
+                                  "introduce": meeting.introduce,
+                                };
+                                await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting, oppositeUserid: meeting.userId);
+                              }),
                   ),
                   crossFadeState: buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                   duration: const Duration(milliseconds: 100),
@@ -243,71 +250,71 @@ class MeetingDetailPage extends StatelessWidget {
   }
 
   Widget seeTheOppositeBt() {
-    return Column(
+    return Row(
       children: [
-        ElevatedButton(
-          onPressed: () async {
-            DocumentSnapshot snapshot;
-            if(meeting.isMine) {
-              snapshot = await meeting.apply.user.get();
-            } else {
-              snapshot = await meeting.user.get();
-            }
-            Map<String, dynamic> data = snapshot.data();
-            meetingDetailController.oppositeUser = UserModel.fromJson(data);
-
-            print('meeting.id : ${meeting.id}');
-            print('meetingDetailController.oppositeUser : ${meetingDetailController.oppositeUser.name}');
-            Get.to(() => ChatPage(),
-            binding: BindingsBuilder(() {
-              Get.put(ChatController(
-                    meeting.id,
-                    meetingDetailController.oppositeUser.uid,
-                    meetingDetailController.oppositeUser.name),
-                tag: meeting.id);
-            }),
-                arguments: meeting.id,
-              preventDuplicates: false,
-          );
-          },
-          child: Text('asd'),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: ButtonTheme(
+              height: 45,
+              child: RaisedButton(
+                  highlightElevation: 0,
+                  elevation: 0,
+                  child: Text(
+                    '상대방 확인',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "AppleSDGothicNeoB",
+                      fontSize: 18,
+                    ),
+                  ),
+                  color: Colors.red[200],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  onPressed: () async {
+                    DocumentSnapshot snapshot;
+                    if (meeting.isMine) {
+                      snapshot = await meeting.apply.user.get();
+                    } else {
+                      snapshot = await meeting.user.get();
+                    }
+                    Map<String, dynamic> data = snapshot.data();
+                    meetingDetailController.oppositeUser = UserModel.fromJson(data);
+                    Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
+                        arguments: meeting.id, preventDuplicates: false);
+                  }),
+            ),
+          ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: ButtonTheme(
-            height: 45,
-            minWidth: Get.width - 16,
-            child: RaisedButton(
-                highlightElevation: 0,
-                elevation: 0,
+        if (meeting.process == 1)
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: ButtonTheme(
+              height: 45,
+              buttonColor: Colors.blue[300],
+              child: RaisedButton(
+                onPressed: () async {
+                  DocumentSnapshot snapshot;
+                  if (meeting.isMine) {
+                    snapshot = await meeting.apply.user.get();
+                  } else {
+                    snapshot = await meeting.user.get();
+                  }
+                  Map<String, dynamic> data = snapshot.data();
+                  MainController.goToChatPage(meeting.id, UserModel.fromJson(data));
+                },
                 child: Text(
-                  '상대방 확인',
+                  '채팅',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: "AppleSDGothicNeoB",
                     fontSize: 18,
                   ),
                 ),
-                color: Colors.red[200],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                onPressed: () async {
-                  DocumentSnapshot snapshot;
-                  if(meeting.isMine) {
-                    snapshot = await meeting.apply.user.get();
-                  } else {
-                    snapshot = await meeting.user.get();
-                  }
-                  Map<String, dynamic> data = snapshot.data();
-                  meetingDetailController.oppositeUser = UserModel.fromJson(data);
-                  Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
-                    arguments: meeting.id,
-                    preventDuplicates: false);
-
-                }),
+              ),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -325,7 +332,8 @@ class MeetingDetailPage extends StatelessWidget {
           height: 25,
           color: Colors.black12,
           child: Center(
-              child: Text('미팅 수락을 기다리고 있습니다',
+              child: Text(
+            '미팅 수락을 기다리고 있습니다',
             style: TextStyle(
               color: Colors.white70,
               fontFamily: "AppleSDGothicNeoM",
@@ -337,38 +345,38 @@ class MeetingDetailPage extends StatelessWidget {
   }
 
   Widget buildOppositeProfile() {
-    if(meetingDetailController.userLoaded.value)
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-
-        Padding(
-          padding: const EdgeInsets.only(top: 15.0, bottom: 10),
-          child: meetingOwner.pics.length > 0 ? BluredImage(meetingOwner.pics[0], meetingDetailController.meeting.value.id) : Container(),
-        ),
-        Wrap(
-          children: [
-            MyChip(meetingOwner.age + '살'),
-            MyChip(meetingOwner.tall + 'cm'),
-            MyChip(null),
-            MyChip(meetingOwner.bodyType),
-            MyChip(meetingOwner.career),
-            MyChip('${meetingOwner.loc1} ${meetingOwner.loc2}'),
-            MyChip(meetingOwner.mbti),
-          ],
-        ),
-      ],
-    ); else return Center(child: CircularProgressIndicator());
+    if (meetingDetailController.userLoaded.value)
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0, bottom: 10),
+            child: meetingOwner.pics.length > 0 ? BluredImage(meetingOwner.pics[0], meetingDetailController.meeting.value.id) : Container(),
+          ),
+          Wrap(
+            children: [
+              MyChip(meetingOwner.age + '살'),
+              MyChip(meetingOwner.tall + 'cm'),
+              MyChip(null),
+              MyChip(meetingOwner.bodyType),
+              MyChip(meetingOwner.career),
+              MyChip('${meetingOwner.loc1} ${meetingOwner.loc2}'),
+              MyChip(meetingOwner.mbti),
+            ],
+          ),
+        ],
+      );
+    else
+      return Center(child: CircularProgressIndicator());
   }
 
   Widget BluredImage(String pic, String id) {
     bool banned = false;
     meeting.banList?.forEach((banItem) {
-      if(banItem['from'] == this.user.uid) {
+      if (banItem['from'] == this.user.uid) {
         banned = true;
       }
     });
-
 
     return Stack(
       children: [
@@ -431,8 +439,12 @@ class MeetingDetailPage extends StatelessWidget {
             child: Container(
               width: 20,
               height: 20,
-              child: !meeting.isMine ?
-                Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),) : Container(),
+              child: !meeting.isMine
+                  ? Image.asset(
+                      'assets/report.png',
+                      color: Colors.white.withOpacity(0.7),
+                    )
+                  : Container(),
             ),
           ),
           top: 10,

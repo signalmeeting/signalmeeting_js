@@ -5,13 +5,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/messageModel.dart';
+import 'package:signalmeeting/model/userModel.dart';
 
 class ChatController extends GetxController {
   final String roomId;
-  final String oppositeId;
-  final String oppositeName;
+  final UserModel oppositeUser;
 
-  ChatController(this.roomId, this.oppositeId, this.oppositeName);
+  ChatController(this.roomId, this.oppositeUser);
 
   final MainController _mainController = Get.find();
 
