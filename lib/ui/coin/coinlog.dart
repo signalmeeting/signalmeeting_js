@@ -27,8 +27,12 @@ class _CoinLogState extends State<CoinLog> {
         body: SafeArea(
           child: Column(
             children: <Widget>[
-              Obx(() => top()),
-              divider("사용 내역"),
+              //Obx(() => top()),
+              Obx(() => top2()),
+              //divider("사용 내역"),
+              mid()
+              ,
+              Divider(height: 1, color: Colors.black38,),
               StreamBuilder<QuerySnapshot>(
                   stream: DatabaseService.instance.getCoinLog(),
                   builder: (BuildContext context ,AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -80,39 +84,105 @@ class _CoinLogState extends State<CoinLog> {
   }
 
   Widget top() {
-    return Container(
-      height: Get.height / 8,
-      child: Center(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical : 6.0),
-                child: Text("보유 코인",
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.redAccent,
-                    size: 18,
-                  ),
-                  SizedBox(width : 5),
-                  Text(user.coin.toString(),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        height: Get.height / 8,
+        child: Center(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text("보유 코인",
                     style: TextStyle(
-                        fontSize: 20,
-                        fontWeight : FontWeight.bold
+                      fontSize: 18,
+                      //fontFamily: "AppleSDGothicNeoB"
+                      //fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
-            ]
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left : 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Icon(
+                        Icons.favorite,
+                        color: Colors.redAccent,
+                        size: 18,
+                      ),
+                      SizedBox(width : 5),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom : 3.0),
+                        child: Text(user.coin.toString(),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight : FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ]
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget top2() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 20, 14, 8),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+          color: Colors.blue[900],
+        ),
+        height: Get.height / 10,
+        child: Center(
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left : 15.0),
+                  child: Text("보유 코인",
+                    style: TextStyle(
+                      fontSize: 18,
+                      //fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.redAccent,
+                      size: 18,
+                    ),
+                    SizedBox(width : 5),
+                    Padding(
+                      padding: const EdgeInsets.only(right : 15.0, bottom: 3.0),
+                      child: Text(user.coin.toString(),
+                        style: TextStyle(
+                            fontSize: 20,
+                            //fontWeight : FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ]
+          ),
         ),
       ),
     );
@@ -146,6 +216,28 @@ class _CoinLogState extends State<CoinLog> {
                 ),
               );
             }),
+      ),
+    );
+  }
+
+  Widget mid() {
+    return Container(
+      height: Get.height/12,
+      decoration: BoxDecoration(
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left : 8.0),
+            child: Text("충전/사용 내역",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
