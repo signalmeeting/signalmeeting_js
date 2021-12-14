@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
@@ -16,7 +15,6 @@ import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
 
 //oppositeUser > '방장 - 지원자' 간 서로
 //applyUser > 지원자
@@ -173,6 +171,7 @@ class MeetingDetailPage extends StatelessWidget {
                         };
                         await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
                       }),
+                  ),
                   crossFadeState: buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                   duration: const Duration(milliseconds: 100),
                 ),
@@ -227,67 +226,71 @@ class MeetingDetailPage extends StatelessWidget {
   }
 
   Widget seeTheOppositeBt() {
-    return Column(
+    return Row(
       children: [
-        ElevatedButton(
-          onPressed: () async {
-            DocumentSnapshot snapshot;
-            if(meeting.isMine) {
-              snapshot = await meeting.apply.user.get();
-            } else {
-              snapshot = await meeting.user.get();
-            }
-            Map<String, dynamic> data = snapshot.data();
-            meetingDetailController.oppositeUser = UserModel.fromJson(data);
-
-            print('meeting.id : ${meeting.id}');
-            print('meetingDetailController.oppositeUser : ${meetingDetailController.oppositeUser.name}');
-            Get.to(() => ChatPage(),
-            binding: BindingsBuilder(() {
-              Get.put(ChatController(
-                    meeting.id,
-                    meetingDetailController.oppositeUser.uid,
-                    meetingDetailController.oppositeUser.name),
-                tag: meeting.id);
-            }),
-                arguments: meeting.id,
-              preventDuplicates: false,
-          );
-          },
-          child: Text('asd'),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: ButtonTheme(
+              height: 45,
+              child: RaisedButton(
+                  highlightElevation: 0,
+                  elevation: 0,
+                  child: Text(
+                    '상대방 확인',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "AppleSDGothicNeoB",
+                      fontSize: 18,
+                    ),
+                  ),
+                  color: Colors.red[200],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  onPressed: () async {
+                    DocumentSnapshot snapshot;
+                    if (meeting.isMine) {
+                      snapshot = await meeting.apply.user.get();
+                    } else {
+                      snapshot = await meeting.user.get();
+                    }
+                    Map<String, dynamic> data = snapshot.data();
+                    meetingDetailController.oppositeUser = UserModel.fromJson(data);
+                    Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
+                        arguments: meeting.id, preventDuplicates: false);
+                  }),
+            ),
+          ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: RaisedButton(
-              highlightElevation: 0,
-              elevation: 0,
-              child: Text(
-                '상대방 확인',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "AppleSDGothicNeoB",
-                  fontSize: 18,
+        if (meeting.process == 1)
+          Padding(
+            padding: const EdgeInsets.only(right : 8.0),
+            child: ButtonTheme(
+              height: 45,
+              buttonColor: Colors.blue[300],
+              child: RaisedButton(
+                onPressed: () async {
+                  DocumentSnapshot snapshot;
+                  if (meeting.isMine) {
+                    snapshot = await meeting.apply.user.get();
+                  } else {
+                    snapshot = await meeting.user.get();
+                  }
+                  Map<String, dynamic> data = snapshot.data();
+                  MainController.goToChatPage(meeting.id, UserModel.fromJson(data));
+                },
+                child: Text(
+                  '채팅',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "AppleSDGothicNeoB",
+                    fontSize: 18,
+                  ),
                 ),
               ),
-              color: Colors.red[200],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-              onPressed: () async {
-                DocumentSnapshot snapshot;
-                if(meeting.isMine) {
-                  snapshot = await meeting.apply.user.get();
-                } else {
-                  snapshot = await meeting.user.get();
-                }
-                Map<String, dynamic> data = snapshot.data();
-                meetingDetailController.oppositeUser = UserModel.fromJson(data);
-                Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
-                  arguments: meeting.id,
-                  preventDuplicates: false);
-
-              }),
-        ),
+            ),
+          ),
       ],
     );
   }
@@ -349,6 +352,7 @@ class MeetingDetailPage extends StatelessWidget {
       }
     });
 
+
     return Stack(
       children: [
         Container(
@@ -372,35 +376,35 @@ class MeetingDetailPage extends StatelessWidget {
                 meeting.process == 1
                     ? Container()
                     : Stack(
-                      children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Container(
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                            ),
-                          ),
-                          Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: Colors.white, width: 1.5)),
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                            child: Text(
-                              '매칭 성사 시, 확인 가능',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "AppleSDGothicNeoM",
-                              ),
-                            ),
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: Colors.white, width: 1.5)),
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                        child: Text(
+                          '매칭 성사 시, 확인 가능',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "AppleSDGothicNeoM",
                           ),
                         ),
-
-                        ],
+                      ),
                     ),
+
+                  ],
+                ),
               ],
             ),
           ),

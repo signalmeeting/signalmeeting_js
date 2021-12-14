@@ -11,13 +11,19 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/model/messageModel.dart';
+import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/ui/home/opposite_profile.dart';
+import 'package:signalmeeting/ui/widget/cached_image.dart';
 
 class ChatPage extends StatelessWidget {
   ChatController get _chatController => Get.find(tag: Get.arguments);
 
-  String get oppositeId => _chatController.oppositeId;
+  UserModel get oppositeUser => _chatController.oppositeUser;
 
-  String get oppositeName => _chatController.oppositeName;
+  String get oppositeId => oppositeUser.uid;
+
+  String get oppositeName => oppositeUser.name;
+
   final TextEditingController _textController = new TextEditingController();
 
   DatabaseReference get reference => _chatController.messagesRef;
@@ -66,17 +72,23 @@ class ChatPage extends StatelessWidget {
         reverse: true,
         itemBuilder: (_, DataSnapshot snapshot, Animation<double> animation, int index) {
           MessageModel message = MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value)));
-          print("message : $message");
           bool _isComing = message.sender == oppositeId;
-          print("index : $index" + " length : ${_chatController.messageList.length}");
-          if (_chatController.messageList.length < index + 1 || index ==0) {
+          if (_chatController.messageList.length < index + 1 || index == 0) {
             _chatController.messageList.add(message.obs);
-            if(index != 0 && message.theDay != _chatController.messageList[_chatController.messageList.indexWhere((element) => element.value == message) - 1].value.theDay)
+            if (index != 0 &&
+                message.theDay !=
+                    _chatController
+                        .messageList[_chatController.messageList.indexWhere((element) => element.value == message) - 1].value.theDay)
               _chatController.messageList[index - 1].update((val) {
                 val.showDate = true;
               });
           }
-          return ChatMessage(message: _chatController.messageList.firstWhere((element) => element.value == message), animation: animation, isComing: _isComing);
+          return ChatMessage(
+            message: _chatController.messageList.firstWhere((element) => element.value == message),
+            animation: animation,
+            isComing: _isComing,
+            oppositeUser: _isComing ? oppositeUser : null,
+          );
         });
   }
 
@@ -158,8 +170,9 @@ class ChatMessage extends StatelessWidget {
   final Rx<MessageModel> message;
   final Animation animation;
   final bool isComing;
+  final UserModel oppositeUser;
 
-  ChatMessage({this.message, this.animation, this.isComing});
+  ChatMessage({this.message, this.animation, this.isComing, this.oppositeUser});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +181,7 @@ class ChatMessage extends StatelessWidget {
         axisAlignment: 0.0,
         child: Obx(
           () => Container(
-            margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+            margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
             child: Column(
               children: [
                 if (message.value.showDate ?? false)
@@ -180,7 +193,11 @@ class ChatMessage extends StatelessWidget {
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12)), color: Colors.grey[400]),
                             child: Text(message.value.theDay,
                                 style: const TextStyle(
-                                    color: const Color(0xffffffff), fontWeight: FontWeight.w600, fontFamily: "AppleSDGothicNeo", fontStyle: FontStyle.normal, fontSize: 13.0)))
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "AppleSDGothicNeo",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 13.0)))
                       ])),
                 buildMessageRow(),
               ],
@@ -194,30 +211,37 @@ class ChatMessage extends StatelessWidget {
       mainAxisAlignment: isComing ? MainAxisAlignment.start : MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (isComing)
-          Container(
-            margin: const EdgeInsets.only(right: 16.0),
-            child: buildAvatar(),
-          ),
+        if (isComing) buildAvatar(),
         SizedBox(width: 8.0),
-        Column(
-          crossAxisAlignment: isComing ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-          children: <Widget>[buildMessageBody(), Opacity(opacity: 0.5, child: Text(message.value.timeString, style: TextStyle(color: Color(0xff131415), fontSize: 12)))],
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            if(!isComing)
+              _buildTime(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal : 4.0),
+              child: buildMessageBody(),
+            ),
+            if(isComing)
+            _buildTime()
+          ],
         )
       ],
     );
   }
 
-  CircleAvatar buildAvatar({String pic = ""}) {
-    return pic.length > 0
-        ? CircleAvatar(
-            radius: 15,
-            backgroundImage: NetworkImage(pic),
-          )
-        : CircleAvatar(
-            radius: 15,
-            backgroundColor: Colors.grey[300],
-          );
+  Opacity _buildTime() => Opacity(opacity: 0.5, child: Text(message.value.timeString, style: TextStyle(color: Color(0xff131415), fontSize: 12)));
+
+  Widget buildAvatar() {
+    return GestureDetector(
+      onTap: () => Get.to(() => OppositeProfilePage(oppositeUser)),
+      child: oppositeUser.pics.length > 0
+          ? cachedImage(oppositeUser.firstPic, width: 30, height: 30, radius: 30.0)
+          : CircleAvatar(
+        radius: 15,
+        backgroundColor: Colors.grey[300],
+      ),
+    );
   }
 
   Widget buildMessageBody() {
@@ -225,11 +249,16 @@ class ChatMessage extends StatelessWidget {
       opacity: 0.8,
       child: Container(
           padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
-          child: Container(constraints: BoxConstraints(maxWidth: Get.width * .58), child: Text(message.value.text, style: TextStyle(color: Colors.black, fontSize: 16))),
+          child: Container(
+              constraints: BoxConstraints(maxWidth: Get.width * .58),
+              child: Text(message.value.text, style: TextStyle(color: Colors.black, fontSize: 16))),
           decoration: new BoxDecoration(
               color: Colors.grey[300],
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(isComing ? 0 : 12), topRight: Radius.circular(isComing ? 12 : 0), bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)))),
+                  topLeft: Radius.circular(isComing ? 0 : 12),
+                  topRight: Radius.circular(isComing ? 12 : 0),
+                  bottomRight: Radius.circular(12),
+                  bottomLeft: Radius.circular(12)))),
     );
   }
 

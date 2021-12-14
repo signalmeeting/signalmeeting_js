@@ -7,22 +7,25 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
+import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 
 class MainController extends GetxController {
   final FirebaseApp app;
+
   MainController(this.app);
-  
+
   var user = UserModel().obs;
   RxList todayMatchList = [].obs;
   RxBool isLogOut = false.obs;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  logOut() async{
+  logOut() async {
     await FirebaseAuth.instance.signOut();
   }
 
@@ -41,7 +44,7 @@ class MainController extends GetxController {
     this.user(user);
   }
 
-  useCoin(int coin) async{
+  useCoin(int coin) async {
     user.update((val) => val.coin -= coin);
   }
 
@@ -74,13 +77,17 @@ class MainController extends GetxController {
     print("deviceToken : $deviceToken");
 
     final CollectionReference meetingApplyCollection = FirebaseFirestore.instance.collection('meeting_apply');
-    await meetingApplyCollection.doc().set({
-      "user": "QuJp3HmwM7cuMVi8c9swfQwkYup2",
-      "meeting": "zGPgH2MnhP2yWzdQZ5nB",
-      "msg": "알림테스트",
-      "createdAt": DateTime.now(),
-      "process": 0
-    }).then((value) => print("success")).catchError((error) => print("error : $error")); // process 0 : 신청중 , 1 : 연결, 2: 거절
+    await meetingApplyCollection
+        .doc()
+        .set({
+          "user": "QuJp3HmwM7cuMVi8c9swfQwkYup2",
+          "meeting": "zGPgH2MnhP2yWzdQZ5nB",
+          "msg": "알림테스트",
+          "createdAt": DateTime.now(),
+          "process": 0
+        })
+        .then((value) => print("success"))
+        .catchError((error) => print("error : $error")); // process 0 : 신청중 , 1 : 연결, 2: 거절
     // HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendFollowerNotification');
 //{"token" : deviceToken}
 //     await callable().then((value) => print("result : $value")).catchError((e) {
@@ -104,10 +111,19 @@ class MainController extends GetxController {
   }
 
   updateBanList(String from, String to, ReportType reportType, MeetingDetailController meetingDetailController) {
-    if(reportType == ReportType.daily) {
+    if (reportType == ReportType.daily) {
       user.update((val) => val.banList.add({'from': from, 'to': to, 'when': DateTime.now()}));
-    } else if((reportType == ReportType.meeting)) {
+    } else if ((reportType == ReportType.meeting)) {
       meetingDetailController.meeting.value.banList.add({'from': from, 'to': to, 'when': DateTime.now()});
     }
   }
+
+  static goToChatPage(String roomId, UserModel user) => Get.to(
+      () => ChatPage(),
+      binding: BindingsBuilder(() {
+        Get.put(ChatController(roomId, user), tag: roomId);
+      }),
+      arguments: roomId,
+      preventDuplicates: false,
+    );
 }
