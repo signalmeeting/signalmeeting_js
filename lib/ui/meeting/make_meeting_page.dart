@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/widget/dialog/city_list_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 import 'package:signalmeeting/util/util.dart';
 import 'package:smart_select/smart_select.dart';
 
@@ -353,11 +355,10 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: ButtonTheme(
+                child: Container(
                   height: 45,
-                  minWidth: Get.width - 16,
-                  child: RaisedButton(
-                    elevation: 2,
+                  width: Get.width - 16,
+                  child: TextButton(
                     child: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
                         ? Row(
                       mainAxisSize: MainAxisSize.min,
@@ -388,12 +389,8 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                         fontSize: 16,
                       ),
                     ),
-                    color: Colors.white,
-                    shape: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
-                        ? RoundedRectangleBorder(
-                        side: BorderSide(width: 1.5, color: Colors.red[200]), borderRadius: BorderRadius.circular(5))
-                        : null,
-                    onPressed:  confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
+                    style: BtStyle.sideLine,
+                    onPressed: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
                         ? () async {
                       await DatabaseService.instance.makeMeeting(
                         title: this._titleController.text,
@@ -416,8 +413,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                       FocusScope.of(context).unfocus();
                       Navigator.pop(context);
                       CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
-                    }
-                        : null,
+                    } : null,
                   ),
                 ),
               ),
@@ -690,31 +686,35 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
           imageFile = aa;
           setState(() {});
         },
-        child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Colors.grey)),
-            width: Get.width*0.3,
-            height: Get.width*0.3,
-            child: imageFile == null ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('센터', style: TextStyle(color: Colors.white)),
-                  Icon(
-                    Icons.add,
-                    color: Colors.grey,
-                  ),
-                  Text('(파티 소개에\n쓰일 이미지)',
-                      style: TextStyle(color: Colors.grey))
-                ]) : ClipRRect(
-              borderRadius: new BorderRadius.circular(7.0),
-              child: Image(
-                  image: FileImage(imageFile),
-                  width: Get.width*0.3,
-                  height: Get.width*0.3,
-                  fit: BoxFit.cover),
-            )
+        child: Stack(
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: Colors.grey)),
+                width: Get.width*0.3,
+                height: Get.width*0.3,
+                child: imageFile == null ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('센터', style: TextStyle(color: Colors.white)),
+                      Icon(
+                        Icons.add,
+                        color: Colors.grey,
+                      ),
+                      Text('(파티 소개에\n쓰일 이미지)',
+                          style: TextStyle(color: Colors.grey))
+                    ]) : ClipRRect(
+                      borderRadius: new BorderRadius.circular(7.0),
+                      child: Image(
+                          image: FileImage(imageFile),
+                          width: Get.width*0.3,
+                          height: Get.width*0.3,
+                          fit: BoxFit.cover),
+                    )
+            ),
+          ],
         ),
       ),
     );

@@ -8,7 +8,7 @@ class MainDialog extends StatelessWidget {
   final String buttonText;
   final Widget contents;
   final VoidCallback onPressed;
-  final Color buttonColor = AppColor.main;
+  final Color buttonColor = AppColor.main200;
 
   const MainDialog({Key key, this.title, this.buttonText, this.contents, this.onPressed}) : super(key: key);
 
@@ -34,7 +34,7 @@ class MainDialog extends StatelessWidget {
                 child: TextButton(
                   onPressed: onPressed,
                   child: Text(buttonText, style: TextStyle(color: buttonColor, fontFamily: "AppleSDGothicNeoM",),),
-                  style: BtStyle.mainBtStyle,
+                  style: BtStyle.textDialog,
                 ),
               ),
             ],

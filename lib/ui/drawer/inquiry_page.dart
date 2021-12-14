@@ -10,6 +10,7 @@ import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/main.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 import 'custom_drawer.dart';
 
@@ -31,62 +32,40 @@ class InquiryPage extends StatelessWidget {
               //텍스트
               TextBox(context),
               //로그 아웃
-              ButtonTheme(
-                height: 45,
-                minWidth: Get.width * 0.9,
-                child: RaisedButton(
-                  child: Text(
-                    '로그아웃',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  color: Colors.blue[200],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  onPressed: () {
-                    Get.dialog(
-                      ConfirmDialog(
-                        title: '로그 아웃',
-                        text: '로그 아웃 하시겠습니까?',
-                        //onConfirmed: () => _lobbyController.isLogOut.update((val) { val = !val;}),
-                        onConfirmed: () => logOut(context),
-                        confirmText: '확인',
-                      ),
-                    );
-                  },
+              TextButton(
+                child: Text(
+                  '로그아웃',
                 ),
+                style: BtStyle.textSub200,
+                onPressed: () {
+                  Get.dialog(
+                    ConfirmDialog(
+                      title: '로그 아웃',
+                      text: '로그 아웃 하시겠습니까?',
+                      //onConfirmed: () => _lobbyController.isLogOut.update((val) { val = !val;}),
+                      onConfirmed: () => logOut(context),
+                      confirmText: '확인',
+                    ),
+                  );
+                },
               ),
               SizedBox(height: 10),
               //회원 탈퇴
-              ButtonTheme(
-                height: 45,
-                minWidth: Get.width * 0.9,
-                child: RaisedButton(
-                  child: Text(
-                    '회원탈퇴',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  color: Colors.blue[100],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  onPressed: () {
-                    Get.dialog(
-                      ConfirmDialog(
-                        title: '회원 탈퇴',
-                        text: '탈퇴하시면 복구가 불가능합니다.\n정말로 탈퇴하시겠습니까?',
-                        onConfirmed: withDraw,
-                        confirmText: '탈퇴',
-                      ),
-                    );
-                  },
+              TextButton(
+                child: Text(
+                  '회원탈퇴',
                 ),
+                style: BtStyle.textSub100,
+                onPressed: () {
+                  Get.dialog(
+                    ConfirmDialog(
+                      title: '회원 탈퇴',
+                      text: '탈퇴하시면 복구가 불가능합니다.\n정말로 탈퇴하시겠습니까?',
+                      onConfirmed: withDraw,
+                      confirmText: '탈퇴',
+                    ),
+                  );
+                },
               ),
             ],
           ),

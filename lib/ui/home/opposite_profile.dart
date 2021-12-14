@@ -9,10 +9,10 @@ import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/colored_button.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 class OppositeProfilePage extends StatefulWidget {
   final UserModel user;
@@ -40,7 +40,9 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
 
   @override
   void initState() {
-    meetingDetailController = Get.find(tag: Get.arguments);
+    if(!widget.isTodayMatch) {
+      meetingDetailController = Get.find(tag: Get.arguments);
+    }
     super.initState();
   }
 
@@ -73,11 +75,11 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                                 firstChild: _SignalButton(false),
                                 secondChild: _SignalButton(true),
                                 crossFadeState: _buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 400)),
+                                duration: const Duration(milliseconds: 300)),
                             secondChild: SizedBox(),
                             crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                             // data == 2일 때 번호 떠야됨
-                            duration: const Duration(milliseconds: 400));
+                            duration: const Duration(milliseconds: 300));
                       }
                     },
                   ),
@@ -89,7 +91,8 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                     color: Colors.grey[200],
                   ),
                 ),
-                Obx(() => !widget.isTodayMatch && meeting.process == 0 ? acceptOrNot() : Container()),
+                if(!widget.isTodayMatch)
+                  Obx(() => !widget.isTodayMatch && meeting.process == 0 ? acceptOrNot() : Container()),
                 //닉네임
                 Row(
                   children: <Widget>[
@@ -137,47 +140,30 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   }
 
   Widget _SignalButton(bool clicked) {
-    return ButtonTheme(
-      highlightColor: Colors.transparent,
-      minWidth: Get.width * 0.9,
-      height: 40.0,
-      child: RaisedButton(
-        disabledElevation: 2,
-        focusElevation: 2,
-        elevation: 2,
-        hoverElevation: 2,
-        highlightElevation: 2,
-        child: clicked
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '1',
-                    style: TextStyle(
-                      color: Colors.red[200],
-                      fontSize: 18,
-                    ),
+    return TextButton(
+      style: clicked ? BtStyle.sideLine : BtStyle.textMain200,
+      child: clicked
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  '1',
+                  style: TextStyle(
+                    fontSize: 18,
                   ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red[200],
-                    size: 20,
-                  ),
-                ],
-              )
-            : Text(
-                '시그널 보내기',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-        color: clicked ? Colors.white : Colors.red[200],
-        shape: RoundedRectangleBorder(
-            side: clicked ? BorderSide(width: 1.5, color: Colors.red[200]) : BorderSide.none, borderRadius: BorderRadius.circular(5)),
-        onPressed: clicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
-      ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  Icons.favorite,
+                  size: 20,
+                ),
+              ],
+            )
+          : Text('시그널 보내기'),
+      onPressed: clicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
     );
   }
 
@@ -311,17 +297,17 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
       children: [
         SizedBox(width: Get.width*0.05,),
         Flexible(
-          child: ColoredButton(
-            text: '수락',
-            color: Colors.red[200],
+          child: TextButton(
+            child: Text('수락'),
+            style: BtStyle.textMain200,
             onPressed: () => _onPressAccept(),
           ),
         ),
         SizedBox(width: Get.width*0.05,),
         Flexible(
-          child: ColoredButton(
-            text: '거절',
-            color: Colors.red[100],
+          child: TextButton(
+            child: Text('거절'),
+            style: BtStyle.textMain100,
             onPressed: () {
               DatabaseService.instance.refuseApply(
                   meetingId: meeting.id,

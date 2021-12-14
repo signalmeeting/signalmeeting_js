@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 class AppColor {
   AppColor._();
 
-  static const Color main = const Color(0xfff39595);
+  static const Color main200 = const Color(0xfff39595);
+  // static Color main200 = Colors.red[200];
+  static Color main100 = Colors.red[100];
 
-  // static const Color sub = const Color(0xfff39595);
-  // static const Color light = const Color(0xfff39595);
-  // static const Color dark = const Color(0xfff39595);
+  static const Color sub = Colors.blue;
+  static Color sub200 = Colors.blue[200];
+  static Color sub100 = Colors.blue[100];
+
+  static const Color hint = Colors.grey;
 
 }

@@ -59,7 +59,7 @@ Widget customDrawer(pic, nickName, loc1, loc2, career, BuildContext context) {
           decoration: BoxDecoration(color: Colors.blue[100]),
         ),
         drawerTileForm('프로필', () => Get.to(MyProfilePage(), transition: Transition.native)),
-        drawerTileForm('진행 방법', () => Get.to(HowToUsePage(), transition: Transition.rightToLeftWithFade)),
+        // drawerTileForm('진행 방법', () => Get.to(HowToUsePage(), transition: Transition.rightToLeftWithFade)),
         drawerTileForm('스토어', () => Get.to(StorePage(), transition: Transition.rightToLeftWithFade)),
         Container(height: 2, color: Colors.blue[50]),
         drawerTileForm('공지사항', () => Get.to(NoticePage(), transition: Transition.rightToLeftWithFade)),

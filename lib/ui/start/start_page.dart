@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/ui/start/start_page_2.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 class StartPage extends StatelessWidget {
   @override
@@ -15,7 +17,7 @@ class StartPage extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     stops: [0.3,0.6],
-                    colors: [Colors.blue[200], Colors.blue[100]]
+                    colors: [AppColor.sub200, AppColor.sub100]
                 )
             ),
           ),
@@ -30,9 +32,7 @@ class StartPage extends StatelessWidget {
                 child: ButtonTheme(
                   minWidth: Get.width*0.9,
                   height: 50.0,
-                  child: RaisedButton(
-                    highlightElevation: 0,
-                    elevation: 0,
+                  child: TextButton(
                     child: Text(
                       '전화번호로 계속',
                       style: TextStyle(
@@ -40,10 +40,8 @@ class StartPage extends StatelessWidget {
                           fontSize: 16
                       ),
                     ),
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    onPressed: ()  => Get.to(() => StartPage2()),
+                    onPressed: () => Get.to(() => StartPage2()),
+                    style: BtStyle.splash,
                   ),
                 ),
               ),

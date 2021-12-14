@@ -10,6 +10,7 @@ import 'package:signalmeeting/ui/meeting/make_meeting_page.dart';
 import 'package:signalmeeting/ui/widget/dialog/city_list_dialog.dart';
 import 'package:signalmeeting/ui/widget/meeting/meetingGrid.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 import 'package:smart_select/smart_select.dart';
 import 'my_meeting_page.dart';
 
@@ -58,11 +59,11 @@ class _MeetingPageState extends State<MeetingPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    MakeMeetingButton(),
+                    makeMeetingButton(),
                     SizedBox(
                       width: Get.width * 0.02,
                     ),
-                    MyMeetingButton(),
+                    myMeetingButton(),
                   ],
                 ),
               ),
@@ -335,50 +336,29 @@ class _MeetingPageState extends State<MeetingPage> {
       return Container();
   }
 
-  Widget MakeMeetingButton() {
-    return ButtonTheme(
-      height: 45,
-      minWidth: Get.width * 0.47,
-      child: RaisedButton(
-        disabledElevation: 2,
-        focusElevation: 2,
-        elevation: 2,
-        hoverElevation: 2,
-        highlightElevation: 2,
+  Widget makeMeetingButton() {
+    return Container(
+      height: 46,
+      width: Get.width * 0.47,
+      child: TextButton(
         child: Text(
           '미팅 등록',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontFamily: "AppleSDGothicNeoB",
-          ),
         ),
-        color: Colors.red[200],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
+        style: BtStyle.textMain200,
         onPressed: () => (user.coin < 20) ? Get.dialog(NoCoinDialog()) : Get.to(() => MakeMeetingPage()),
       ),
     );
   }
 
-  Widget MyMeetingButton() {
-    return ButtonTheme(
-      height: 45,
-      minWidth: Get.width * 0.47,
-      child: RaisedButton(
+  Widget myMeetingButton() {
+    return Container(
+      height: 46,
+      width: Get.width * 0.47,
+      child: TextButton(
         child: Text(
           '내 미팅',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontFamily: "AppleSDGothicNeoB",
-          ),
         ),
-        color: Colors.red[200],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
+        style: BtStyle.textMain200,
         onPressed: () => Get.to(() => MyMeetingPage()),
       ),
     );

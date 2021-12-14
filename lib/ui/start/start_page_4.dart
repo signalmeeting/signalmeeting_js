@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 import 'package:signalmeeting/util/util.dart';
 
 import '../lobby.dart';
@@ -22,53 +24,50 @@ class _StartPage4State extends State<StartPage4> {
 
     double width = Get.width;
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            color: Colors.white,
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 15.0, top: 50),
-                    child: Text(
-                      '사진 등록',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
+      resizeToAvoidBottomInset: false,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15.0, top: 50),
+                child: Text(
+                  '사진 등록',
+                  style: TextStyle(
+                      color: AppColor.sub,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
-                Obx(
-                () => Container(
-                      alignment: Alignment.centerRight,
-                      height: width * 0.60,
-                      width: width * 0.90,
-                      child: Row(children: <Widget>[
-                        Expanded(
-                            flex: 2,
-                            child: photoBox(width * 0.60, width * 0.60, 0)),
-                        Expanded(
-                            flex: 1,
-                            child: Column(children: <Widget>[
-                              Expanded(
-                                  flex: 1,
-                                  child: photoBox(width * 0.30, width * 0.30, 1)),
-                              Expanded(
-                                  flex: 1,
-                                  child: photoBox(width * 0.30, width * 0.30, 2))
-                            ]))
-                      ])),
-                ),
-                NextButton(),
-              ],
+              ),
             ),
-          )
-        ],
+            Obx(
+            () => Container(
+                  alignment: Alignment.centerRight,
+                  height: width * 0.60,
+                  width: width * 0.90,
+                  child: Row(children: <Widget>[
+                    Expanded(
+                        flex: 2,
+                        child: photoBox(width * 0.60, width * 0.60, 0)),
+                    Container(width: 16,),
+                    Expanded(
+                        flex: 1,
+                        child: Column(children: <Widget>[
+                          Expanded(
+                              flex: 1,
+                              child: photoBox(width * 0.30, width * 0.30, 1)),
+                          Container(height: 16,),
+                          Expanded(
+                              flex: 1,
+                              child: photoBox(width * 0.30, width * 0.30, 2)),
+                        ]))
+                  ])),
+            ),
+            Container(height: 16,),
+            NextButton(),
+          ],
+        ),
       ),
     );
   }
@@ -78,10 +77,7 @@ class _StartPage4State extends State<StartPage4> {
       var pics = user.profileInfo['pics'];
       var pic = Util.getListElement(pics, index);
       return pic != null
-          ? Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8.0),
+          ? GestureDetector(
             onTap: () => Get.dialog(PhotoDialog(index, pic)),
             child: ClipRRect(
                 borderRadius: new BorderRadius.circular(8.0),
@@ -92,29 +88,25 @@ class _StartPage4State extends State<StartPage4> {
                     width: width,
                     height: width,
                     fit: BoxFit.cover)),
-          ))
-          : Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-          onTap: () => _getImage(index),
-          child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(color: Colors.grey)),
-              width: width,
-              height: width,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('센터', style: TextStyle(color: Colors.white)),
-                    Icon(
-                      Icons.add,
-                      color: Colors.grey,
-                    ),
-                  ])),
-        ),
-      );
+          )
+          : GestureDetector(
+            onTap: () => _getImage(index),
+            child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: Colors.grey)),
+                width: width,
+                height: width,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.add,
+                        color: Colors.grey,
+                      ),
+                    ])),
+          );
   }
 
   _getImage(index) async {
@@ -133,53 +125,46 @@ class _StartPage4State extends State<StartPage4> {
 
   Widget NextButton() {
     return Obx(
-          () => ButtonTheme(
-        padding: EdgeInsets.all(0),
-        minWidth: Get.width * 0.9 - 16,
-        height: 45,
-        child: RaisedButton(
-          child: Container(
-            width: Get.width * 0.9 - 16,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.transparent,
-                    size: 15,
-                  ),
+      () => TextButton(
+        child: Container(
+          width: Get.width * 0.9 - 16,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.transparent,
+                  size: 15,
                 ),
-                Text(
-                  '다음',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+              ),
+              Text(
+                '다음',
+                style: TextStyle(
+                  fontSize: 18,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                    size: 15,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 15,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          color: Colors.blue[200],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
-          onPressed: List.from(user.profileInfo['pics']).isEmpty ? null : () async {
-            await _controller.newUser();
-            Get.offAll(() => LobbyPage(), transition: Transition.fadeIn);
-          },
         ),
+        style: BtStyle.start,
+        onPressed: List.from(user.profileInfo['pics']).isEmpty
+            ? null
+            : () async {
+                await _controller.newUser();
+                Get.offAll(() => LobbyPage(), transition: Transition.fadeIn);
+              },
       ),
     );
   }

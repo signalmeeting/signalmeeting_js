@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
@@ -15,6 +16,7 @@ import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 //oppositeUser > '방장 - 지원자' 간 서로
 //applyUser > 지원자
@@ -123,72 +125,54 @@ class MeetingDetailPage extends StatelessWidget {
               firstChild: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: AnimatedCrossFade(
-                  firstChild: ButtonTheme(
-                    height: 45,
-                    minWidth: Get.width - 16,
-                    child: RaisedButton(
-                        highlightElevation: 0,
-                        elevation: 0,
-                        child: Text(
-                          '신청하기',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "AppleSDGothicNeoB",
-                            fontSize: 18,
+                  firstChild: TextButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '신청하기',
                           ),
-                        ),
-                        color: Colors.red[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        onPressed: () {
-                          meetingDetailController.buttonClicked.value = true;
-                        }),
-                  ),
-                  secondChild: ButtonTheme(
-                    minWidth: Get.width - 16,
-                    height: 45,
-                    child: RaisedButton(
-                        elevation: 2,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              '5',
-                              style: TextStyle(
-                                color: Colors.red[200],
-                                fontFamily: "AppleSDGothicNeoB",
-                                fontSize: 20,
-                              ),
+                        ],
+                      ),
+                      style: BtStyle.textMain200,
+                      onPressed: () {
+                        meetingDetailController.buttonClicked.value = true;
+                      }),
+                  secondChild: TextButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '5',
+                            style: TextStyle(
+                              fontFamily: "AppleSDGothicNeoB",
+                              fontSize: 20,
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Icon(
-                              Icons.favorite,
-                              color: Colors.red[200],
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(width: 1.5, color: Colors.red[200]), borderRadius: BorderRadius.circular(5)),
-                        onPressed: (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
-                          FocusScope.of(context).unfocus();
-                          await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                          meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                          Map<String, dynamic> applyMeeting = {
-                            "title" : meeting.title,
-                            "loc1" : meeting.loc1,
-                            "loc2" : meeting.loc2,
-                            "loc3" : meeting.loc3,
-                            "number" : meeting.number,
-                            "introduce" : meeting.introduce,
-                          };
-                          await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
-                        }),
-                  ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Icon(
+                            Icons.favorite,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                      style: BtStyle.sideLine,
+                      onPressed: (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
+                        FocusScope.of(context).unfocus();
+                        await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
+                        meetingDetailController.meeting.update((meeting) => meeting.process = 0);
+                        Map<String, dynamic> applyMeeting = {
+                          "title" : meeting.title,
+                          "loc1" : meeting.loc1,
+                          "loc2" : meeting.loc2,
+                          "loc3" : meeting.loc3,
+                          "number" : meeting.number,
+                          "introduce" : meeting.introduce,
+                        };
+                        await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
+                      }),
                   crossFadeState: buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                   duration: const Duration(milliseconds: 100),
                 ),
@@ -274,39 +258,35 @@ class MeetingDetailPage extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: ButtonTheme(
-            height: 45,
-            minWidth: Get.width - 16,
-            child: RaisedButton(
-                highlightElevation: 0,
-                elevation: 0,
-                child: Text(
-                  '상대방 확인',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "AppleSDGothicNeoB",
-                    fontSize: 18,
-                  ),
+          child: RaisedButton(
+              highlightElevation: 0,
+              elevation: 0,
+              child: Text(
+                '상대방 확인',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "AppleSDGothicNeoB",
+                  fontSize: 18,
                 ),
-                color: Colors.red[200],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                onPressed: () async {
-                  DocumentSnapshot snapshot;
-                  if(meeting.isMine) {
-                    snapshot = await meeting.apply.user.get();
-                  } else {
-                    snapshot = await meeting.user.get();
-                  }
-                  Map<String, dynamic> data = snapshot.data();
-                  meetingDetailController.oppositeUser = UserModel.fromJson(data);
-                  Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
-                    arguments: meeting.id,
-                    preventDuplicates: false);
+              ),
+              color: Colors.red[200],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              onPressed: () async {
+                DocumentSnapshot snapshot;
+                if(meeting.isMine) {
+                  snapshot = await meeting.apply.user.get();
+                } else {
+                  snapshot = await meeting.user.get();
+                }
+                Map<String, dynamic> data = snapshot.data();
+                meetingDetailController.oppositeUser = UserModel.fromJson(data);
+                Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
+                  arguments: meeting.id,
+                  preventDuplicates: false);
 
-                }),
-          ),
+              }),
         ),
       ],
     );
@@ -333,7 +313,7 @@ class MeetingDetailPage extends StatelessWidget {
           )),
         ),
         crossFadeState: meeting.process == 0 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-        duration: const Duration(milliseconds: 500));
+        duration: const Duration(milliseconds: 100));
   }
 
   Widget buildOppositeProfile() {
@@ -369,7 +349,6 @@ class MeetingDetailPage extends StatelessWidget {
       }
     });
 
-
     return Stack(
       children: [
         Container(
@@ -392,33 +371,36 @@ class MeetingDetailPage extends StatelessWidget {
                 ),
                 meeting.process == 1
                     ? Container()
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Container(
-                            color: Colors.black.withOpacity(0.5),
+                    : Stack(
+                      children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                meeting.process == 1
-                    ? Container()
-                    : Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: Colors.white, width: 1.5)),
-                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                          child: Text(
-                            '매칭 성사 시, 확인 가능',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "AppleSDGothicNeoM",
+                          Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: Colors.white, width: 1.5)),
+                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                            child: Text(
+                              '매칭 성사 시, 확인 가능',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "AppleSDGothicNeoM",
+                              ),
                             ),
                           ),
                         ),
-                      )
+
+                        ],
+                    ),
               ],
             ),
           ),

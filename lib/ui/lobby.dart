@@ -85,7 +85,7 @@ class LobbyPage extends StatelessWidget {
           drawer: Obx(() => customDrawer(_user.firstPic, _user.name, _user.loc1, _user.loc2, _user.career, context)),
           body: Obx(() => Center(child: _widgetOptions.elementAt(_selectedIndex))),
           bottomNavigationBar: SizedBox(
-              height: Get.height * 0.08,
+              height: 52,
               child: Obx(
                 () => Row(
                   children: <Widget>[

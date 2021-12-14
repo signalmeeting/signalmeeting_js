@@ -6,7 +6,6 @@ import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/drawer/store_page.dart';
-import 'package:signalmeeting/ui/widget/colored_button.dart';
 import 'package:signalmeeting/util/util.dart';
 import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
 

@@ -106,9 +106,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildTodayMatchColumn(list, docId) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: list.map<Widget>((e) => Obx(() => todayMatchItem(e, docId))).toList()),
     );
   }
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
   Widget todayMatchItem(UserModel user, String docId) {
     bool sameGender = this.user.man == user.man;
     bool isMe = this.user.uid == user.uid;
-    double size = Get.height * 0.16;
+    double size = Get.height * 0.17;
     bool banned = false;
     this.user.banList?.forEach((banItem) {
       if ((user.uid != this.user.uid) &&
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                     tag: 'today_signal' + user.uid,
                     child: banned ? GestureDetector(
                       onTap: () {
-                        Get.dialog(SimpleAlarmDialog());
+                        Get.dialog(SimpleAlarmDialog('asd', 'asd', 'asd'));
                         print('test');
                         print('test2');
                         print('test3');
@@ -176,9 +176,9 @@ class _HomePageState extends State<HomePage> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
-                        color: Colors.black.withOpacity(0),
+                        color: Colors.black.withOpacity(0.3),
                       ),
                     ),
                   )

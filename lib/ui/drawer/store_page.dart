@@ -82,7 +82,7 @@ class StorePage extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.only(top: 16, bottom: 8, left: 18, right: 18),
+        padding: const EdgeInsets.only(top: 16, bottom: 0, left: 18, right: 18),
         child: Card(
           elevation: 2,
           shape: RoundedRectangleBorder(

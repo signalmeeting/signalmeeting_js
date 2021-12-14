@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 class InviteFriendsPage extends StatefulWidget {
   @override
@@ -81,7 +83,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                                 filled: true,
                                 enabled: firstTime,
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue[200], width: 1),
+                                  borderSide: BorderSide(color: AppColor.sub200, width: 1),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey, width: 1),
@@ -90,7 +92,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                                 labelStyle: TextStyle(color: Colors.grey),
                                 labelText: firstTime ? '상대방 추천인코드' : '친구초대 완료',
                               ),
-                              cursorColor: Colors.blue[100],
+                              cursorColor: AppColor.sub100,
                               validator: (value) {
                                 return '알맞은 코드를 입력해주세요';
                               },
@@ -99,22 +101,14 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                           SizedBox(
                             width: 10,
                           ),
-                          ButtonTheme(
+                          Container(
                             height: 58,
-                            child: RaisedButton(
-                              elevation: 0,
-                              highlightElevation: 0,
+                            width: 90,
+                            child: TextButton(
                               child: Text(
                                 '입력',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
                               ),
-                              color: Colors.blue[200],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
+                              style: BtStyle.textSub200,
                               onPressed: firstTime && _targetUIDController.text.length == 10
                                   ? () async {
                                       bool result = await DatabaseService.instance.inviteFriend(_targetUIDController.text);
@@ -165,24 +159,14 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                       SizedBox(
                         width: 10,
                       ),
-                      ButtonTheme(
+                      Container(
                         height: 58,
-                        child: RaisedButton(
-                          elevation: 0,
-                          highlightElevation: 0,
-                          child: Text(
-                            '복사',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
+                        width: 90,
+                        child: TextButton(
+                          child: Text('복사',
                           ),
-                          color: Colors.blue[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
+                          style: BtStyle.start,
                           onPressed: () {
-                            //클립보드로 복사
                             Clipboard.setData(ClipboardData(text: '$myUID'));
                             CustomedFlushBar(Get.context, "복사 되었습니다");
                           },
@@ -209,7 +193,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
             TextSpan(
               text: '50 하트씩 ',
               style: TextStyle(
-                color: Colors.blue[300],
+                color: AppColor.sub,
                 fontWeight: FontWeight.bold,
               ),
             ),

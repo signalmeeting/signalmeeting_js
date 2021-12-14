@@ -33,7 +33,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
 
     },
     onLongPress: () {
-      if(item.isMine && item.apply == null){
+      if(item.isMine && item.apply == null) {
         Get.dialog(
             MainDialog(
               title: "알림",

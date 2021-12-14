@@ -8,8 +8,9 @@ import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/drawer/my_profile_Intoduce_edit_page.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/colored_button.dart';
 import 'package:signalmeeting/util/city_list_Info.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 import 'my_profile_pic_edit_page.dart';
 
@@ -188,15 +189,11 @@ class _MyProfilePageState extends State<MyProfilePage> {
     );
   }
 
-  ButtonTheme _editProfileImageButton(BuildContext context) {
-    return ButtonTheme(
-      minWidth: _width,
-      height: 40.0,
-      child: ColoredButton(
-        text: '프로필 사진 수정',
-        onPressed: () => Get.to(() => MyProfileImageEditPage(), transition: Transition.rightToLeftWithFade),
-        color: Colors.blue[200],
-      ),
+  Widget _editProfileImageButton(BuildContext context) {
+    return TextButton(
+      child: Text('프로필 사진 수정'),
+      style: BtStyle.textSub200,
+      onPressed: () => Get.to(() => MyProfileImageEditPage(), transition: Transition.rightToLeftWithFade),
     );
   }
 
@@ -214,7 +211,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   void agePick() {
     return showMaterialNumberPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       context: context,
       title: '나이',
@@ -231,7 +228,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   void tallPick() {
     return showMaterialNumberPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       context: context,
       title: '키',
@@ -261,7 +258,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -297,7 +294,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -439,7 +436,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     }
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -465,7 +462,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -487,7 +484,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -510,7 +507,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -535,7 +532,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -571,7 +568,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",

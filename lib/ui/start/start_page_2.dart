@@ -8,6 +8,8 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/start/start_page_3.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 import 'package:signalmeeting/util/uiData.dart';
 
 class StartPage2 extends StatefulWidget {
@@ -16,12 +18,8 @@ class StartPage2 extends StatefulWidget {
 }
 
 class _StartPage2State extends State<StartPage2> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   MainController _controller = Get.find();
-
   UserModel get user => _controller.user.value;
-
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   final GlobalKey<FormState> _phoneNumKey = GlobalKey<FormState>();
@@ -81,17 +79,14 @@ class _StartPage2State extends State<StartPage2> {
     }
   }
 
-  // 폼이 생성될 때 호출
   @override
   void initState() {
     super.initState();
-    // myFocusNode에 포커스 인스턴스 저장.
     myFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    // 폼이 삭제되면 myFocusNode도 삭제됨
     myFocusNode.dispose();
     super.dispose();
   }
@@ -100,7 +95,6 @@ class _StartPage2State extends State<StartPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -109,7 +103,7 @@ class _StartPage2State extends State<StartPage2> {
               padding: const EdgeInsets.only(bottom: 15.0, top: 50),
               child: Text(
                 '본인 인증',
-                style: TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(color: AppColor.sub, fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -146,18 +140,18 @@ class _StartPage2State extends State<StartPage2> {
                   filled: true,
                   //focus 됐을 시
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[100], width: 1),
+                    borderSide: BorderSide(color: AppColor.sub100, width: 1),
                   ),
                   //focus 되기 전
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 0.15),
+                    borderSide: BorderSide(color: AppColor.hint, width: 0.15),
                   ),
                   //validator 실행 후
                   border: OutlineInputBorder(),
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: TextStyle(color: AppColor.hint),
                   labelText: '전화번호',
                 ),
-                cursorColor: Colors.blue[100],
+                cursorColor: AppColor.sub100,
                 //자동 focus
                 autofocus: true,
                 validator: (value) {
@@ -172,33 +166,21 @@ class _StartPage2State extends State<StartPage2> {
             Container(
               width: 10,
             ),
-            ButtonTheme(
-              //TextFormField - OutlineInputBorder 의 default height 몰라서 적당히 맞춤
-              height: 47,
-              child: RaisedButton(
+            TextButton(
+              child: Center(
                 child: Text(
                   '전송',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
                 ),
-                color: Colors.blue[200],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                onPressed: () async {
-                  if (_phoneNumKey.currentState.validate()) {
-                    await smsAuth();
-//                    CustomedFlushBar(context, "문자가 전송되었습니다");
-                    setState(() {
-                      messageSent = true;
-                      //메세지 보낸상태 바꿔줘서 인증번호 UI 띄움
-                    });
-                    FocusScope.of(context).requestFocus(myFocusNode);
-                  }
-                },
               ),
+              style: BtStyle.start,
+              onPressed: () async {
+                if (_phoneNumKey.currentState.validate()) {
+                  await smsAuth();
+                  messageSent = true;
+                  setState(() {});
+                  FocusScope.of(context).requestFocus(myFocusNode);
+                }
+              },
             ),
           ],
         ),
@@ -254,18 +236,11 @@ class _StartPage2State extends State<StartPage2> {
             ),
             ButtonTheme(
               height: 47,
-              child: RaisedButton(
+              child: TextButton(
                 child: Text(
                   '인증',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
                 ),
-                color: Colors.blue[200],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
+                style: BtStyle.start,
                 onPressed: () async {
                   bool result = await signInWithPhoneNumber();
                   //validator 에 future 값 넣기 위한 꼼수

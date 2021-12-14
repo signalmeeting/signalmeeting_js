@@ -7,6 +7,8 @@ import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/start/start_page_4.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/util/city_list_Info.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 class StartPage3 extends StatefulWidget {
   @override
@@ -33,97 +35,80 @@ class _StartPage3State extends State<StartPage3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //키보드 올라올 때 overflow 방지
       resizeToAvoidBottomInset: false,
-      body: Builder(
-        builder: (context) => Stack(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 15.0),
-                    child: Text(
-                      '계정 정보',
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15.0, top: 50),
+              child: Text(
+                '계정 정보',
+                style: TextStyle(
+                    color: AppColor.sub,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          //낙네임만 텍스트폼 입력 받음
+          //나머지는 onTap 통해 alertdialog 느낌으로(연속적으로 넘어가게)
+          Nickname(context),
+          ProfilForm(gender, confirmGender, GenderPick),
+          ProfilForm(age, confirmAge, AgePick),
+          ProfilForm(tall, confirmtall, tallPick),
+          ProfilForm(residence, confirmResidence, ResidencePick),
+          ProfilForm(residence2, confirmResidence2, ResidencePick2),
+          ProfilForm(career, confirmCareer, CareerPick),
+          //다 입력 받았을 시 넘어가도록(순서대로 입력 안가는 경우를 위해)
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 16.0),
+            child: TextButton(
+              child: Container(
+                width: Get.width * 0.9 - 16,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.transparent,
+                        size: 15,
+                      ),
+                    ),
+                    Text(
+                      '다음',
                       style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                //낙네임만 텍스트폼 입력 받음
-                //나머지는 onTap 통해 alertdialog 느낌으로(연속적으로 넘어가게)
-                Nickname(context),
-                ProfilForm(gender, confirmGender, GenderPick),
-                ProfilForm(age, confirmAge, AgePick),
-                ProfilForm(tall, confirmtall, tallPick),
-                ProfilForm(residence, confirmResidence, ResidencePick),
-                ProfilForm(residence2, confirmResidence2, ResidencePick2),
-                ProfilForm(career, confirmCareer, CareerPick),
-                //다 입력 받았을 시 넘어가도록(순서대로 입력 안가는 경우를 위해)
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 16.0),
-                  child: ButtonTheme(
-                    padding: EdgeInsets.all(0),
-                    minWidth: Get.width * 0.9,
-                    height: 45,
-                    child: RaisedButton(
-                      child: Container(
-                        width: Get.width * 0.9 - 16,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(left: 12.0),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.transparent,
-                                size: 15,
-                              ),
-                            ),
-                            Text(
-                              '다음',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 12.0),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                                size: 15,
-                              ),
-                            ),
-                          ],
-                        ),
+                        fontSize: 18,
                       ),
-                      color: Colors.blue[200],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      onPressed: (confirmNickname &&
-                          confirmGender &&
-                          confirmAge &&
-                          confirmtall &&
-                          confirmResidence &&
-                          confirmResidence2 &&
-                          confirmCareer)
-                          ? () {() => Get.to(StartPage4());}
-                          : null,
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+              style: BtStyle.start,
+              onPressed: (confirmNickname &&
+                  confirmGender &&
+                  confirmAge &&
+                  confirmtall &&
+                  confirmResidence &&
+                  confirmResidence2 &&
+                  confirmCareer)
+                  ? () => Get.to(StartPage4())
+                  : null,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -142,6 +127,7 @@ class _StartPage3State extends State<StartPage3> {
       child: Form(
         key: _formKey,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               child: TextFormField(
@@ -179,29 +165,19 @@ class _StartPage3State extends State<StartPage3> {
             Container(
               width: 10,
             ),
-            ButtonTheme(
-              height: 47,
-              child: RaisedButton(
-                child: Text(
-                  '입력',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                color: Colors.blue[200],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    confirmNickname = true;
-                    CustomedFlushBar(context, "닉네임 입력이 완료되었습니다");
-                  }
-                  //키보드 창 내리고 SnackBar 띄움
-                  FocusScope.of(context).unfocus();
-                },
+            TextButton(
+              child: Text(
+                '입력',
               ),
+              style: BtStyle.start,
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  confirmNickname = true;
+                  CustomedFlushBar(context, "닉네임 입력이 완료되었습니다");
+                }
+                //키보드 창 내리고 SnackBar 띄움
+                FocusScope.of(context).unfocus();
+              },
             )
           ],
         ),
@@ -233,10 +209,10 @@ class _StartPage3State extends State<StartPage3> {
             width: 10,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Icon(Icons.check_circle_outline,
                 size: 32,
-                color: confirmed ? Colors.blue[200] : Colors.grey[400]),
+                color: confirmed ? AppColor.sub200 : Colors.grey[400]),
           ),
         ],
       ),
@@ -250,7 +226,7 @@ class _StartPage3State extends State<StartPage3> {
     List<String> genderList = <String>['남자', '여자'];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -270,7 +246,7 @@ class _StartPage3State extends State<StartPage3> {
 
   void AgePick() {
     return showMaterialNumberPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       context: context,
       title: '나이',
@@ -291,7 +267,7 @@ class _StartPage3State extends State<StartPage3> {
 
   void tallPick() {
     return showMaterialNumberPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       context: context,
       title: '키',
@@ -320,7 +296,7 @@ class _StartPage3State extends State<StartPage3> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -371,7 +347,7 @@ class _StartPage3State extends State<StartPage3> {
     }
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -397,7 +373,7 @@ class _StartPage3State extends State<StartPage3> {
       '의료직', '기타',];
 
     return showMaterialScrollPicker(
-      headerColor: Colors.blue[200],
+      headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
