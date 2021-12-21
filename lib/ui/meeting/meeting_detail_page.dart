@@ -15,6 +15,8 @@ import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 //oppositeUser > '방장 - 지원자' 간 서로
 //applyUser > 지원자
@@ -122,60 +124,44 @@ class MeetingDetailPage extends StatelessWidget {
           AnimatedCrossFade(
               firstChild: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: AnimatedCrossFade(
-                  firstChild: TextButton(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '신청하기',
-                          ),
-                        ],
+                child: TextButton(
+                  style: BtStyle.changeState(buttonClicked),
+                  child: buttonClicked
+                      ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        '5',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
                       ),
-                      style: BtStyle.textMain200,
-                      onPressed: () {
-                        meetingDetailController.buttonClicked.value = true;
-                      }),
-                  secondChild: TextButton(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '5',
-                            style: TextStyle(
-                              fontFamily: "AppleSDGothicNeoB",
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                            Icons.favorite,
-                            size: 20,
-                          ),
-                        ],
+                      SizedBox(
+                        width: 5,
                       ),
-                      style: BtStyle.sideLine,
-                      onPressed: (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
-                        FocusScope.of(context).unfocus();
-                        await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                        meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                        Map<String, dynamic> applyMeeting = {
-                          "title" : meeting.title,
-                          "loc1" : meeting.loc1,
-                          "loc2" : meeting.loc2,
-                          "loc3" : meeting.loc3,
-                          "number" : meeting.number,
-                          "introduce" : meeting.introduce,
-                        };
-                        await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
-                      }),
-                  ),
-                  crossFadeState: buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 100),
-                ),
-              ),
+                      Icon(
+                        Icons.favorite,
+                        size: 20,
+                      ),
+                    ],
+                  )
+                      : Text('신청하기'),
+                  onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
+                    FocusScope.of(context).unfocus();
+                    await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
+                    meetingDetailController.meeting.update((meeting) => meeting.process = 0);
+                    Map<String, dynamic> applyMeeting = {
+                      "title" : meeting.title,
+                      "loc1" : meeting.loc1,
+                      "loc2" : meeting.loc2,
+                      "loc3" : meeting.loc3,
+                      "number" : meeting.number,
+                      "introduce" : meeting.introduce,
+                    };
+                    await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
+                  } : () => meetingDetailController.buttonClicked.value = true,
+                ),),
               secondChild: SizedBox(),
               crossFadeState: this.applied ?? false ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               duration: const Duration(milliseconds: 100)),
@@ -231,45 +217,30 @@ class MeetingDetailPage extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: ButtonTheme(
-              height: 45,
-              child: RaisedButton(
-                  highlightElevation: 0,
-                  elevation: 0,
-                  child: Text(
-                    '상대방 확인',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "AppleSDGothicNeoB",
-                      fontSize: 18,
-                    ),
-                  ),
-                  color: Colors.red[200],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  onPressed: () async {
-                    DocumentSnapshot snapshot;
-                    if (meeting.isMine) {
-                      snapshot = await meeting.apply.user.get();
-                    } else {
-                      snapshot = await meeting.user.get();
-                    }
-                    Map<String, dynamic> data = snapshot.data();
-                    meetingDetailController.oppositeUser = UserModel.fromJson(data);
-                    Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
-                        arguments: meeting.id, preventDuplicates: false);
-                  }),
-            ),
+            child: TextButton(
+                child: Text('상대방 확인'),
+                style: BtStyle.textMain200,
+                onPressed: () async {
+                  DocumentSnapshot snapshot;
+                  if (meeting.isMine) {
+                    snapshot = await meeting.apply.user.get();
+                  } else {
+                    snapshot = await meeting.user.get();
+                  }
+                  Map<String, dynamic> data = snapshot.data();
+                  meetingDetailController.oppositeUser = UserModel.fromJson(data);
+                  Get.to(() => OppositeProfilePage(meetingDetailController.oppositeUser, isTodayMatch: false),
+                      arguments: meeting.id, preventDuplicates: false);
+                }),
           ),
         ),
         if (meeting.process == 1)
           Padding(
             padding: const EdgeInsets.only(right : 8.0),
-            child: ButtonTheme(
-              height: 45,
-              buttonColor: Colors.blue[300],
-              child: RaisedButton(
+            child: Container(
+              width: 75,
+              child: TextButton(
+                style: BtStyle.textSub200,
                 onPressed: () async {
                   DocumentSnapshot snapshot;
                   if (meeting.isMine) {
@@ -280,14 +251,7 @@ class MeetingDetailPage extends StatelessWidget {
                   Map<String, dynamic> data = snapshot.data();
                   MainController.goToChatPage(meeting.id, UserModel.fromJson(data));
                 },
-                child: Text(
-                  '채팅',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "AppleSDGothicNeoB",
-                    fontSize: 18,
-                  ),
-                ),
+                child: Container(width: 25, child: Image.asset('assets/bubble_chat.png', color: Colors.white,)),
               ),
             ),
           ),
@@ -438,7 +402,8 @@ class MeetingDetailPage extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 35,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[200], width: 1.5),
+                  color: Colors.grey[100],
+                  // border: Border.all(color: AppColor.main100.withOpacity(0.4), width: 1.5),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Padding(

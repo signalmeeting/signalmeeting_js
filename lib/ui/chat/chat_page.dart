@@ -101,27 +101,32 @@ class ChatPage extends StatelessWidget {
             Flexible(
               child: buildSendTextField(),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 4.0),
-              child: buildSendButton(),
-            ),
+            buildSendButton(),
           ])),
     );
   }
 
   Widget buildSendTextField() {
     return Obx(
-      () => TextField(
-        controller: _textController,
-        onSubmitted: _isComposing ? _onSendMessageButtonPressed : null,
-        onChanged: _handleChanged,
-        decoration: InputDecoration.collapsed(hintText: "메세지 입력"),
+      () => Padding(
+        padding: const EdgeInsets.only(left: 12.0),
+        child: TextField(
+          style: TextStyle(fontSize: 16),
+          controller: _textController,
+          onSubmitted: _isComposing ? _onSendMessageButtonPressed : null,
+          onChanged: _handleChanged,
+          decoration: InputDecoration.collapsed(hintText: "메세지 입력"),
+        ),
       ),
     );
   }
 
   Widget buildSendButton() {
-    return IconButton(icon: Icon(Icons.send), onPressed: () => _onSendMessageButtonPressed(_textController.text));
+    return IconButton(
+        icon: Icon(Icons.arrow_forward_ios_rounded),
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onPressed: () => _onSendMessageButtonPressed(_textController.text));
   }
 
   Future onTakePhotoButtonPressed() async {
@@ -234,26 +239,26 @@ class ChatMessage extends StatelessWidget {
 
   Widget buildAvatar() {
     return GestureDetector(
-      onTap: () => Get.to(() => OppositeProfilePage(oppositeUser)),
+      onTap: () => Get.to(() => OppositeProfilePage(oppositeUser, isItFromChat: true), arguments: Get.arguments,),
       child: oppositeUser.pics.length > 0
-          ? cachedImage(oppositeUser.firstPic, width: 30, height: 30, radius: 30.0)
+          ? cachedImage(oppositeUser.firstPic, width: 35, height: 35, radius: 30.0)
           : CircleAvatar(
         radius: 15,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.grey[200],
       ),
     );
   }
 
   Widget buildMessageBody() {
-    return Opacity(
-      opacity: 0.8,
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
       child: Container(
           padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
           child: Container(
               constraints: BoxConstraints(maxWidth: Get.width * .58),
               child: Text(message.value.text, style: TextStyle(color: Colors.black, fontSize: 16))),
           decoration: new BoxDecoration(
-              color: Colors.grey[300],
+              color: Colors.grey[200],
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(isComing ? 0 : 12),
                   topRight: Radius.circular(isComing ? 12 : 0),

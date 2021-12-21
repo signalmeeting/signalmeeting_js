@@ -85,4 +85,27 @@ class BtStyle {
         }),
       );
 
+  static ButtonStyle changeState(_buttonClicked) => ButtonStyle(
+    minimumSize: MaterialStateProperty.all(Size(Get.width*0.9, 44)),
+    foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+      if (_buttonClicked) return AppColor.main200;
+      return Colors.white;
+    }),
+    overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+      if (_buttonClicked) return AppColor.main200.withOpacity(0.1);
+      return Colors.white.withOpacity(0.1);
+    }),
+    backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+      if (_buttonClicked) return Colors.white;
+      return AppColor.main200;
+    }),
+    shape: MaterialStateProperty.resolveWith((states) {
+      if (!_buttonClicked) return RoundedRectangleBorder(borderRadius: BorderRadius.circular(6));
+      return RoundedRectangleBorder(
+          side: BorderSide(width: 1.5, color: AppColor.main200),
+          borderRadius: BorderRadius.circular(6));
+    }),
+    textStyle: MaterialStateProperty.all(TextStyle(fontSize: 16)),
+  );
+
 }

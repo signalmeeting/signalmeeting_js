@@ -52,7 +52,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
     child: OpenContainer(
         useRootNavigator: true,
         tappable: ((didIApplied || item.isMine || item.process == null) && !refused) ? true : false,
-        transitionDuration: Duration(milliseconds: 800),
+        transitionDuration: Duration(milliseconds: 500),
         openShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5.2),
         ),

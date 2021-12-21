@@ -12,13 +12,15 @@ import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
+import 'package:signalmeeting/util/style/appColor.dart';
 import 'package:signalmeeting/util/style/btStyle.dart';
 
 class OppositeProfilePage extends StatefulWidget {
   final UserModel user;
   final bool isTodayMatch; //todayMatch , meeting 신청 확인 2개 양식
   final String docId;
-  OppositeProfilePage(this.user, {this.isTodayMatch = true, this.docId});
+  final bool isItFromChat;
+  OppositeProfilePage(this.user, {this.isTodayMatch = true, this.docId, this.isItFromChat = false,});
 
   @override
   _OppositeProfilePageState createState() => _OppositeProfilePageState();
@@ -57,7 +59,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
               children: <Widget>[
                 profileImage(),
                 //애니메이션 버튼
-                if (!_signalSent && widget.isTodayMatch)
+                if (!_signalSent && widget.isTodayMatch && !widget.isItFromChat)
                   FutureBuilder(
                     future: DatabaseService.instance.checkConnectionAndSignal(widget.user.uid),
                     builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
@@ -71,11 +73,31 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                       else {
                         print(snapshot.data);
                         return AnimatedCrossFade(
-                            firstChild: AnimatedCrossFade(
-                                firstChild: _SignalButton(false),
-                                secondChild: _SignalButton(true),
-                                crossFadeState: _buttonClicked ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                duration: const Duration(milliseconds: 300)),
+                            firstChild: TextButton(
+                              style: BtStyle.changeState(_buttonClicked),
+                              child: _buttonClicked
+                                  ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    '1',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 20,
+                                  ),
+                                ],
+                              )
+                                  : Text('시그널 보내기'),
+                              onPressed: _buttonClicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
+                            ),
                             secondChild: SizedBox(),
                             crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                             // data == 2일 때 번호 떠야됨
@@ -136,34 +158,6 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _SignalButton(bool clicked) {
-    return TextButton(
-      style: clicked ? BtStyle.sideLine : BtStyle.textMain200,
-      child: clicked
-          ? Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  '1',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(
-                  Icons.favorite,
-                  size: 20,
-                ),
-              ],
-            )
-          : Text('시그널 보내기'),
-      onPressed: clicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
     );
   }
 
