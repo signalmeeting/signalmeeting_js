@@ -37,8 +37,6 @@ class DatabaseService {
 
   final StreamController streamController = StreamController.broadcast();
 
-  final int groupSize = 4;
-
   //user collection reference
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
 
@@ -491,6 +489,7 @@ class DatabaseService {
     snapshot.docs.forEach((element) {
       List<UserModel> sameGenders = [];
       List<UserModel> oppositeGenders = [];
+      int groupSize = element.data()['womenProfile'].length;
       for (int i = 0; i < groupSize; i++) {
         sameGenders.add(UserModel(
           uid: element[_user.man ? "men" : "women"][i],

@@ -98,13 +98,21 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                                   : Text('시그널 보내기'),
                               onPressed: _buttonClicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
                             ),
-                            secondChild: SizedBox(),
+                            secondChild: TextButton(
+                                style: BtStyle.textSub200,
+                                onPressed: () {},
+                                child: Text('대화하기')),
                             crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                             // data == 2일 때 번호 떠야됨
                             duration: const Duration(milliseconds: 300));
                       }
                     },
                   ),
+                if (_signalSent && !widget.isTodayMatch && !widget.isItFromChat)
+                  TextButton(
+                      style: BtStyle.textSub200,
+                      onPressed: () {},
+                      child: Text('대화하기')),
                 //divider
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0, bottom: 10),

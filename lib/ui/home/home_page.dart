@@ -105,10 +105,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildTodayMatchColumn(list, docId) {
+
+    MainAxisAlignment _mainAxisAlignment = MainAxisAlignment.start;
+    switch (list.length) {
+      case 2:
+        _mainAxisAlignment = MainAxisAlignment.spaceBetween;
+        break;
+      case 3:
+        _mainAxisAlignment = MainAxisAlignment.spaceAround;
+        break;
+      case 4:
+        _mainAxisAlignment = MainAxisAlignment.spaceEvenly;
+        break;
+      default:
+        _mainAxisAlignment = MainAxisAlignment.spaceEvenly;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: _mainAxisAlignment,
           children: list.map<Widget>((e) => Obx(() => todayMatchItem(e, docId))).toList()),
     );
   }
