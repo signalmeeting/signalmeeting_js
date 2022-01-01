@@ -73,8 +73,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       _editProfileImageButton(context),
                       Padding(
                           padding: const EdgeInsets.only(top: 10.0),
-                          child:
-                              Container(height: 10, color: Colors.grey[200])),
+                          child: Container(height: 10, color: Colors.grey[100])),
                       _buildName(user),
                       _profileItem('나이', user.age, () => agePick()),
                       _profileItem('키', user.tall, () => tallPick()),
@@ -84,7 +83,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       Container(
                           height: 10,
                           width: double.infinity,
-                          color: Colors.grey[200]),
+                          color: Colors.grey[100]),
                       _profileItem('체형', user.bodyType, () => bodyTypePick()),
                       _profileItem('흡연', user.smoke, () => smokePick()),
                       _profileItem('음주', user.drink, () => drinkPick()),
@@ -109,7 +108,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         if (title != '체형')
           Container(
             height: 0.3,
-            color: Colors.grey,
+            color: Colors.grey[200],
           ),
         GestureDetector(
           onTap: onTap,
@@ -166,7 +165,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         if (title == '간단소개')
           Container(
             height: 50,
-            color: Colors.grey[200],
+            color: Colors.grey[100],
           ),
       ],
     );

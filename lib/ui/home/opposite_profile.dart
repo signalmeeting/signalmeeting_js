@@ -247,7 +247,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           padding: EdgeInsets.all(10),
           width: Get.width*0.9,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300], width: 1),
+            border: Border.all(color: Colors.grey[200], width: 1),
             borderRadius: BorderRadius.circular(8),
             color: Colors.grey[100],
           ),
@@ -366,8 +366,8 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
             child: InkWell(
               onTap: () => Get.dialog(ReportDialog(widget.user.uid, ReportType.daily)),
               child: Container(
-                width: 20,
-                height: 20,
+                width: 30,
+                height: 30,
                 child: Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),),
               ),
             ),

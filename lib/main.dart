@@ -53,8 +53,14 @@ class MyApp extends StatelessWidget {
   MyApp(this.app);
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+      statusBarBrightness: Brightness.dark, // For iOS (dark icons)
+      statusBarColor: Colors.white, //or set color with: Color(0xFF0000FF)
+    ));
     return GetMaterialApp(
       title: 'signalmeeting',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "AppleSDGothicNeoM",
         primaryColor: Colors.black,

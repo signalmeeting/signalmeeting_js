@@ -61,6 +61,7 @@ class MeetingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('meeting : $meeting');
     return WillPopScope(
       onWillPop: () async {
         if(buttonClicked) {
@@ -123,44 +124,47 @@ class MeetingDetailPage extends StatelessWidget {
         children: [
           AnimatedCrossFade(
               firstChild: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: TextButton(
-                  style: BtStyle.changeState(buttonClicked),
-                  child: buttonClicked
-                      ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '5',
-                        style: TextStyle(
-                          fontSize: 18,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Container(
+                  width: Get.width - 16,
+                  child: TextButton(
+                    style: BtStyle.changeState(buttonClicked),
+                    child: buttonClicked
+                        ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '5',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        Icons.favorite,
-                        size: 20,
-                      ),
-                    ],
-                  )
-                      : Text('신청하기'),
-                  onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
-                    FocusScope.of(context).unfocus();
-                    await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                    meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                    Map<String, dynamic> applyMeeting = {
-                      "title" : meeting.title,
-                      "loc1" : meeting.loc1,
-                      "loc2" : meeting.loc2,
-                      "loc3" : meeting.loc3,
-                      "number" : meeting.number,
-                      "introduce" : meeting.introduce,
-                    };
-                    await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
-                  } : () => meetingDetailController.buttonClicked.value = true,
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Icon(
+                          Icons.favorite,
+                          size: 20,
+                        ),
+                      ],
+                    )
+                        : Text('신청하기'),
+                    onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
+                      FocusScope.of(context).unfocus();
+                      await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
+                      meetingDetailController.meeting.update((meeting) => meeting.process = 0);
+                      Map<String, dynamic> applyMeeting = {
+                        "title" : meeting.title,
+                        "loc1" : meeting.loc1,
+                        "loc2" : meeting.loc2,
+                        "loc3" : meeting.loc3,
+                        "number" : meeting.number,
+                        "introduce" : meeting.introduce,
+                      };
+                      await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
+                    } : () => meetingDetailController.buttonClicked.value = true,
+                  ),
                 ),),
               secondChild: SizedBox(),
               crossFadeState: this.applied ?? false ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -221,8 +225,10 @@ class MeetingDetailPage extends StatelessWidget {
                 child: Text('상대방 확인'),
                 style: BtStyle.textMain200,
                 onPressed: () async {
+                  print('???@W#@#@#@# : ${meeting.apply}');
                   DocumentSnapshot snapshot;
                   if (meeting.isMine) {
+                    print('meeting.apply.user : ${meeting.apply.user}');
                     snapshot = await meeting.apply.user.get();
                   } else {
                     snapshot = await meeting.user.get();
@@ -375,12 +381,12 @@ class MeetingDetailPage extends StatelessWidget {
         ),
         Positioned(
           child: InkWell(
-            onTap: () => banned
+            onTap: () => !meeting.isMine ? banned
                 ? Get.defaultDialog(title: '이미 신고 했습니다')
-                : Get.dialog(ReportDialog(id, ReportType.meeting, meetingDetailController: meetingDetailController)),
+                : Get.dialog(ReportDialog(id, ReportType.meeting, meetingDetailController: meetingDetailController)) : (){},
             child: Container(
-              width: 20,
-              height: 20,
+              width: 30,
+              height: 30,
               child: !meeting.isMine ?
                 Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),) : Container(),
             ),

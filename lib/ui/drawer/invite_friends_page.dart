@@ -73,29 +73,31 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
-                            child: TextFormField(
-                              maxLength: 10,
-                              onChanged: (text) => setState(() {}),
-                              controller: _targetUIDController,
-                              decoration: InputDecoration(
-                                contentPadding: new EdgeInsets.fromLTRB(10, 20, 0, 20),
-                                fillColor: Colors.white,
-                                filled: true,
-                                enabled: firstTime,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: AppColor.sub200, width: 1),
+                            child: Container(
+                              height: 58,
+                              child: TextFormField(
+                                onChanged: (text) => setState(() {}),
+                                controller: _targetUIDController,
+                                decoration: InputDecoration(
+                                  // contentPadding: new EdgeInsets.fromLTRB(10, 20, 0, 20),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  enabled: firstTime,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColor.sub200, width: 1),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey, width: 1),
+                                  ),
+                                  border: OutlineInputBorder(),
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  labelText: firstTime ? '상대방 추천인코드' : '친구초대 완료',
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey, width: 1),
-                                ),
-                                border: OutlineInputBorder(),
-                                labelStyle: TextStyle(color: Colors.grey),
-                                labelText: firstTime ? '상대방 추천인코드' : '친구초대 완료',
+                                cursorColor: AppColor.sub100,
+                                validator: (value) {
+                                  return '알맞은 코드를 입력해주세요';
+                                },
                               ),
-                              cursorColor: AppColor.sub100,
-                              validator: (value) {
-                                return '알맞은 코드를 입력해주세요';
-                              },
                             ),
                           ),
                           SizedBox(
@@ -140,20 +142,22 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
-                        child: TextFormField(
-                          enabled: false,
-                          decoration: InputDecoration(
-                            contentPadding: new EdgeInsets.fromLTRB(10, 20, 0, 20),
-                            fillColor: Colors.white,
-                            filled: true,
-                            disabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey, width: 1),
+                        child: Container(
+                          height: 58,
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey, width: 1),
+                              ),
+                              border: OutlineInputBorder(),
+                              labelStyle: TextStyle(color: Colors.grey),
+                              labelText: '$myUID',
                             ),
-                            border: OutlineInputBorder(),
-                            labelStyle: TextStyle(color: Colors.grey),
-                            labelText: '$myUID',
+                            cursorColor: Colors.blue[100],
                           ),
-                          cursorColor: Colors.blue[100],
                         ),
                       ),
                       SizedBox(
