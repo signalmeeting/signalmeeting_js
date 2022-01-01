@@ -22,11 +22,11 @@ class OppositeProfilePage extends StatefulWidget {
   final bool isItFromChat;
 
   OppositeProfilePage(
-    this.user, {
-    this.isTodayMatch = true,
-    this.docId,
-    this.isItFromChat = false,
-  });
+      this.user, {
+        this.isTodayMatch = true,
+        this.docId,
+        this.isItFromChat = false,
+      });
 
   @override
   _OppositeProfilePageState createState() => _OppositeProfilePageState();
@@ -74,8 +74,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                         return Text('Something went wrong');
                       }
                       if (!snapshot.hasData)
-                        return Container();
-                      //인창, 시그널 보냈으면 보냈습니다 표시 추가 예정,,
+                        return Container(); //인창, 시그널 보냈으면 보냈습니다 표시 추가 예정,,
                       else {
                         int result = snapshot.data["result"];
                         return Column(
@@ -85,24 +84,24 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                                   style: BtStyle.changeState(_buttonClicked),
                                   child: _buttonClicked
                                       ? Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              '1',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Icon(
-                                              Icons.favorite,
-                                              size: 20,
-                                            ),
-                                          ],
-                                        )
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        '1',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Icon(
+                                        Icons.favorite,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  )
                                       : Text('시그널 보내기'),
                                   onPressed: _buttonClicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
                                 ),
@@ -225,23 +224,23 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: value != null
                 ? <Widget>[
-                    Text(
-                      '$value',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ]
+              Text(
+                '$value',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+            ]
                 : <Widget>[
-                    Text(
-                      '-',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[400],
-                      ),
-                    ),
-                  ],
+              Text(
+                '-',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[400],
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -256,7 +255,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
           padding: EdgeInsets.all(10),
           width: Get.width * 0.9,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300], width: 1),
+            border: Border.all(color: Colors.grey[200], width: 1),
             borderRadius: BorderRadius.circular(8),
             color: Colors.grey[100],
           ),
@@ -373,8 +372,8 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
             child: InkWell(
               onTap: () => Get.dialog(ReportDialog(widget.user.uid, ReportType.daily)),
               child: Container(
-                width: 20,
-                height: 20,
+                width: 30,
+                height: 30,
                 child: Image.asset(
                   'assets/report.png',
                   color: Colors.white.withOpacity(0.7),

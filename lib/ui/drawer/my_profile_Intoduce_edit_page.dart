@@ -4,6 +4,7 @@ import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/drawer/my_profile_page.dart';
+import 'package:signalmeeting/util/style/btStyle.dart';
 
 import 'custom_drawer.dart';
 
@@ -76,35 +77,25 @@ class _MyProfileIntroduceEditPageState extends State<MyProfileIntroduceEditPage>
                       ),
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      RaisedButton(
-                          elevation: 2,
-                          child: Text(
-                            '작성 완료',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                          color: Colors.blue[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          onPressed: () {
-                            if(_formKey.currentState.validate()) {
-                              _controller.changeProfileValue('introduce', _selfIntroductionController.text);
-                              Get.back();
-                            }
-                          }
-                      ),
-                    ],
-                  ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Text('* 본인의 개인정보나 연락처 SNS 등을 기재시\n  계정 영구정지 등 불이익을 받을 수 있습니다.'),
+                    padding: const EdgeInsets.only(top: 5.0, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextButton(
+                            child: Text('작성 완료'),
+                            style: BtStyle.textSub200,
+                            onPressed: () {
+                              if(_formKey.currentState.validate()) {
+                                _controller.changeProfileValue('introduce', _selfIntroductionController.text);
+                                Get.back();
+                              }
+                            }
+                        ),
+                      ],
+                    ),
                   ),
+                  Text('* 본인의 개인정보나 연락처 SNS 등을 기재시\n  계정 영구정지 등 불이익을 받을 수 있습니다.'),
                 ],
               ),
             ),

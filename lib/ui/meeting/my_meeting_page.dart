@@ -87,7 +87,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   buildTodayConnectionList() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
-      child: Wrap(children: _controller.todayConnectionList.map<Widget>((element) => ShortTileRow(element)).toList()),
+      child: Wrap(children: _controller.todayConnectionList.map<Widget>((element) => shortTileRow(element)).toList()),
     );
   }
 
@@ -115,7 +115,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
               child: Builder(
                 builder: (context) {
                   if (short) {
-                    return ShortTileRow(itemList[index]);
+                    return shortTileRow(itemList[index]);
                   } else if (isMine) {
                     return meetingGridItem(itemList[index], isMine: true);
                   } else {
@@ -237,7 +237,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   //   );
   // }
 
-  Widget ShortTileRow(UserModel user) {
+  Widget shortTileRow(UserModel user) {
     return Card(
       elevation: 1.5,
       shape: RoundedRectangleBorder(
@@ -246,18 +246,19 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
       child: Padding(
         padding: const EdgeInsets.all(3.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              width: (Get.width - 54) / 3 - 6,
-              height: (Get.width - 54) / 3 - 6,
-              child: ProfileImageForm2(user),
+            Expanded(
+              child: Container(
+                child: ProfileImageForm2(user),
+              ),
             ),
             Container(
               constraints: BoxConstraints(
                 maxWidth: (Get.width - 54) / 3 - 10,
               ),
               alignment: Alignment.center,
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(3),
               child: Text(
                 user.name,
                 overflow: TextOverflow.ellipsis,
@@ -268,92 +269,6 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
       ),
     );
   }
-
-  // //안씀?
-  // Widget LongTileForm(int num, bool iMade, Color state) {
-  //   return GestureDetector(
-  //     onTap: () {
-  //       if (iMade == true && state == Colors.black) {
-  //         Get.dialog(
-  //           ConfirmDialog(
-  //             title: '신청 거절',
-  //             text: '신청이 거절 되었습니다.',
-  //             onConfirmed: () {},
-  //             confirmText: '확인',
-  //           ),
-  //         );
-  //       } else if (iMade == true && state == Colors.blue) {}
-  //     },
-  //     child: Padding(
-  //       padding: const EdgeInsets.symmetric(vertical: 3.0),
-  //       child: Card(
-  //         elevation: 1.5,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(10),
-  //         ),
-  //         child: Container(
-  //           decoration: BoxDecoration(
-  //             color: Colors.transparent,
-  //             borderRadius: BorderRadius.all(Radius.circular(10)),
-  //             border: Border.all(color: Colors.grey[100], width: 0.5),
-  //           ),
-  //           child: Row(
-  //             children: <Widget>[
-  //               Expanded(
-  //                 flex: 2,
-  //                 child: Column(
-  //                   children: <Widget>[
-  //                     Container(
-  //                       alignment: Alignment.bottomLeft,
-  //                       height: 34,
-  //                       child: Padding(
-  //                         padding: const EdgeInsets.only(left: 16.0),
-  //                         child: Text(
-  //                           '코로나 시국!! 합법 4인이서 노실분!?',
-  //                           style: TextStyle(fontSize: 15),
-  //                           overflow: TextOverflow.ellipsis,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     SizedBox(
-  //                       height: 5,
-  //                     ),
-  //                     Container(
-  //                       alignment: Alignment.topLeft,
-  //                       height: 30,
-  //                       child: Padding(
-  //                         padding: const EdgeInsets.only(left: 16.0),
-  //                         child: Text(
-  //                           '서울특별시 마포구 - 신촌 또는 홍대',
-  //                           style: TextStyle(color: Colors.grey[600]),
-  //                           overflow: TextOverflow.ellipsis,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               Expanded(
-  //                 flex: 1,
-  //                 child: Container(
-  //                   alignment: Alignment.centerRight,
-  //                   height: 64,
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.only(right: 32.0),
-  //                     child: Text(
-  //                       '${state == Colors.black ? 0 : num} / $num',
-  //                       style: TextStyle(fontSize: 15, color: state),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget ProfileImageForm2(UserModel user) {
     return GestureDetector(
@@ -367,12 +282,12 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
       },
        */
       onTap: () {
-        //Get.to(OppositeProfilePage(), arguments: whichProfile);
         Get.to(() => OppositeProfilePage(user));
+        print('this is opposite : ${'today_signal' + user.uid}');
       },
       child: Hero(
-        tag: '${user.name}',
-        child: cachedImage(user.firstPic, width: 90, height: 90, radius: 7.0),
+        tag: 'today_signal' + user.uid,
+        child: cachedImage(user.firstPic, radius: 7.0),
       ),
     );
   }

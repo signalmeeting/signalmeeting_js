@@ -48,7 +48,7 @@ class NoticePage extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
-            bottom: BorderSide(color: Colors.grey[300]),
+            bottom: BorderSide(color: Colors.grey[200]),
           )),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

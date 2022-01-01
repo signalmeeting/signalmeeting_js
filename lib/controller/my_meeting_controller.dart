@@ -55,7 +55,7 @@ class MyMeetingController extends GetxController {
         Map data = applyData.data();
         UserModel user = await DatabaseService.instance.getOppositeUserInfo(data["userId"]);
         meeting["applyUser"] = user.toJson();
-        meeting["apply"] = {"msg": data["msg"], "createdAt" : data["createdAt"], "id" : applyData.id};
+        // meeting["apply"] = {"msg": data["msg"], "createdAt" : data["createdAt"], "id" : applyData.id};
       }
       list.add(MeetingModel.fromJson(meeting));
     }
