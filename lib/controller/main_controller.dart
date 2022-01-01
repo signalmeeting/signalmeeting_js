@@ -13,6 +13,7 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
+import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 class MainController extends GetxController {
   final FirebaseApp app;
@@ -22,6 +23,7 @@ class MainController extends GetxController {
   var user = UserModel().obs;
   RxList todayMatchList = [].obs;
   RxBool isLogOut = false.obs;
+  RxBool isFree = false.obs;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -36,7 +38,8 @@ class MainController extends GetxController {
   newUser() async {
     Get.dialog(Center(child: CircularProgressIndicator()));
     bool result = await DatabaseService.instance.newUser();
-    if (!result) Get.defaultDialog(title: "알림", middleText: "계정 생성에 실패했습니다", onConfirm: () => Get.back());
+    //Get.defaultDialog(title: "알림", middleText: "계정 생성에 실패했습니다", onConfirm: () => Get.back());
+    if (!result) CustomedFlushBar(Get.context, "계정 생성에 실패했습니다");
     Get.back();
   }
 
@@ -106,8 +109,8 @@ class MainController extends GetxController {
     Get.back();
     //인창 추가
     callback();
-
-    if (!result) Get.defaultDialog(title: "알림", middleText: "죄송합니다. 수정에 실패했습니다.\n잠시 후 다시 시도해주세요");
+    // Get.defaultDialog(title: "알림", middleText: "죄송합니다. 수정에 실패했습니다.\n잠시 후 다시 시도해주세요");
+    if (!result) CustomedFlushBar(Get.context, "죄송합니다. 수정에 실패했습니다.\n잠시 후 다시 시도해주세요");
   }
 
   updateBanList(String from, String to, ReportType reportType, MeetingDetailController meetingDetailController) {

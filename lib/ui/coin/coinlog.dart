@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
@@ -15,8 +18,15 @@ class CoinLog extends StatefulWidget {
   _CoinLogState createState() => _CoinLogState();
 }
 
+class DateController extends GetxController{
+  RxString startDate = ''.obs;
+  RxString endDate = ''.obs;
+  RxBool filtered = false.obs;
+}
+
 class _CoinLogState extends State<CoinLog> {
   MainController _mainController = Get.find();
+  DateController dateController = Get.put(DateController());
   UserModel get user => _mainController.user.value;
 
   @override
@@ -97,7 +107,7 @@ class _CoinLogState extends State<CoinLog> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text("보유 코인",
+                  child: Text("보유 하트",
                     style: TextStyle(
                       fontSize: 18,
                       //fontFamily: "AppleSDGothicNeoB"
@@ -151,7 +161,7 @@ class _CoinLogState extends State<CoinLog> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left : 15.0),
-                  child: Text("보유 코인",
+                  child: Text("보유 하트",
                     style: TextStyle(
                       fontSize: 18,
                       //fontWeight: FontWeight.bold,
@@ -208,7 +218,7 @@ class _CoinLogState extends State<CoinLog> {
                   trailing: Text(coinUsage(logList[index]['usage'], logList[index]['coin']),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: (logList[index]['usage'] == "친구 초대" || logList[index]['usage'] == "코인 구매")
+                        color: (logList[index]['usage'] == "친구 초대" || logList[index]['usage'] == "하트 충전")
                             ? Colors.red : Colors.blue
                     ),
                   ),
@@ -228,7 +238,7 @@ class _CoinLogState extends State<CoinLog> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left : 8.0),
+            padding: const EdgeInsets.only(left : 15.0),
             child: Text("충전/사용 내역",
               style: TextStyle(
                 fontSize: 16,
@@ -248,7 +258,7 @@ class _CoinLogState extends State<CoinLog> {
       iconTheme: IconThemeData(color: Colors.black),
       centerTitle: true,
       title: const Text(
-        '내 코인',
+        '내 하트',
         style: TextStyle(color: Colors.black, fontFamily: "AppleSDGothicNeoM"),
       ),
       actions: [
@@ -257,6 +267,7 @@ class _CoinLogState extends State<CoinLog> {
               Icons.storefront_outlined
           ),
           onPressed: () => Get.to(() => StorePage()),
+
         )
       ],
     );
@@ -396,11 +407,33 @@ class _CoinLogState extends State<CoinLog> {
   }
 
   coinUsage(String usage, int coin) {
-    if(usage == "친구 초대" || usage == "코인 구매") {
-      return "+" + coin.toString()  + " 코인";
+    if(usage == "친구 초대" || usage == "하트 충전") {
+      return "+" + (coin < 0 ? -coin : coin).toString()  + " 하트";
     } else {
-      return "-" + coin.toString()  + " 코인";
+      return "-" + coin.toString()  + " 하트";
     }
+  }
+
+  datePicker() {
+    var date = DateTime.now();
+    showMaterialDatePicker(
+      context: context,
+      selectedDate: date,
+      onChanged: (value) => setState(() => date = value),
+      onConfirmed: (){},
+      onCancelled: () => Get.back(),
+    );
+  }
+
+  datePicker2() {
+    var date = DateTime.now();
+    showMaterialDatePicker(
+      context: context,
+      selectedDate: date,
+      onChanged: (value) => setState(() => date = value),
+      onConfirmed: (){},
+      onCancelled: () => Get.back(),
+    );
   }
 
 }

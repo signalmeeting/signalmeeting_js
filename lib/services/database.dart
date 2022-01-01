@@ -13,7 +13,9 @@ import 'package:signalmeeting/model/alarmModel.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/todayMatch.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
+import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/util/uiData.dart';
 import 'dart:math';
 
@@ -35,9 +37,6 @@ class DatabaseService {
 
   static String today = Util.todayMatchDateFormat(DateTime.now());
 
-  final StreamController streamController = StreamController.broadcast();
-
-  final int groupSize = 4;
 
   //user collection reference
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
@@ -96,6 +95,8 @@ class DatabaseService {
         .where("receiver", isEqualTo: _user.uid)
         .where("todayMatch", isEqualTo: docId)
         .get();
+    await userCollection.doc(_user.uid).update({"free" : DateTime.now()});
+    _controller.isFree.value = false;
     if (snapshot.docs.length > 0) {
       //상대방이 나한테 보낸 시그널 존재 => 매칭
       print('match success');
@@ -108,7 +109,8 @@ class DatabaseService {
       }).whenComplete(() {
         alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
         Get.back();
-        Get.defaultDialog(title: "매치 성공!", middleText: "서로를 선택하셨습니다!");
+        Get.dialog(NotificationDialog(title: "매치 성공", contents: "서로를 선택하셨습니다!",));
+        //Get.defaultDialog(title: "매치 성공!", middleText: "서로를 선택하셨습니다!");
       });
       return true;
     } else {
@@ -310,7 +312,8 @@ class DatabaseService {
       if (snapshot.data()["process"] == 0 || snapshot.data()["process"] == 1) {
         Get.back();
         print("타인 신청중");
-        Get.defaultDialog(title: "알림", middleText: "이미 신청중인 미팅입니다.");
+        //Get.defaultDialog(title: "알림", middleText: "이미 신청중인 미팅입니다.");
+        CustomedFlushBar(Get.context, "이미 신청중인 미팅입니다.");
         return Future.value(false);
       }
       // else if (applySnapshot.docs.length > 0) {
@@ -489,6 +492,7 @@ class DatabaseService {
     // var matchIdList = userSnapshot.data()["documentId"];
     List<TodayMatch> todayMatchList = [];
     snapshot.docs.forEach((element) {
+      int groupSize = element.data()['womenProfile'].length;
       List<UserModel> sameGenders = [];
       List<UserModel> oppositeGenders = [];
       for (int i = 0; i < groupSize; i++) {
@@ -581,6 +585,9 @@ class DatabaseService {
         case 2: {
           return "미팅 참여";
         } break;
+        case 3: {
+          return "하트 충전";
+        } break;
       }
     }
     /*
@@ -614,6 +621,22 @@ class DatabaseService {
         .where('userid', isEqualTo : _user.uid)
         .orderBy('date', descending : true)
         .snapshots();
+  }
+
+
+  Future<bool> checkFree() async{
+    int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
+    int freeDate;
+    DocumentSnapshot data = await userCollection.doc(_user.uid).get();
+    if(data['free'] != null)
+      freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
+    if(freeDate == today && freeDate != null){
+      _controller.isFree.value = false;
+      return Future.value(false);
+    }
+    _controller.isFree.value = true;
+    return Future.value(true);
+
   }
 
 

@@ -6,7 +6,9 @@ import 'package:signalmeeting/ui/drawer/inquiry_page.dart';
 import 'package:signalmeeting/ui/drawer/invite_friends_page.dart';
 import 'package:signalmeeting/ui/drawer/my_profile_page.dart';
 import 'package:signalmeeting/ui/drawer/notice_page.dart';
+import 'package:signalmeeting/ui/drawer/personalInfo.dart';
 import 'package:signalmeeting/ui/drawer/store_page.dart';
+import 'package:signalmeeting/ui/drawer/terms.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 
 //클래스화 시켜준 다음에 변수들 받지말고 오비엑스 달아야되나?
@@ -61,10 +63,12 @@ Widget customDrawer(pic, nickName, loc1, loc2, career, BuildContext context) {
         drawerTileForm('프로필', () => Get.to(MyProfilePage(), transition: Transition.native)),
         // drawerTileForm('진행 방법', () => Get.to(HowToUsePage(), transition: Transition.rightToLeftWithFade)),
         drawerTileForm('스토어', () => Get.to(StorePage(), transition: Transition.rightToLeftWithFade)),
-        Container(height: 2, color: Colors.blue[50]),
         drawerTileForm('공지사항', () => Get.to(NoticePage(), transition: Transition.rightToLeftWithFade)),
+        Container(height: 2, color: Colors.blue[50]),
         drawerTileForm('친구 초대', () => Get.to(InviteFriendsPage(), transition: Transition.rightToLeftWithFade)),
         drawerTileForm('리뷰 쓰기', () => inAppReview.openStoreListing()),
+        drawerTileForm('이용 약관', () => Get.to(Terms(), transition: Transition.rightToLeftWithFade)),
+        drawerTileForm('개인정보 처리방침', () => Get.to(PersonalInfo(), transition: Transition.rightToLeftWithFade)),
         drawerTileForm('문의 및 계정', () => Get.to(InquiryPage(), transition: Transition.rightToLeftWithFade)),
       ],
     ),

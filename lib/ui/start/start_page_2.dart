@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
+import 'package:signalmeeting/ui/drawer/personalInfo.dart';
+import 'package:signalmeeting/ui/drawer/terms.dart';
 import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/start/start_page_3.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
@@ -32,6 +34,9 @@ class _StartPage2State extends State<StartPage2> {
   bool messageSent = false;
 
   bool verifySmsResult;
+
+  bool isChecked = false;
+  bool validation = false;
 
   // 포커스노트 선언
   FocusNode myFocusNode;
@@ -81,6 +86,7 @@ class _StartPage2State extends State<StartPage2> {
 
   @override
   void initState() {
+
     super.initState();
     myFocusNode = FocusNode();
   }
@@ -109,6 +115,7 @@ class _StartPage2State extends State<StartPage2> {
           ),
           PhoneNum(context),
           messageSent ? AuthNum(context) : Container(),
+          messageSent ? checkTerm(context) : Container(),
         ],
       ),
     );
@@ -199,7 +206,18 @@ class _StartPage2State extends State<StartPage2> {
             new Flexible(
               child: TextFormField(
                 focusNode: myFocusNode,
-                onChanged: (text) => _controller.updateUser(user..authCode = text),
+                onChanged: (text) {
+                  _controller.updateUser(user..authCode = text);
+                  if(text.length == 6 && isChecked){
+                    setState(() {
+                      validation = true;
+                    });
+                  } else {
+                    setState(() {
+                      validation = false;
+                    });
+                  }
+                },
                 controller: _authNumController,
                 //텍스트 수 4자 제한(인증번호 텍스트 수)
                 maxLength: 6,
@@ -241,7 +259,7 @@ class _StartPage2State extends State<StartPage2> {
                   '인증',
                 ),
                 style: BtStyle.start,
-                onPressed: () async {
+                onPressed: (!validation) ? null : () async {
                   bool result = await signInWithPhoneNumber();
                   //validator 에 future 값 넣기 위한 꼼수
                   setState(() {
@@ -269,4 +287,42 @@ class _StartPage2State extends State<StartPage2> {
       ),
     );
   }
+
+  Widget checkTerm(context){
+    return Padding(
+      padding: const EdgeInsets.only(left: 6),
+      child: Row(
+        children: <Widget>[
+          Checkbox(
+            activeColor: Colors.blue,
+              shape: RoundedRectangleBorder( // Making around shape
+                  borderRadius: BorderRadius.circular(4)),
+              value: isChecked,
+              onChanged: (value) {
+                setState(() {
+                  isChecked = value;
+                });
+                if(isChecked && _authNumController.text.length == 6){
+                  validation = true;
+                } else {
+                  validation = false;
+                }
+              }),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () => Get.to(() => Terms(), transition: Transition.rightToLeftWithFade),
+                  child: Text("이용 약관", style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline, height: 1),)),
+              Text(" 및 ", style: TextStyle(height: 1),),
+              GestureDetector(
+                  onTap: () => Get.to(() => PersonalInfo(), transition: Transition.rightToLeftWithFade),
+                  child: Text("개인정보 처리방침", style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline, height: 1),)),
+              Text("을 확인했습니다", style: TextStyle(height: 1),),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
 }

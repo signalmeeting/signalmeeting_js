@@ -1,3 +1,7 @@
+import 'dart:ffi';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'userModel.g.dart';
@@ -13,6 +17,7 @@ class UserModel {
   Map<dynamic, dynamic> pushInfo;
   bool invite;
   List<Map<String, dynamic>> banList = []; //[{'from' : 'id', 'to' : 'id', 'time' : 'date'}, ...]
+  var free;
 
   UserModel(
       {this.uid,
@@ -23,6 +28,7 @@ class UserModel {
       this.profileInfo,
       this.invite,
       this.banList,
+      this.free
       });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
@@ -30,7 +36,7 @@ class UserModel {
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   static UserModel initUser() {
-    return new UserModel(phone: '', coin: 0, stop: false, profileInfo: {"pics": []}, invite: false, banList: []);
+    return new UserModel(phone: '', coin: 0, stop: false, profileInfo: {"pics": []}, invite: false, banList: [], free : null);
   }
 
   @override

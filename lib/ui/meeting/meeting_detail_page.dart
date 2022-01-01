@@ -13,6 +13,7 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
 import 'package:signalmeeting/util/style/appColor.dart';
@@ -376,7 +377,7 @@ class MeetingDetailPage extends StatelessWidget {
         Positioned(
           child: InkWell(
             onTap: () => banned
-                ? Get.defaultDialog(title: '이미 신고 했습니다')
+                ? Get.dialog(NotificationDialog(contents: "이미 신고 했습니다")) //Get.defaultDialog(title: '이미 신고 했습니다')
                 : Get.dialog(ReportDialog(id, ReportType.meeting, meetingDetailController: meetingDetailController)),
             child: Container(
               width: 20,

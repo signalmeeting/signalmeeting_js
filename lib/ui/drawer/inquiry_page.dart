@@ -8,6 +8,7 @@ import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/main.dart';
 import 'package:signalmeeting/util/style/btStyle.dart';
@@ -131,7 +132,8 @@ class InquiryPage extends StatelessWidget {
       await FirebaseAuth.instance.signOut();
       Get.offAll(() => Splash());
     } catch(e) {
-      Get.defaultDialog(title: "Error", content: Text(e.toString()));
+      //Get.defaultDialog(title: "Error", content: Text(e.toString()));
+      Get.dialog(NotificationDialog(contents: e.toString(),));
     }
   }
 

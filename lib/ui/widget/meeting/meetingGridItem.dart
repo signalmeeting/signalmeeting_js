@@ -8,6 +8,7 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 
 import '../cached_image.dart';
@@ -19,7 +20,8 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
       print('is it refused ? : $refused');
 
       if(refused) {
-        Get.defaultDialog(title: '거절된 미팅\n미팅이 거절되었습니다');
+        //Get.defaultDialog(title: '거절된 미팅\n미팅이 거절되었습니다');
+        Get.dialog(NotificationDialog(contents: "미팅이 거절되었습니다",));
         DatabaseService.instance.checkRefused(item.id);
         MyMeetingController _controller = Get.find();
         _controller.myMeetingApplyList.remove(item);

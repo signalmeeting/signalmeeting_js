@@ -12,6 +12,10 @@ import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/meeting/meeting_page.dart';
 import 'package:signalmeeting/ui/test/dailymeetingtest2.dart';
 import 'package:signalmeeting/ui/test/dailymeetingtest3.dart';
+import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/noCoinDialog.dart';
+import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/util/util.dart';
 
 import 'alarm/alarmPage.dart';
@@ -24,6 +28,7 @@ class LobbyController extends GetxController {
   @override
   void onInit() {
     DatabaseService.instance.getTodayMatch();
+    DatabaseService.instance.checkFree();
     super.onInit();
   }
 }
@@ -113,7 +118,7 @@ class LobbyPage extends StatelessWidget {
         actions: <Widget>[
           TextButton(
             child: Text("test"),
-            onPressed: () => Get.to(DailyMeetingTest3()),
+            onPressed: () => Get.dialog(NoCoinDialog()),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 12.0),

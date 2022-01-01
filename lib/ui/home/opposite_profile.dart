@@ -39,6 +39,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   bool _signalSent = false;
 
   UserModel get myuser => _controller.user.value;
+  bool get isFree => _controller.isFree.value;
 
   @override
   void initState() {
@@ -95,8 +96,8 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                                   ),
                                 ],
                               )
-                                  : Text('시그널 보내기'),
-                              onPressed: _buttonClicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
+                                  : isFree ? Text('시그널 보내기 (무료)') : Text('시그널 보내기'),
+                              onPressed: _buttonClicked ? () => onPressSignalButton() : isFree ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
                             ),
                             secondChild: SizedBox(),
                             crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -166,8 +167,15 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
       Get.dialog(NoCoinDialog());
     } else {
       //시그널 보내기, 코인 소모
+      if(!isFree)
+        await DatabaseService.instance.useCoin(1, 0, oppositeUserid: widget.user.uid);
+      else if(myuser.man){
+        await DatabaseService.instance.useCoin(-1, 3, oppositeUserid: widget.user.uid);
+      }
+      else if(!myuser.man) {
+        await DatabaseService.instance.useCoin(-5, 3, oppositeUserid: widget.user.uid);
+      }
       bool result = await DatabaseService.instance.sendSignal(widget.user.uid, widget.docId);
-      await DatabaseService.instance.useCoin(1, 0, oppositeUserid: widget.user.uid);
       if (result) {
         CustomedFlushBar(context, '시그널을 보냈습니다');
         setState(() {
