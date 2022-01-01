@@ -7,7 +7,9 @@ import 'package:signalmeeting/ui/drawer/inquiry_page.dart';
 import 'package:signalmeeting/ui/drawer/invite_friends_page.dart';
 import 'package:signalmeeting/ui/drawer/my_profile_page.dart';
 import 'package:signalmeeting/ui/drawer/notice_page.dart';
+import 'package:signalmeeting/ui/drawer/personalInfo.dart';
 import 'package:signalmeeting/ui/drawer/store_page.dart';
+import 'package:signalmeeting/ui/drawer/terms.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
 import 'package:signalmeeting/util/style/btStyle.dart';
 
@@ -67,9 +69,9 @@ class MenuPage extends StatelessWidget {
         divider(8),
         menuItem('문의 및 계정', 'store', () => Get.to(() => InquiryPage())),
         divider(0.3),
-        menuItem('이용 약관', 'store', () => Get.to(() => InquiryPage())),
+        menuItem('이용 약관', 'store', () => Get.to(() => Terms())),
         divider(0.3),
-        menuItem('개인정보 처리방침', 'store', () => Get.to(() => InquiryPage())),
+        menuItem('개인정보 처리방침', 'store', () => Get.to(() => PersonalInfo())),
         divider(0.3),
       ],
     );

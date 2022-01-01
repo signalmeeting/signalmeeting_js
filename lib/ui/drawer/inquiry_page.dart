@@ -6,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/main.dart';
 import 'package:signalmeeting/util/style/btStyle.dart';
+
 
 import 'custom_drawer.dart';
 
@@ -140,6 +142,7 @@ class InquiryPage extends StatelessWidget {
   //회원 탈퇴
   withDraw() async {
     await FirebaseAuth.instance.currentUser.delete();
+    await DatabaseService.instance.userCollection.doc(_controller.user.value.uid).delete();
   }
 }
 

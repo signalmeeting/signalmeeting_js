@@ -17,6 +17,7 @@ import 'package:signalmeeting/util/util.dart';
 import 'alarm/alarmPage.dart';
 import 'drawer/custom_drawer.dart';
 import 'home/home_page.dart';
+import 'menu/menu_page.dart';
 
 
 class LobbyController extends GetxController {
