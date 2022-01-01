@@ -70,6 +70,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
           Get.delete<MeetingDetailController>(tag: item.id);
         },
         openBuilder: (context, action) {
+          print('gridItem clicked : $item');
           MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item), tag: item.id);
           return MeetingDetailPage(_meetingDetailController);
         }

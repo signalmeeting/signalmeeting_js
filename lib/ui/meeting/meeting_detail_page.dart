@@ -13,7 +13,6 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
 import 'package:signalmeeting/util/style/appColor.dart';
@@ -124,44 +123,47 @@ class MeetingDetailPage extends StatelessWidget {
         children: [
           AnimatedCrossFade(
               firstChild: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: TextButton(
-                  style: BtStyle.changeState(buttonClicked),
-                  child: buttonClicked
-                      ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '5',
-                        style: TextStyle(
-                          fontSize: 18,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Container(
+                  width: Get.width - 16,
+                  child: TextButton(
+                    style: BtStyle.changeState(buttonClicked),
+                    child: buttonClicked
+                        ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '5',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        Icons.favorite,
-                        size: 20,
-                      ),
-                    ],
-                  )
-                      : Text('신청하기'),
-                  onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
-                    FocusScope.of(context).unfocus();
-                    await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                    meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                    Map<String, dynamic> applyMeeting = {
-                      "title" : meeting.title,
-                      "loc1" : meeting.loc1,
-                      "loc2" : meeting.loc2,
-                      "loc3" : meeting.loc3,
-                      "number" : meeting.number,
-                      "introduce" : meeting.introduce,
-                    };
-                    await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
-                  } : () => meetingDetailController.buttonClicked.value = true,
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Icon(
+                          Icons.favorite,
+                          size: 20,
+                        ),
+                      ],
+                    )
+                        : Text('신청하기'),
+                    onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
+                      FocusScope.of(context).unfocus();
+                      await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
+                      meetingDetailController.meeting.update((meeting) => meeting.process = 0);
+                      Map<String, dynamic> applyMeeting = {
+                        "title" : meeting.title,
+                        "loc1" : meeting.loc1,
+                        "loc2" : meeting.loc2,
+                        "loc3" : meeting.loc3,
+                        "number" : meeting.number,
+                        "introduce" : meeting.introduce,
+                      };
+                      await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting ,oppositeUserid: meeting.userId);
+                    } : () => meetingDetailController.buttonClicked.value = true,
+                  ),
                 ),),
               secondChild: SizedBox(),
               crossFadeState: this.applied ?? false ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -250,7 +252,7 @@ class MeetingDetailPage extends StatelessWidget {
                     snapshot = await meeting.user.get();
                   }
                   Map<String, dynamic> data = snapshot.data();
-                  MainController.goToChatPage(meeting.id, UserModel.fromJson(data));
+                  MainController.goToChatPage(meeting.id, UserModel.fromJson(data), 'meeting');
                 },
                 child: Container(width: 25, child: Image.asset('assets/bubble_chat.png', color: Colors.white,)),
               ),
@@ -376,12 +378,12 @@ class MeetingDetailPage extends StatelessWidget {
         ),
         Positioned(
           child: InkWell(
-            onTap: () => banned
-                ? Get.dialog(NotificationDialog(contents: "이미 신고 했습니다")) //Get.defaultDialog(title: '이미 신고 했습니다')
-                : Get.dialog(ReportDialog(id, ReportType.meeting, meetingDetailController: meetingDetailController)),
+            onTap: () => !meeting.isMine ? banned
+                ? Get.dialog(NotificationDialog(contents: "이미 신고 했습니다"))
+                : Get.dialog(ReportDialog(id, ReportType.meeting, meetingDetailController: meetingDetailController)) : (){},
             child: Container(
-              width: 20,
-              height: 20,
+              width: 30,
+              height: 30,
               child: !meeting.isMine ?
                 Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),) : Container(),
             ),

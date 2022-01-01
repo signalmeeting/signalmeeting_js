@@ -108,4 +108,9 @@ class BtStyle {
     textStyle: MaterialStateProperty.all(TextStyle(fontSize: 16)),
   );
 
+  static ButtonStyle get menu => ButtonStyle(
+      foregroundColor: MaterialStateProperty.all(Colors.black87),
+      overlayColor: MaterialStateProperty.all(Colors.black.withOpacity(0.05)),
+      minimumSize: MaterialStateProperty.all(Size(Get.width * 0.9, 48)),
+      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))));
 }

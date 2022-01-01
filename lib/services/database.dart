@@ -13,9 +13,7 @@ import 'package:signalmeeting/model/alarmModel.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/todayMatch.dart';
 import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/util/uiData.dart';
 import 'dart:math';
 
@@ -36,7 +34,6 @@ class DatabaseService {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   static String today = Util.todayMatchDateFormat(DateTime.now());
-
 
   //user collection reference
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
@@ -70,21 +67,21 @@ class DatabaseService {
 
   //today signal
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
-  Future<int> checkConnectionAndSignal(String oppositeUid) async {
+  Future<Map<String, dynamic>> checkConnectionAndSignal(String oppositeUid) async {
     print("checkConnectionAndSignal");
     QuerySnapshot connectionSnapshot = _user.man
         ? await todayConnectionCollection.where("manId", isEqualTo: _user.uid).where("womanId", isEqualTo: oppositeUid).get()
         : await todayConnectionCollection.where("womanId", isEqualTo: _user.uid).where("manId", isEqualTo: oppositeUid).get();
     if (connectionSnapshot.docs.length > 0)
       //연결
-      return 2;
+      return {"result" : 2, "docId" : connectionSnapshot.docs[0].id};
     else {
       QuerySnapshot snapshot =
-          await todaySignalCollection.where("sender", isEqualTo: _user.uid).where("receiver", isEqualTo: oppositeUid).where("today", isEqualTo: Util.todayMatchDateFormat(DateTime.now())).get();
+      await todaySignalCollection.where("sender", isEqualTo: _user.uid).where("receiver", isEqualTo: oppositeUid).where("today", isEqualTo: Util.todayMatchDateFormat(DateTime.now())).get();
       if (snapshot.docs.length > 0)
-        return 1;
+        return {"result" : 1};
       else
-        return 0;
+        return {"result" : 0};
     }
   }
 
@@ -95,8 +92,6 @@ class DatabaseService {
         .where("receiver", isEqualTo: _user.uid)
         .where("todayMatch", isEqualTo: docId)
         .get();
-    await userCollection.doc(_user.uid).update({"free" : DateTime.now()});
-    _controller.isFree.value = false;
     if (snapshot.docs.length > 0) {
       //상대방이 나한테 보낸 시그널 존재 => 매칭
       print('match success');

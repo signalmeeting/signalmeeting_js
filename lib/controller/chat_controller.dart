@@ -10,8 +10,9 @@ import 'package:signalmeeting/model/userModel.dart';
 class ChatController extends GetxController {
   final String roomId;
   final UserModel oppositeUser;
+  final String type;
 
-  ChatController(this.roomId, this.oppositeUser);
+  ChatController(this.roomId, this.oppositeUser, this.type);
 
   final MainController _mainController = Get.find();
 
@@ -51,7 +52,9 @@ class ChatController extends GetxController {
   sendMessage(String text) {
     newMessage.update((val) {
       val.sender = _mainController.user.value.uid;
+      val.receiver = oppositeUser.uid;
       val.text = text;
+      val.type = type;
       val.time = DateTime.now();
     });
     messagesRef.push().set(newMessage.toJson());

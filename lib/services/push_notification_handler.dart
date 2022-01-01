@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:signalmeeting/controller/chat_controller.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
+import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/my_meeting_page.dart';
 
@@ -12,91 +16,122 @@ class PushNotificationsHandler {
 
   factory PushNotificationsHandler() => _instance;
   static final PushNotificationsHandler _instance = PushNotificationsHandler._();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  bool _initialized = false;
 
   MainController _mainController = Get.find();
 
   Future<void> init() async {
     print("PushNotificationsHandler init");
-    String token = await _firebaseMessaging.getToken();
-
+    String token = await FirebaseMessaging.instance.getToken();
     if (token != _mainController.user.value.deviceToken) await DatabaseService.instance.updateDeviceToken(token);
+    // Firebase 초기화부터 해야 FirebaseMessaging 를 사용할 수 있다.
 
-    if (!_initialized) {
-// For iOS request permission first.
-      _firebaseMessaging.requestNotificationPermissions();
-//You can subscribed to a topic, if you need to send to all devices
-//user segmented messages is not supported for the Admin SDK
-      _firebaseMessaging.subscribeToTopic("AllPushNotifications");
-      _firebaseMessaging.configure(
-//fires when the app is open and running in the foreground.
-        onMessage: onForegroundMessage,
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: true,
+      criticalAlert: true,
+      provisional: true,
+      sound: true,
+    );
 
-//fires if the app is fully terminated.
-        onLaunch: (Map<String, dynamic> message) async {
-          print("onLaunch: $message");
-//do whatever
-        },
-//fires if the app is closed, but still running in the background.
-        onResume: (Map<String, dynamic> message) async {
-          print("onResume: $message");
-//do whatever
-        },
-      );
-      _initialized = true;
-    }
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+
+    // Android용 새 Notification Channel
+    const AndroidNotificationChannel androidNotificationChannel = AndroidNotificationChannel(
+      'high_importance_channel', // 임의의 id
+      'High Importance Notifications', // 설정에 보일 채널명
+      'This channel is used for important notifications.', // 설정에 보일 채널 설명
+      importance: Importance.max,
+    );
+
+    // Notification Channel을 디바이스에 생성
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidNotificationChannel);
+
+
+    // FlutterLocalNotificationsPlugin 초기화. 이 부분은 notification icon 부분에서 다시 다룬다.
+    await flutterLocalNotificationsPlugin.initialize(
+        InitializationSettings(
+            android: AndroidInitializationSettings('@mipmap/launcher_icon'), iOS: IOSInitializationSettings()),
+        onSelectNotification: onLocalMessage);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage rm) {
+      RemoteNotification notification = rm.notification;
+
+      Map<String, dynamic> data = rm.data;
+
+      String payload = json.encode({
+        'data': data,
+        'notification': {'title': rm.notification?.title ?? '', 'body': rm.notification?.body ?? '', 'show_in_foreground': true}
+      });
+      // if (Platform.isIOS) {
+      //   data = {'type': data['type'], 'id': data['id'], 'name': data['name']};
+      // }
+
+
+      if (notification != null && !isSameRoom(data["roomId"])) {
+        flutterLocalNotificationsPlugin.show(
+          0,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel', // AndroidNotificationChannel()에서 생성한 ID
+              'High Importance Notifications',
+              'This channel is used for important notifications.',
+              // other properties...
+            ),
+          ),
+          payload: payload
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage rm) {
+      handleFcmMessage(rm);
+    });
+
+    return true;
   }
 
-  handleFcmMessage(Map<String, dynamic> message) async {
-    print('handleFcmMessage : ' + message.toString());
-    var messageType = message['data']['type'];
+  isSameRoom(String roomId) {
+    print("isSameRoom : $isSameRoom");
+    // print('currentRoom : '+ (store.currentChatRoomIds.isNotEmptylast));
+    // print('currentRoom : '+ (store.currentChatRoomIds.last??'')  + ' roomId : '  + roomId);
+    bool isRegistered = Get.isRegistered<ChatController>(tag : roomId);
+    return isRegistered;
+  }
+
+  handleFcmMessage(RemoteMessage message) async {
+    String messageType = message.data['type'];
     // var id = message['data']['id'];
-    if (messageType == 'meeting_apply') {
+    if (messageType.startsWith("meeting") || messageType.startsWith("signal")) {
       Get.to(() => MyMeetingPage());
-    } else if (message['data']['type'] == 'meeting_match') {
-
-    } else if (message['data']['type'] == 'meeting_reject') {
-
-    } else if (message['data']['type'] == 'signal_receive') {
-
-    } else if (message['data']['type'] == 'signal_match') {
-
+    } else if (messageType == "chat") {
+      UserModel oppositeUser = await DatabaseService.instance.getOppositeUserInfo(message.data["opposite"]);
+      MainController.goToChatPage(message.data["roomId"], oppositeUser, message.data["roomType"]);
     }
   }
 
-  Future onForegroundMessage(Map<String, dynamic> message) async {
-    print("onForegroundMessage: $message");
-    if (Platform.isIOS) {
-      message['data'] = {'type': message['type'], 'id': message['id'], 'nickName': message['nickName']};
+
+  Future onLocalMessage(String message) {
+    //앱 살아있을때
+    print('onLocalMessage $message');
+    if (message != null) {
+      Map<String, dynamic> remoteMessage = jsonDecode(message);
+      Map<String, dynamic> data = remoteMessage['data'];
+      Map<String, dynamic> notification = remoteMessage['notification'];
+
+      handleFcmMessage(RemoteMessage(data: data, notification: RemoteNotification.fromMap(notification)));
     }
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails('your channel id', 'your channel name', 'your channel description',
-        importance: Importance.max, priority: Priority.high, ticker: 'ticker');
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
-    print('local push');
-    print('message: $message');
-    if (message['data']['type'] == 'meeting_apply') {
-      Get.snackbar(message['notification']['title'], message['notification']['body'], onTap: (_) => this.handleFcmMessage(message));
-    } else if (message['data']['type'] == 'meeting_match') {
-      Get.snackbar(message['notification']['title'], message['notification']['body'], onTap: (_) => this.handleFcmMessage(message));
-    } else if (message['data']['type'] == 'signal_receive') {
-      Get.snackbar(message['notification']['title'], message['notification']['body'], onTap: (_) => this.handleFcmMessage(message));
-    } else if (message['data']['type'] == 'signal_reject') {
-      Get.snackbar(message['notification']['title'], message['notification']['body'], onTap: (_) => this.handleFcmMessage(message));
-    } else if (message['data']['type'] == 'signal_match') {
-      Get.snackbar(message['notification']['title'], message['notification']['body'], onTap: (_) => this.handleFcmMessage(message));
-    }
-    // else {
-    //   await flutterLocalNotificationsPlugin.show(
-    //     0,
-    //     message['notification']['title'],
-    //     message['notification']['body'],
-    //     platformChannelSpecifics,
-    //     payload: jsonEncode(message),
-    //   );
-    // }
     return Future.value(true);
   }
 }

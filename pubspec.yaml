@@ -36,7 +36,7 @@ dependencies:
   get: ^3.24.0
   intl: ^0.16.1
   flutter_swiper: ^1.1.6
-  another_flushbar: 1.10.25
+  another_flushbar:
   flutter_material_pickers: ^1.8.1
   dots_indicator: ^1.2.0 #오늘의 소개팅 dot
   smart_select: ^4.2.1
@@ -44,14 +44,13 @@ dependencies:
   image_picker: #사진 등록
   jiffy:
   animations: ^1.1.2
-  firebase_messaging: 6.0.16
+  firebase_messaging:
   cloud_functions:
   flutter_local_notifications:
   auto_animated:
   in_app_review: 1.0.4
   firebase_database: 6.0.0
   firebase_core: 0.7.0
-  glassmorphism: ^3.0.0
 
 dev_dependencies:
   flutter_test:
