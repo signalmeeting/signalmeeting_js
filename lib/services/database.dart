@@ -393,6 +393,14 @@ class DatabaseService {
       return Future.value(false);
   }
 
+  Future<bool> checkStop(String uid) async{
+    DocumentSnapshot data = await userCollection.doc(uid).get();
+    if(data['stop']){
+      return Future.value(true);
+    }
+    return Future.value(false);
+  }
+
   Future<bool> newUser() async {
     bool result;
     List uploadedPics = [];
