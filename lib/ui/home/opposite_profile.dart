@@ -18,9 +18,15 @@ import 'package:signalmeeting/util/style/btStyle.dart';
 class OppositeProfilePage extends StatefulWidget {
   final UserModel user;
   final bool isTodayMatch; //todayMatch , meeting 신청 확인 2개 양식
-  final String docId;
+  final String docId; //todayMatch docId
   final bool isItFromChat;
-  OppositeProfilePage(this.user, {this.isTodayMatch = true, this.docId, this.isItFromChat = false,});
+
+  OppositeProfilePage(
+    this.user, {
+    this.isTodayMatch = true,
+    this.docId,
+    this.isItFromChat = false,
+  });
 
   @override
   _OppositeProfilePageState createState() => _OppositeProfilePageState();
@@ -28,6 +34,7 @@ class OppositeProfilePage extends StatefulWidget {
 
 class _OppositeProfilePageState extends State<OppositeProfilePage> {
   MeetingDetailController meetingDetailController;
+
   MeetingModel get meeting => meetingDetailController.meeting.value;
   double width = Get.width * 0.9;
   double height = Get.width * 0.9;
@@ -42,7 +49,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
 
   @override
   void initState() {
-    if(!widget.isTodayMatch) {
+    if (!widget.isTodayMatch) {
       meetingDetailController = Get.find(tag: Get.arguments);
     }
     super.initState();
@@ -62,57 +69,60 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                 if (!_signalSent && widget.isTodayMatch && !widget.isItFromChat)
                   FutureBuilder(
                     future: DatabaseService.instance.checkConnectionAndSignal(widget.user.uid),
-                    builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
                       if (snapshot.hasError) {
                         return Text('Something went wrong');
                       }
                       if (!snapshot.hasData)
-                        return Container(
-                        );
+                        return Container();
                       //인창, 시그널 보냈으면 보냈습니다 표시 추가 예정,,
                       else {
-                        print(snapshot.data);
-                        return AnimatedCrossFade(
-                            firstChild: TextButton(
-                              style: BtStyle.changeState(_buttonClicked),
-                              child: _buttonClicked
-                                  ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    '1',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Icon(
-                                    Icons.favorite,
-                                    size: 20,
-                                  ),
-                                ],
-                              )
-                                  : Text('시그널 보내기'),
-                              onPressed: _buttonClicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
-                            ),
-                            secondChild: TextButton(
-                                style: BtStyle.textSub200,
-                                onPressed: () {},
-                                child: Text('대화하기')),
-                            crossFadeState: snapshot.data == 1 || snapshot.data == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                            // data == 2일 때 번호 떠야됨
-                            duration: const Duration(milliseconds: 300));
+                        int result = snapshot.data["result"];
+                        return Column(
+                          children: [
+                            AnimatedCrossFade(
+                                firstChild: TextButton(
+                                  style: BtStyle.changeState(_buttonClicked),
+                                  child: _buttonClicked
+                                      ? Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              '1',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.favorite,
+                                              size: 20,
+                                            ),
+                                          ],
+                                        )
+                                      : Text('시그널 보내기'),
+                                  onPressed: _buttonClicked ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
+                                ),
+                                secondChild: Container(),
+                                crossFadeState:
+                                result == 1 || result == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                duration: const Duration(milliseconds: 300)),
+                            if (result == 2)
+                              TextButton(
+                                  style: BtStyle.textSub200,
+                                  onPressed: () {
+                                    //시그널 매치 됐을 때 채팅방으로 가는 버튼
+                                    MainController.goToChatPage(snapshot.data["docId"], widget.user, 'signal');
+                                  },
+                                  child: Text('대화하기')),
+                          ],
+                        );
                       }
                     },
                   ),
-                if (_signalSent && !widget.isTodayMatch && !widget.isItFromChat)
-                  TextButton(
-                      style: BtStyle.textSub200,
-                      onPressed: () {},
-                      child: Text('대화하기')),
                 //divider
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0, bottom: 10),
@@ -121,8 +131,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                     color: Colors.grey[200],
                   ),
                 ),
-                if(!widget.isTodayMatch)
-                  Obx(() => !widget.isTodayMatch && meeting.process == 0 ? acceptOrNot() : Container()),
+                if (!widget.isTodayMatch) Obx(() => !widget.isTodayMatch && meeting.process == 0 ? acceptOrNot() : Container()),
                 //닉네임
                 Row(
                   children: <Widget>[
@@ -245,7 +254,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
         SizedBox(height: 10.0),
         Container(
           padding: EdgeInsets.all(10),
-          width: Get.width*0.9,
+          width: Get.width * 0.9,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey[300], width: 1),
             borderRadius: BorderRadius.circular(8),
@@ -267,17 +276,12 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   }
 
   _onPressAccept() async {
-    await DatabaseService.instance.acceptApply(
-        meetingId: meeting.id,
-        applyId: meeting.apply.applyId,
-        meetingTitle: meeting.title,
-        receiver: widget.user.uid);
+    await DatabaseService.instance
+        .acceptApply(meetingId: meeting.id, applyId: meeting.apply.applyId, meetingTitle: meeting.title, receiver: widget.user.uid);
     meetingDetailController.meeting.update((meeting) {
-    meeting.process = 1;
-  });
+      meeting.process = 1;
+    });
     // print('Get.arguments : ${meetingDetailController}');
-
-
 
     // print('Get.arguments : ${meetingDetailController}');
     CustomedFlushBar(Get.context, '축하합니다! 미팅이 성사되었습니다!');
@@ -286,8 +290,8 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
     //거절 시  - 바깥으로 보내고 플러시 한번 띄워주??
 
     1.delay(() {
-      for(int i = 0; i < _myMeetingController.myMeetingList.length; i++) {
-        if(_myMeetingController.myMeetingList[i].id == meetingDetailController.meeting.value.id) {
+      for (int i = 0; i < _myMeetingController.myMeetingList.length; i++) {
+        if (_myMeetingController.myMeetingList[i].id == meetingDetailController.meeting.value.id) {
           _myMeetingController.myMeetingList[i].process = 1;
         }
       }
@@ -297,7 +301,9 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   Widget acceptOrNotButtons() {
     return Row(
       children: [
-        SizedBox(width: Get.width*0.05,),
+        SizedBox(
+          width: Get.width * 0.05,
+        ),
         Flexible(
           child: TextButton(
             child: Text('수락'),
@@ -305,21 +311,20 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
             onPressed: () => _onPressAccept(),
           ),
         ),
-        SizedBox(width: Get.width*0.05,),
+        SizedBox(
+          width: Get.width * 0.05,
+        ),
         Flexible(
           child: TextButton(
             child: Text('거절'),
             style: BtStyle.textMain100,
             onPressed: () {
               DatabaseService.instance.refuseApply(
-                  meetingId: meeting.id,
-                  applyId: meeting.apply.applyId,
-                  meetingTitle: meeting.title,
-                  receiver: widget.user.uid);
+                  meetingId: meeting.id, applyId: meeting.apply.applyId, meetingTitle: meeting.title, receiver: widget.user.uid);
 
               //인창, 여기 null이 맞을까 2가 맞을까??
-              for(int i = 0; i < _myMeetingController.myMeetingList.length; i++) {
-                if(_myMeetingController.myMeetingList[i].id == meeting.id) {
+              for (int i = 0; i < _myMeetingController.myMeetingList.length; i++) {
+                if (_myMeetingController.myMeetingList[i].id == meeting.id) {
                   _myMeetingController.myMeetingList[i].process = null;
                 }
               }
@@ -327,7 +332,9 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
             },
           ),
         ),
-        SizedBox(width: Get.width*0.05,),
+        SizedBox(
+          width: Get.width * 0.05,
+        ),
       ],
     );
   }
@@ -368,7 +375,10 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
               child: Container(
                 width: 20,
                 height: 20,
-                child: Image.asset('assets/report.png', color: Colors.white.withOpacity(0.7),),
+                child: Image.asset(
+                  'assets/report.png',
+                  color: Colors.white.withOpacity(0.7),
+                ),
               ),
             ),
             top: 10,

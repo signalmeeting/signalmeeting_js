@@ -69,21 +69,21 @@ class DatabaseService {
 
   //today signal
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
-  Future<int> checkConnectionAndSignal(String oppositeUid) async {
+  Future<Map<String, dynamic>> checkConnectionAndSignal(String oppositeUid) async {
     print("checkConnectionAndSignal");
     QuerySnapshot connectionSnapshot = _user.man
         ? await todayConnectionCollection.where("manId", isEqualTo: _user.uid).where("womanId", isEqualTo: oppositeUid).get()
         : await todayConnectionCollection.where("womanId", isEqualTo: _user.uid).where("manId", isEqualTo: oppositeUid).get();
     if (connectionSnapshot.docs.length > 0)
       //연결
-      return 2;
+      return {"result" : 2, "docId" : connectionSnapshot.docs[0].id};
     else {
       QuerySnapshot snapshot =
           await todaySignalCollection.where("sender", isEqualTo: _user.uid).where("receiver", isEqualTo: oppositeUid).where("today", isEqualTo: Util.todayMatchDateFormat(DateTime.now())).get();
       if (snapshot.docs.length > 0)
-        return 1;
+        return {"result" : 1};
       else
-        return 0;
+        return {"result" : 0};
     }
   }
 

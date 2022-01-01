@@ -118,12 +118,15 @@ class MainController extends GetxController {
     }
   }
 
-  static goToChatPage(String roomId, UserModel user) => Get.to(
+  static goToChatPage(String roomId, UserModel user, String type) {
+    print("roomId : $roomId");
+    Get.to(
       () => ChatPage(),
       binding: BindingsBuilder(() {
-        Get.put(ChatController(roomId, user), tag: roomId);
+        Get.put(ChatController(roomId, user, type), tag: roomId);
       }),
       arguments: roomId,
       preventDuplicates: false,
     );
+  }
 }

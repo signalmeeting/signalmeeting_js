@@ -7,7 +7,9 @@ part 'messageModel.g.dart';
 @JsonSerializable(nullable: true)
 class MessageModel {
   String sender;
+  String receiver;
   String text;
+  String type; //meeting or signal
   DateTime time;
   @JsonKey(defaultValue: false)
   bool showDate;

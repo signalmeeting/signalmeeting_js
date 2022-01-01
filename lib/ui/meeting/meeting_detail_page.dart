@@ -249,7 +249,7 @@ class MeetingDetailPage extends StatelessWidget {
                     snapshot = await meeting.user.get();
                   }
                   Map<String, dynamic> data = snapshot.data();
-                  MainController.goToChatPage(meeting.id, UserModel.fromJson(data));
+                  MainController.goToChatPage(meeting.id, UserModel.fromJson(data), 'meeting');
                 },
                 child: Container(width: 25, child: Image.asset('assets/bubble_chat.png', color: Colors.white,)),
               ),
