@@ -77,9 +77,26 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
             return MeetingDetailPage(_meetingDetailController);
           }
       ),
-        !myMeeting ? Positioned(child: Container(height: 20, color: Colors.white,
-          child: Center(child: Text("D-${(31 - DateTime.now().difference(item.createdAt).inDays).toString()}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)),
-        ), top: 10) : Container(),
+        !myMeeting ? Positioned(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(5.2), topRight: Radius.circular(5.2)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.black38.withOpacity(0.2), Colors.black38.withOpacity(0)],)
+            ),
+            height: 40,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 5.0, top: 3),
+              child: Text(
+                "D-${(31 - DateTime.now().difference(item.createdAt).inDays).toString()}",
+                style: TextStyle(fontFamily: "AppleSDGothicNeoB", fontSize: 12, color: Colors.white),
+              ),
+            ),
+          ),
+          top: 7, right: 7.7, left: 7.7,
+        ) : Container(),
       ]
     ),
   );

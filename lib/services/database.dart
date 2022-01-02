@@ -97,7 +97,7 @@ class DatabaseService {
         .where("receiver", isEqualTo: _user.uid)
         .where("todayMatch", isEqualTo: docId)
         .get();
-    await userCollection.doc(_user.uid).update({"free" : DateTime.now()});
+    await userCollection.doc(_user.uid).update({"free": DateTime.now()});
     _controller.isFree.value = false;
     if (snapshot.docs.length > 0) {
       //상대방이 나한테 보낸 시그널 존재 => 매칭
@@ -108,7 +108,7 @@ class DatabaseService {
         "manId": _user.man ? _user.uid : oppositeUid,
         "womanId": _user.man ? oppositeUid : _user.uid,
         "push": oppositeUid
-      }).whenComplete(() async{
+      }).whenComplete(() async {
         await alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
         await alarmCollection.doc().set({"body": oppositeName, "receiver": _user.uid, "time": DateTime.now(), "type": "match"});
         Get.back();
@@ -641,15 +641,15 @@ class DatabaseService {
     return coinLogCollection.where('userid', isEqualTo: _user.uid).orderBy('date', descending: true).snapshots();
   }
 
-  checkFree() async{
+  checkFree() async {
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
     DocumentSnapshot data = await userCollection.doc(_user.uid).get();
-    if(data['free'] == null){
+    if (data['free'] == null) {
       _controller.isFree.value = true;
     } else {
       freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
-      if(freeDate == today){
+      if (freeDate == today) {
         _controller.isFree.value = false;
       } else {
         _controller.isFree.value = true;
@@ -661,16 +661,13 @@ class DatabaseService {
     await todayConnectionCollection.doc(docId).delete(); // delete 된 todayConnection 은 내 미팅페이지에서 안 불러오도록
   }
 
-
   updateDailyMeetingActivation(bool bool) async {
-    await userCollection.doc(_user.uid).update({"dailyMeetingActivation" : bool});
-    }
+    await userCollection.doc(_user.uid).update({"dailyMeetingActivation": bool});
+  }
 
   Future withDraw() async {
     await FirebaseAuth.instance.currentUser.delete();
-    await DatabaseService.instance.userCollection
-        .doc(_controller.user.value.uid)
-        .delete();
+    await DatabaseService.instance.userCollection.doc(_controller.user.value.uid).delete();
 
     //update today match
     QuerySnapshot snapshot =
