@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:signalmeeting/ui/widget/deletedUser.dart';
 import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/simple_alarm_dialog.dart';
 import 'opposite_profile.dart';
@@ -134,17 +135,20 @@ class _HomePageState extends State<HomePage> {
     bool sameGender = this.user.man == user.man;
     bool isMe = this.user.uid == user.uid;
     double size = Get.height * 0.17;
-    bool banned = false;
+    bool notShow = false;
     this.user.banList?.forEach((banItem) {
       if ((user.uid != this.user.uid) &&
           (banItem['from'] == user.uid || banItem['to'] == user.uid)) {
-        banned = true;
+        notShow = true;
       }
     });
 
+    if(user.matchUserDeleted)
+      notShow = true;
+
     return InkWell(
       borderRadius: BorderRadius.circular(8.0),
-      onTap: sameGender || banned
+      onTap: sameGender || notShow
           ? null
           : () => Get.to(()=>OppositeProfilePage(user, docId: docId,)),
       child: Container(
@@ -164,21 +168,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(8),
                   child: Hero(
                     tag: 'today_signal' + user.uid,
-                    child: banned ? GestureDetector(
-                      onTap: () {
-                        Get.dialog(NotificationDialog(contents: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다',));
-                      },
-                          // Get.defaultDialog(title: '시그널팅',
-                          //     middleText: '죄송합니다. 상대의 회원 탈퇴 혹은 기타 사유로 카드를 열람하실 수 없습니다'),
-                      child: Container(
-                              width: size,
-                              height: size,
-                              color: user.man
-                                  ? Colors.blue[100].withOpacity(0.1)
-                                  : Colors.red[100].withOpacity(0.1),
-                              child: Icon(Icons.favorite, color: Colors.red[50], size: size*0.4,),
-                            ),
-                    )
+                    child: notShow ? deletedUser(size : size)
                         : cachedImage(
                                   user.firstPic,
                           width: size,

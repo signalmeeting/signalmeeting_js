@@ -76,14 +76,17 @@ class DatabaseService {
         : await todayConnectionCollection.where("womanId", isEqualTo: _user.uid).where("manId", isEqualTo: oppositeUid).get();
     if (connectionSnapshot.docs.length > 0)
       //연결
-      return {"result" : 2, "docId" : connectionSnapshot.docs[0].id};
+      return {"result": 2, "docId": connectionSnapshot.docs[0].id};
     else {
-      QuerySnapshot snapshot =
-      await todaySignalCollection.where("sender", isEqualTo: _user.uid).where("receiver", isEqualTo: oppositeUid).where("today", isEqualTo: Util.todayMatchDateFormat(DateTime.now())).get();
+      QuerySnapshot snapshot = await todaySignalCollection
+          .where("sender", isEqualTo: _user.uid)
+          .where("receiver", isEqualTo: oppositeUid)
+          .where("today", isEqualTo: Util.todayMatchDateFormat(DateTime.now()))
+          .get();
       if (snapshot.docs.length > 0)
-        return {"result" : 1};
+        return {"result": 1};
       else
-        return {"result" : 0};
+        return {"result": 0};
     }
   }
 
@@ -106,7 +109,10 @@ class DatabaseService {
       }).whenComplete(() {
         alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
         Get.back();
-        Get.dialog(NotificationDialog(title: "매치 성공", contents: "서로를 선택하셨습니다!",));
+        Get.dialog(NotificationDialog(
+          title: "매치 성공",
+          contents: "서로를 선택하셨습니다!",
+        ));
         //Get.defaultDialog(title: "매치 성공!", middleText: "서로를 선택하셨습니다!");
       });
       return true;
@@ -139,9 +145,9 @@ class DatabaseService {
       "introduce": introduce,
       "createdAt": DateTime.now(),
       "man": this._user.profileInfo['man'], //인창, 추가
-      "meetingImageUrl" : meetingImageUrl,
-      "banList" : [],
-      'deletedTime' : '',
+      "meetingImageUrl": meetingImageUrl,
+      "banList": [],
+      'deletedTime': '',
     };
 
     meetingDoc.set(newMeeting);
@@ -150,7 +156,7 @@ class DatabaseService {
   }
 
   deleteMeeting(String docId) async {
-    await meetingCollection.doc(docId).update({"deletedTime" : DateTime.now()});
+    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now()});
   }
 
   Stream<QuerySnapshot> getTotalMeetingList() {
@@ -206,7 +212,6 @@ class DatabaseService {
     QuerySnapshot snapshot = _user.man
         ? await todayConnectionCollection.where("manId", isEqualTo: _user.uid).get()
         : await todayConnectionCollection.where("womanId", isEqualTo: _user.uid).get();
-    print(snapshot.docs.length);
     return snapshot.docs;
   }
 
@@ -214,7 +219,6 @@ class DatabaseService {
     QuerySnapshot snapshot = await meetingCollection
         .where("deletedTime", isEqualTo: '')
         .where("userId", isEqualTo: _user.uid)
-        .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 7)))
         .orderBy("createdAt", descending: true)
         .get();
     return snapshot.docs;
@@ -222,11 +226,7 @@ class DatabaseService {
 
   Future<QueryDocumentSnapshot> getApplyData(String meetingId) async {
     QuerySnapshot snapshot =
-    await meetingApplyCollection
-        .where("meeting", isEqualTo: meetingId)
-        .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 7)))
-        .orderBy("createdAt", descending: true)
-        .get();
+        await meetingApplyCollection.where("meeting", isEqualTo: meetingId).orderBy("createdAt", descending: true).get();
     if (snapshot.docs.length > 0)
       return snapshot.docs[0];
     else
@@ -262,36 +262,25 @@ class DatabaseService {
   }
 
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
-    print('_user.uid : ${_user.uid}');
-
-    QuerySnapshot snapshot = await meetingApplyCollection
-        .where("userId", isEqualTo: _user.uid)
-        .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 7)))
-        .orderBy("createdAt", descending: true)
-        .get();
-
-    print('???? : ${snapshot.docs.length}');
-    for(int i = 0; i < snapshot.docs.length; i++) {
-      print('process : ${snapshot.docs[i]['process']}');
-    }
+    QuerySnapshot snapshot =
+        await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
 
     if (snapshot.docs != null) {
       List meetingIdList = [];
-      for(int i = 0; i < snapshot.docs.length; i++) {
-        if(snapshot.docs[i].data()['process'] != null) {
-          print('??@@@@ : ${snapshot.docs[i].data()['process']}');
+      for (int i = 0; i < snapshot.docs.length; i++) {
+        if (snapshot.docs[i].data()['process'] != null) {
           meetingIdList.add(snapshot.docs[i].data()['meeting']);
-          print('process is not null');
-        } else print('process is null');
+        } else
+          print('process is null');
       }
       // List meetingIdList = snapshot.docs.map((e) => e.data()["meeting"]).toList();
-      print('meetingIdList : $meetingIdList');
       List<MeetingModel> meetingList = [];
       for (int i = 0; i < meetingIdList.length; i++) {
         DocumentSnapshot snapshot = await meetingCollection.doc(meetingIdList[i]).get();
         Map<String, dynamic> meeting = snapshot.data();
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
+        meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
       return meetingList;
@@ -333,7 +322,7 @@ class DatabaseService {
         await meetingCollection.doc(meetingId).update({
           "process": 0,
           "apply": {
-            "applyId" : apply.id,
+            "applyId": apply.id,
             "user": userCollection.doc(_user.uid),
             "userId": _user.uid,
             "msg": msg,
@@ -363,10 +352,18 @@ class DatabaseService {
   }
 
   Future<UserModel> getOppositeUserInfo(String uid) async {
+    UserModel oppositeUser;
     DocumentSnapshot snapshot = await userCollection.doc(uid).get();
     Map data = snapshot.data();
-
-    UserModel oppositeUser = UserModel.fromJson({"uid": data["uid"], "profileInfo": data["profileInfo"], 'phone': data['phone'].toString()});
+    if (data != null)
+      oppositeUser = UserModel.fromJson({
+        "uid": data["uid"],
+        "profileInfo": data["profileInfo"],
+        'phone': data['phone'].toString(),
+        'deleted': data["deleted"]
+      }); // deleted 테스트용임
+    else
+      oppositeUser = UserModel.fromJson({"deleted": true}); //회원탈퇴한 유저
     return oppositeUser;
   }
 
@@ -393,9 +390,9 @@ class DatabaseService {
       return Future.value(false);
   }
 
-  Future<bool> checkStop(String uid) async{
+  Future<bool> checkStop(String uid) async {
     DocumentSnapshot data = await userCollection.doc(uid).get();
-    if(data['stop']){
+    if (data['stop']) {
       return Future.value(true);
     }
     return Future.value(false);
@@ -429,16 +426,22 @@ class DatabaseService {
   }
 
   updateBanList(String from, String to, ReportType reportType) async {
-    if(reportType == ReportType.daily) {
+    if (reportType == ReportType.daily) {
       await userCollection.doc(from).update({
-        'banList': FieldValue.arrayUnion([<String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}]),
+        'banList': FieldValue.arrayUnion([
+          <String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}
+        ]),
       });
       await userCollection.doc(to).update({
-        'banList': FieldValue.arrayUnion([<String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}]),
+        'banList': FieldValue.arrayUnion([
+          <String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}
+        ]),
       });
-    } else if(reportType == ReportType.meeting) {
+    } else if (reportType == ReportType.meeting) {
       await meetingCollection.doc(to).update({
-        'banList': FieldValue.arrayUnion([<String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}]),
+        'banList': FieldValue.arrayUnion([
+          <String, dynamic>{'from': from, 'to': to, 'when': DateTime.now()}
+        ]),
       });
     }
   }
@@ -492,7 +495,8 @@ class DatabaseService {
 
   Future<bool> getTodayMatch() async {
     String today = Util.todayMatchDateFormat(DateTime.now());
-    QuerySnapshot snapshot = await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
+    QuerySnapshot snapshot =
+        await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
     // DocumentSnapshot userSnapshot = await userCollection.doc(_user.uid).collection("todayMatch").doc(today).get();
     // var matchIdList = userSnapshot.data()["documentId"];
     List<TodayMatch> todayMatchList = [];
@@ -539,18 +543,18 @@ class DatabaseService {
       await inviteCollection.doc().set(body);
       await userCollection.doc(_user.uid).update({"invite": true});
       await coinLogCollection.doc().set({
-        "userid" : _user.uid,
-        "coin" : 50,
-        "usage" : "친구 초대",
-        "oppositeUserid" : snapshot.docs[0].id,
-        "date" : DateTime.now(),
+        "userid": _user.uid,
+        "coin": 50,
+        "usage": "친구 초대",
+        "oppositeUserid": snapshot.docs[0].id,
+        "date": DateTime.now(),
       });
       await coinLogCollection.doc().set({
-        "userid" : snapshot.docs[0].id,
-        "coin" : 50,
-        "usage" : "친구 초대",
-        "oppositeUserid" : _user.uid,
-        "date" : DateTime.now(),
+        "userid": snapshot.docs[0].id,
+        "coin": 50,
+        "usage": "친구 초대",
+        "oppositeUserid": _user.uid,
+        "date": DateTime.now(),
       });
       await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(50)});
       await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(50)});
@@ -577,22 +581,30 @@ class DatabaseService {
       return [];
   }
 
-  useCoin(int coin, int type, {String oppositeUserid, Map<String, dynamic> newMeeting}) async{
+  useCoin(int coin, int type, {String oppositeUserid, Map<String, dynamic> newMeeting}) async {
     DocumentReference coinLogDoc = coinLogCollection.doc();
     coinUsage() {
-      switch(type) {
-        case 0 : {
-          return "시그널 보내기";
-        } break;
-        case 1 : {
-          return "미팅 생성";
-        } break;
-        case 2: {
-          return "미팅 참여";
-        } break;
-        case 3: {
-          return "하트 충전";
-        } break;
+      switch (type) {
+        case 0:
+          {
+            return "시그널 보내기";
+          }
+          break;
+        case 1:
+          {
+            return "미팅 생성";
+          }
+          break;
+        case 2:
+          {
+            return "미팅 참여";
+          }
+          break;
+        case 3:
+          {
+            return "하트 충전";
+          }
+          break;
       }
     }
     /*
@@ -609,40 +621,105 @@ class DatabaseService {
      */
 
     Map<String, dynamic> newCoinLog = {
-      "userid" : _user.uid,
-      "coin" : coin,
-      "usage" : coinUsage(),
-      "oppositeUserid" : oppositeUserid ?? "",
-      "meeting" : newMeeting ?? {},
-      "date" : DateTime.now(),
+      "userid": _user.uid,
+      "coin": coin,
+      "usage": coinUsage(),
+      "oppositeUserid": oppositeUserid ?? "",
+      "meeting": newMeeting ?? {},
+      "date": DateTime.now(),
     };
-      await coinLogDoc.set(newCoinLog);
-      _controller.useCoin(coin);
-      await userCollection.doc(_user.uid).update({"coin" : _user.coin});
+    await coinLogDoc.set(newCoinLog);
+    _controller.useCoin(coin);
+    await userCollection.doc(_user.uid).update({"coin": _user.coin});
   }
-  
+
   Stream<QuerySnapshot> getCoinLog() {
-    return coinLogCollection
-        .where('userid', isEqualTo : _user.uid)
-        .orderBy('date', descending : true)
-        .snapshots();
+    return coinLogCollection.where('userid', isEqualTo: _user.uid).orderBy('date', descending: true).snapshots();
   }
 
-
-  Future<bool> checkFree() async{
+  Future<bool> checkFree() async {
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
     DocumentSnapshot data = await userCollection.doc(_user.uid).get();
-    if(data['free'] != null)
-      freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
-    if(freeDate == today && freeDate != null){
+    if (data['free'] != null) freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
+    if (freeDate == today && freeDate != null) {
       _controller.isFree.value = false;
       return Future.value(false);
     }
     _controller.isFree.value = true;
     return Future.value(true);
-
   }
 
+  Future deleteTodayConnection(String docId) async {
+    await todayConnectionCollection.doc(docId).delete(); // delete 된 todayConnection 은 내 미팅페이지에서 안 불러오도록
+  }
 
+  Future withDraw() async {
+    await FirebaseAuth.instance.currentUser.delete();
+    await DatabaseService.instance.userCollection
+        .doc(_controller.user.value.uid)
+        .delete();
+
+    //update today match
+    QuerySnapshot snapshot =
+        await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
+    snapshot.docs.forEach((element) async {
+      List<dynamic> uidList = _user.man ? element.data()["men"] : element.data()["women"];
+      int index = uidList.indexWhere((element) => element == _user.uid);
+      List<dynamic> profileList = _user.man ? element.data()["menProfile"] : element.data()["womenProfile"];
+      Map<String, dynamic> myProfile = profileList[index];
+      myProfile["deleted"] = true;
+      profileList[index] = myProfile;
+      Map<String, dynamic> updateQuery = {"${_user.man ? "menProfile" : "womenProfile"}": profileList};
+      await todayMatchCollection.doc(today).collection("matches").doc(element.id).update(updateQuery);
+    });
+
+    //get my meeting list
+    List<String> meetingDocList = [];
+    List<String> applyDocList = [];
+    QuerySnapshot myMeetingSnapshot = await meetingCollection
+        .where("deletedTime", isEqualTo: '')
+        .where("userId", isEqualTo: _user.uid)
+        .orderBy("createdAt", descending: true)
+        .get();
+
+    myMeetingSnapshot.docs.forEach((element) {
+      meetingDocList.add(element.id);
+      if (element.data()["apply"] != null) applyDocList.add(element.data()["apply"]["applyId"]);
+    });
+
+    //delete my meeting
+    for (int i = 0; i < meetingDocList.length; i++) {
+      await deleteMeeting(meetingDocList[i]);
+    }
+
+    //나한테 apply 다 거절
+    for (int i = 0; i < applyDocList.length; i++) {
+      await meetingApplyCollection.doc(applyDocList[i]).update({"process": 2});
+    }
+
+    //내가 보낸 apply 다 삭제
+    List<String> myApplyDocList = [];
+    //네기 보낸 apply 해당하는 meeting 의 apply 삭제
+    List<String> myApplyMeetingDocList = [];
+    QuerySnapshot myApplySnapshot =
+        await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
+
+    myApplySnapshot.docs.forEach((e) {
+      myApplyDocList.add(e.id);
+      if (e.data()["apply"] != null) myApplyMeetingDocList.add(e.data()["apply"]["applyId"]);
+    });
+
+    for (int i = 0; i < myApplyDocList.length; i++) {
+      await deleteApply(myApplyDocList[i]);
+    }
+
+    for (int i = 0; i < myApplyMeetingDocList.length; i++) {
+      await meetingCollection.doc(myApplyMeetingDocList[i]).update({"apply": null, "process": null});
+    }
+  }
+
+  deleteApply(String docId) async {
+    await meetingApplyCollection.doc(docId).delete();
+  }
 }

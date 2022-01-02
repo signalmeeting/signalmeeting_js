@@ -44,8 +44,8 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
                 child: Text("미팅을 삭제하시겠습니까?", textAlign: TextAlign.center,),
               ),
               buttonText: "삭제",
-              onPressed: () {
-                DatabaseService.instance.deleteMeeting(item.id);
+              onPressed: () async {
+                await DatabaseService.instance.deleteMeeting(item.id);
                 Get.back();
                 CustomedFlushBar(Get.context, "삭제가 완료되었습니다!");
               },));

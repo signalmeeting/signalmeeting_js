@@ -13,6 +13,7 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:signalmeeting/ui/widget/deletedUser.dart';
 import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/noCoin.dart';
@@ -38,8 +39,9 @@ class MeetingDetailController extends GetxController {
     //meetingOwner init
     DocumentSnapshot snapshot = await meeting.value.user.get();
     Map<String, dynamic> data = snapshot.data();
+    if(data == null)
+      data = {"deleted" : true};
     meetingOwner = UserModel.fromJson(data);
-
     userLoaded.value = true;
     super.onInit();
   }
@@ -289,10 +291,9 @@ class MeetingDetailPage extends StatelessWidget {
 
   Widget buildOppositeProfile() {
     if(meetingDetailController.userLoaded.value)
-    return Column(
+    return meetingOwner.deleted !=null  ? deletedUser(onPressed : () {}) : Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-
         Padding(
           padding: const EdgeInsets.only(top: 15.0, bottom: 10),
           child: meetingOwner.pics.length > 0 ? BluredImage(meetingOwner.pics[0], meetingDetailController.meeting.value.id) : Container(),

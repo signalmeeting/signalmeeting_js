@@ -18,6 +18,7 @@ class UserModel {
   bool invite;
   List<Map<String, dynamic>> banList = []; //[{'from' : 'id', 'to' : 'id', 'time' : 'date'}, ...]
   var free;
+  var deleted;
 
   UserModel(
       {this.uid,
@@ -28,7 +29,8 @@ class UserModel {
       this.profileInfo,
       this.invite,
       this.banList,
-      this.free
+      this.free,
+        this.deleted
       });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
@@ -77,6 +79,8 @@ class UserModel {
   String get phoneNumber => '0' + phone.substring(3);
 
   String get deviceToken => pushInfo == null ? '' : pushInfo['deviceToken'] ?? '';
+
+  bool get matchUserDeleted => profileInfo["deleted"] ?? false;
 
   @override
   String toString() {
