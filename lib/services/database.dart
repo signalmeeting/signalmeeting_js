@@ -283,11 +283,8 @@ class DatabaseService {
         Map<String, dynamic> meeting = snapshot.data();
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
-<<<<<<< HEAD
         meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-=======
         meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
->>>>>>> kunhee
         meetingList.add(MeetingModel.fromJson(meeting));
       }
       return meetingList;
@@ -397,8 +394,6 @@ class DatabaseService {
       return Future.value(false);
   }
 
-<<<<<<< HEAD
-=======
   Future<bool> checkStop(String uid) async {
     DocumentSnapshot data = await userCollection.doc(uid).get();
     if (data['stop']) {
@@ -407,7 +402,6 @@ class DatabaseService {
     return Future.value(false);
   }
 
->>>>>>> kunhee
   Future<bool> newUser() async {
     bool result;
     List uploadedPics = [];
@@ -647,8 +641,6 @@ class DatabaseService {
     return coinLogCollection.where('userid', isEqualTo: _user.uid).orderBy('date', descending: true).snapshots();
   }
 
-<<<<<<< HEAD
-
   checkFree() async{
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
@@ -663,28 +655,16 @@ class DatabaseService {
         _controller.isFree.value = true;
       }
     }
-=======
-  Future<bool> checkFree() async {
-    int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
-    int freeDate;
-    DocumentSnapshot data = await userCollection.doc(_user.uid).get();
-    if (data['free'] != null) freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
-    if (freeDate == today && freeDate != null) {
-      _controller.isFree.value = false;
-      return Future.value(false);
-    }
-    _controller.isFree.value = true;
-    return Future.value(true);
   }
->>>>>>> kunhee
 
   Future deleteTodayConnection(String docId) async {
     await todayConnectionCollection.doc(docId).delete(); // delete 된 todayConnection 은 내 미팅페이지에서 안 불러오도록
   }
-<<<<<<< HEAD
+
+
   updateDailyMeetingActivation(bool bool) async {
     await userCollection.doc(_user.uid).update({"dailyMeetingActivation" : bool});
-=======
+    }
 
   Future withDraw() async {
     await FirebaseAuth.instance.currentUser.delete();
@@ -755,4 +735,3 @@ class DatabaseService {
     await meetingApplyCollection.doc(docId).delete();
   }
 }
->>>>>>> kunhee

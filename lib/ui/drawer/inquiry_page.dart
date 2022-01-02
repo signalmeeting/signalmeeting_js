@@ -147,10 +147,7 @@ class _InquiryPageState extends State<InquiryPage> {
     try {
       await FirebaseAuth.instance.signOut();
       Get.delete<LobbyController>();
-<<<<<<< HEAD
-=======
       _controller.user = UserModel().obs;
->>>>>>> kunhee
       _controller.todayMatchList.clear();
       Get.offAll(() => Splash());
     } catch (e) {
