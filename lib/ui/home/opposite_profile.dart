@@ -9,9 +9,9 @@ import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:signalmeeting/ui/widget/dialog/noCoinDialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/ui/widget/noCoin.dart';
 import 'package:signalmeeting/util/style/appColor.dart';
 import 'package:signalmeeting/util/style/btStyle.dart';
 
@@ -179,7 +179,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   }
 
   void onPressSignalButton() async {
-    if (myuser.coin < 1) {
+    if (myuser.coin < 1 && !isFree) {
       Get.dialog(NoCoinDialog());
     } else {
       //시그널 보내기, 코인 소모
@@ -199,6 +199,8 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
         });
       }
     }
+
+
   }
 
   Widget _InfoForm(String category, String value) {

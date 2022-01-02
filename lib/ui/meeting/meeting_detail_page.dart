@@ -13,9 +13,9 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/chat/chat_page.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:signalmeeting/ui/widget/dialog/noCoinDialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/ui/widget/noCoin.dart';
 import 'package:signalmeeting/util/style/appColor.dart';
 import 'package:signalmeeting/util/style/btStyle.dart';
 

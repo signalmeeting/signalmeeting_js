@@ -94,6 +94,8 @@ class DatabaseService {
         .where("receiver", isEqualTo: _user.uid)
         .where("todayMatch", isEqualTo: docId)
         .get();
+    await userCollection.doc(_user.uid).update({"free" : DateTime.now()});
+    _controller.isFree.value = false;
     if (snapshot.docs.length > 0) {
       //상대방이 나한테 보낸 시그널 존재 => 매칭
       print('match success');
@@ -635,6 +637,9 @@ class DatabaseService {
     DocumentSnapshot data = await userCollection.doc(_user.uid).get();
     if(data['free'] != null)
       freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
+    else
+      _controller.isFree.value = true;
+
     if(freeDate == today && freeDate != null){
       _controller.isFree.value = false;
       return Future.value(false);
