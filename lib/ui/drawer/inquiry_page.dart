@@ -5,15 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/lobby.dart';
-import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/main.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/lobby.dart';
+import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/main.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 import 'custom_drawer.dart';
 
@@ -109,13 +109,13 @@ class _InquiryPageState extends State<InquiryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SelectableText(
-                'signalmeeting@gmail.com',
+                'byule@gmail.com',
                 style: TextStyle(
                     fontSize: 17, decoration: TextDecoration.underline),
                 onTap: () {
                   //클립보드로 복사
                   Clipboard.setData(
-                      ClipboardData(text: 'signalmeeting@gmail.com'));
+                      ClipboardData(text: 'byule@gmail.com'));
 
                   CustomedFlushBar(context, '이메일이 복사 되었습니다');
                 },

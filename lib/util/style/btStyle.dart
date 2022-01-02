@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
+import 'package:byule/util/style/appColor.dart';
 
 class BtStyle {
   BtStyle._();

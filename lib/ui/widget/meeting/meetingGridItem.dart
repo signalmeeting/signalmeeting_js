@@ -2,15 +2,15 @@ import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/my_meeting_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
-import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/controller/my_meeting_controller.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/meeting/meeting_detail_page.dart';
+import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/widget/dialog/main_dialog.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/util/util.dart';
 import '../cached_image.dart';
 
 Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied = false, bool refused = false, bool myMeeting = false}) {

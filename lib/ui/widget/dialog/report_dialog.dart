@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/meeting/meeting_detail_page.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
 import 'package:get/get.dart';
 import 'main_dialog.dart';
 

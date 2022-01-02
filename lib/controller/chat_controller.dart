@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:byule/model/userModel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/messageModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/messageModel.dart';
+import 'package:byule/model/userModel.dart';
 
 class ChatController extends GetxController {
   final String roomId;

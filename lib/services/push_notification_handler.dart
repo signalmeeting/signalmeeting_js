@@ -5,11 +5,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/chat_controller.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/meeting/my_meeting_page.dart';
+import 'package:byule/controller/chat_controller.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/meeting/my_meeting_page.dart';
 
 class PushNotificationsHandler {
   PushNotificationsHandler._();
@@ -112,7 +112,7 @@ class PushNotificationsHandler {
   handleFcmMessage(RemoteMessage message) async {
     String messageType = message.data['type'];
     // var id = message['data']['id'];
-    if (messageType.startsWith("meeting") || messageType.startsWith("signal")) {
+    if (messageType.startsWith("meeting") || messageType.startsWith("signalting")) {
       Get.to(() => MyMeetingPage());
     } else if (messageType == "chat") {
       UserModel oppositeUser = await DatabaseService.instance.getOppositeUserInfo(message.data["opposite"]);

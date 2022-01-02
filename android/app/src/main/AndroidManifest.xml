@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.signal.signalmeeting">
+    package="com.signalting.byule">
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Permissions options for the `storage` group -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/alarmModel.dart';
-import 'package:signalmeeting/services/database.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/alarmModel.dart';
+import 'package:byule/services/database.dart';
 
 class AlarmPage extends StatelessWidget {
 
@@ -25,7 +25,7 @@ class AlarmPage extends StatelessWidget {
                 child: ListView(
                     children: alarmList
                         .map(
-                          (e) => e.type == 'signal'
+                          (e) => e.type == 'signalting'
                               ? SignalAlarm('데일리 미팅 ${e.body}', e.date)
                               : e.type == 'match'
                                   ? MatchingAlarm(e.body, e.date)

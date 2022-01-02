@@ -7,13 +7,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/chat_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/chat/chat_page.dart';
-import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
-import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
+import 'package:byule/controller/chat_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/chat/chat_page.dart';
+import 'package:byule/ui/meeting/meeting_detail_page.dart';
+import 'package:byule/ui/widget/dialog/report_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
 
 class MainController extends GetxController {
   final FirebaseApp app;

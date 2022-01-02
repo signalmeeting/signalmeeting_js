@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/drawer/my_profile_page.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/drawer/my_profile_page.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 import 'custom_drawer.dart';
 

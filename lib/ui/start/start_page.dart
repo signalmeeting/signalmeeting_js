@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/ui/start/start_page_2.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/ui/start/start_page_2.dart';
+import 'package:byule/util/style/appColor.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 class StartPage extends StatelessWidget {
   @override

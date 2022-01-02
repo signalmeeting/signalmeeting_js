@@ -5,11 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/util/style/appColor.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 class InviteFriendsPage extends StatefulWidget {
   @override

@@ -2,18 +2,18 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/controller/meeting_controller.dart';
-import 'package:signalmeeting/controller/my_meeting_controller.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/services/push_notification_handler.dart';
-import 'package:signalmeeting/ui/drawer/inquiry_page.dart';
-import 'package:signalmeeting/ui/lobby.dart';
-import 'package:signalmeeting/ui/start/start_page.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/controller/meeting_controller.dart';
+import 'package:byule/controller/my_meeting_controller.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/services/push_notification_handler.dart';
+import 'package:byule/ui/drawer/inquiry_page.dart';
+import 'package:byule/ui/lobby.dart';
+import 'package:byule/ui/start/start_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:signalmeeting/ui/start/start_page_3.dart';
+import 'package:byule/ui/start/start_page_3.dart';
 
 import 'model/userModel.dart';
 import 'services/push_notification_handler.dart';
@@ -25,18 +25,18 @@ void main() async {
 
   try {
     app = await Firebase.initializeApp(
-      name: 'signalmeeting',
+      name: 'byule',
       options: FirebaseOptions(
         appId: '1:387245324127:android:f336e996594ce3e0a3a8ea',
         apiKey: 'AIzaSyDnw8E0LXbk8cwCNbI8ujSWyMzLZ7iivMA',
         messagingSenderId: '387245324127',
-        projectId: 'signalmeeting-8ee89',
-        databaseURL: 'https://signalmeeting-8ee89-default-rtdb.asia-southeast1.firebasedatabase.app/',
+        projectId: 'byule-8ee89',
+        databaseURL: 'https://byule-8ee89-default-rtdb.asia-southeast1.firebasedatabase.app/',
       ),
     );
   } on FirebaseException catch (e) {
     if (e.code == 'duplicate-app') {
-      app = Firebase.app('signalmeeting');
+      app = Firebase.app('byule');
     } else {
       throw e;
     }
@@ -44,7 +44,7 @@ void main() async {
     rethrow;
   }
 
-  FirebaseFunctions.instance.useFunctionsEmulator(origin: 'https://asia-northeast3-signalmeeting-8ee89.cloudfunctions.net');
+  FirebaseFunctions.instance.useFunctionsEmulator(origin: 'https://asia-northeast3-byule-8ee89.cloudfunctions.net');
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(app));
 }
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
       statusBarColor: Colors.white, //or set color with: Color(0xFF0000FF)
     ));
     return GetMaterialApp(
-      title: 'signalmeeting',
+      title: 'byule',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "AppleSDGothicNeoM",

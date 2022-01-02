@@ -1,6 +1,6 @@
 import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
+import 'package:byule/model/meetingModel.dart';
 
 import 'meetingGridItem.dart';
 

@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/deletedUser.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/simple_alarm_dialog.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/ui/widget/cached_image.dart';
+import 'package:byule/ui/widget/deletedUser.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/dialog/simple_alarm_dialog.dart';
 import 'opposite_profile.dart';
 
 const SCALE_FRACTION = 0.75;

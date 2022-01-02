@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/widget/dialog/city_list_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/widget/dialog/city_list_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/util/style/btStyle.dart';
+import 'package:byule/util/util.dart';
 import 'package:smart_select/smart_select.dart';
 
 class MakeMeetingPage extends StatefulWidget {

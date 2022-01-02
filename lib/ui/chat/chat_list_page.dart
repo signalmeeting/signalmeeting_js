@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:signalmeeting/model/chatListModel.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:byule/model/chatListModel.dart';
+import 'package:byule/ui/widget/cached_image.dart';
 
 class ChatListPage extends StatelessWidget {
 

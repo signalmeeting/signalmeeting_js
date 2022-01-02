@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:signalmeeting/model/chatListModel.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:byule/model/chatListModel.dart';
+import 'package:byule/ui/widget/cached_image.dart';
 
 Widget buildChatItem(ChatListModel item, BuildContext context) {
   return InkWell(

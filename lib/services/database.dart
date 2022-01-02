@@ -8,18 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/alarmModel.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/todayMatch.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/util/uiData.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/alarmModel.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/todayMatch.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/dialog/report_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/util/uiData.dart';
 import 'dart:math';
 
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/util/util.dart';
 
 class DatabaseService {
   DatabaseService._privateConstructor();
@@ -44,7 +44,7 @@ class DatabaseService {
   final CollectionReference todayMatchCollection = FirebaseFirestore.instance.collection('todayMatch'); // 매일 자정에 생성
 
   //todaySignal collection reference
-  final CollectionReference todaySignalCollection = FirebaseFirestore.instance.collection('todaySignal'); // signal 보낸거
+  final CollectionReference todaySignalCollection = FirebaseFirestore.instance.collection('todaySignal'); // signalting 보낸거
 
   //todayMatch connection collection reference
   final CollectionReference todayConnectionCollection = FirebaseFirestore.instance.collection('todayConnection'); // todayMatch 성사된거
@@ -67,7 +67,7 @@ class DatabaseService {
   //Coin UsageLog
   final CollectionReference coinLogCollection = FirebaseFirestore.instance.collection('coinLog');
 
-  //today signal
+  //today signalting
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
   Future<Map<String, dynamic>> checkConnectionAndSignal(String oppositeUid) async {
     print("checkConnectionAndSignal");
@@ -122,7 +122,7 @@ class DatabaseService {
     } else {
       await todaySignalCollection.doc().set(
           {"sender": _user.uid, "receiver": oppositeUid, "todayMatch": docId, "time": DateTime.now(), "today": today}).whenComplete(() {
-        alarmCollection.doc().set({"body": "", "receiver": oppositeUid, "time": DateTime.now(), "type": "signal"});
+        alarmCollection.doc().set({"body": "", "receiver": oppositeUid, "time": DateTime.now(), "type": "signalting"});
       }).catchError((e) {
         Get.back();
         return false;
@@ -284,7 +284,8 @@ class DatabaseService {
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
         meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-        meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
+        if(meeting["deletedTime"].length > 0)
+          meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
       return meetingList;

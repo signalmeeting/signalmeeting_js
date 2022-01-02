@@ -9,7 +9,7 @@ class MessageModel {
   String sender;
   String receiver;
   String text;
-  String type; //meeting or signal
+  String type; //meeting or signalting
   DateTime time;
   @JsonKey(defaultValue: false)
   bool showDate;

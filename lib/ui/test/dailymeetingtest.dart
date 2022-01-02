@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/util/util.dart';
 import 'dart:math';
 
 class DailyTesting extends StatefulWidget {

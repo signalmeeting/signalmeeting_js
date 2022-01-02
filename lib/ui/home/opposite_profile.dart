@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/controller/my_meeting_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/dialog/noCoinDialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/controller/my_meeting_controller.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/meeting/meeting_detail_page.dart';
+import 'package:byule/ui/widget/cached_image.dart';
+import 'package:byule/ui/widget/dialog/noCoinDialog.dart';
+import 'package:byule/ui/widget/dialog/report_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/util/style/appColor.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 class OppositeProfilePage extends StatefulWidget {
   final UserModel user;
@@ -115,7 +115,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                       style: BtStyle.textSub200,
                       onPressed: () {
                         //시그널 매치 됐을 때 채팅방으로 가는 버튼
-                        MainController.goToChatPage(snapshot.data["docId"], widget.user, 'signal');
+                        MainController.goToChatPage(snapshot.data["docId"], widget.user, 'signalting');
                       },
                       child: Text('대화하기')),
               ],

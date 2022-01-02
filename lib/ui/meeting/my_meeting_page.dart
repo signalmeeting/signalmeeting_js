@@ -2,15 +2,15 @@ import 'package:animations/animations.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/my_meeting_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/home/opposite_profile.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/deletedUser.dart';
-import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
-import 'package:signalmeeting/ui/widget/meeting/meetingGridItem.dart';
+import 'package:byule/controller/my_meeting_controller.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/home/opposite_profile.dart';
+import 'package:byule/ui/widget/cached_image.dart';
+import 'package:byule/ui/widget/deletedUser.dart';
+import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/widget/meeting/meetingGridItem.dart';
 
 import 'meeting_detail_page.dart';
 

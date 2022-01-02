@@ -2,8 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:signalmeeting/model/applyModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
+import 'package:byule/model/applyModel.dart';
+import 'package:byule/model/userModel.dart';
 
 part 'meetingModel.g.dart';
 
