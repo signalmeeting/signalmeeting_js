@@ -145,6 +145,8 @@ class _InquiryPageState extends State<InquiryPage> {
     _controller.updateUser(UserModel.initUser());
     try {
       await FirebaseAuth.instance.signOut();
+      Get.delete<LobbyController>();
+      _controller.todayMatchList.clear();
       Get.offAll(() => Splash());
     } catch (e) {
       //Get.defaultDialog(title: "Error", content: Text(e.toString()));

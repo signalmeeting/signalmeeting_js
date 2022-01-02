@@ -26,7 +26,7 @@ class AlarmPage extends StatelessWidget {
                     children: alarmList
                         .map(
                           (e) => e.type == 'signal'
-                              ? SignalAlarm('데일리 소개팅 ${e.body}', e.date)
+                              ? SignalAlarm('데일리 미팅 ${e.body}', e.date)
                               : e.type == 'match'
                                   ? MatchingAlarm(e.body, e.date)
                                   : e.type == 'accept'

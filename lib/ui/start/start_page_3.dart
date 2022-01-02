@@ -340,7 +340,7 @@ class _StartPage3State extends State<StartPage3> {
       case '세종':{cityList = CityListInfo().options12;} break;
       case '전북':{cityList = CityListInfo().options13;} break;
       case '전남':{cityList = CityListInfo().options14;} break;
-      case '경상북도':{cityList = CityListInfo().options15;} break;
+      case '경북':{cityList = CityListInfo().options15;} break;
       case '경남':{cityList = CityListInfo().options16;} break;
       case '제주':{cityList = CityListInfo().options17;} break;
       default:{cityList = CityListInfo().options0;} break;

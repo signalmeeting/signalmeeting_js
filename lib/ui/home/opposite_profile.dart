@@ -191,7 +191,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
       else if(!myuser.man) {
         await DatabaseService.instance.useCoin(-5, 3, oppositeUserid: widget.user.uid);
       }
-      bool result = await DatabaseService.instance.sendSignal(widget.user.uid, widget.docId);
+      bool result = await DatabaseService.instance.sendSignal(widget.user.uid, widget.docId, widget.user.name);
       if (result) {
         CustomedFlushBar(context, '시그널을 보냈습니다');
         setState(() {

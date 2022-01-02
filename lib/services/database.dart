@@ -87,7 +87,7 @@ class DatabaseService {
     }
   }
 
-  Future<bool> sendSignal(String oppositeUid, String docId) async {
+  Future<bool> sendSignal(String oppositeUid, String docId, String oppositeName) async {
     Get.dialog(Center(child: CircularProgressIndicator()));
     QuerySnapshot snapshot = await todaySignalCollection
         .where("sender", isEqualTo: oppositeUid)
@@ -105,8 +105,9 @@ class DatabaseService {
         "manId": _user.man ? _user.uid : oppositeUid,
         "womanId": _user.man ? oppositeUid : _user.uid,
         "push": oppositeUid
-      }).whenComplete(() {
-        alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
+      }).whenComplete(() async{
+        await alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
+        await alarmCollection.doc().set({"body": oppositeName, "receiver": _user.uid, "time": DateTime.now(), "type": "match"});
         Get.back();
         Get.dialog(NotificationDialog(title: "매치 성공", contents: "서로를 선택하셨습니다!",));
         //Get.defaultDialog(title: "매치 성공!", middleText: "서로를 선택하셨습니다!");
@@ -514,7 +515,9 @@ class DatabaseService {
       }
       TodayMatch todayMatch = TodayMatch(documentId: element.id, sameGenders: sameGenders, oppositeGenders: oppositeGenders);
       todayMatchList.add(todayMatch);
+      print("todayMatch : $todayMatch");
     });
+
     _controller.updateTodayMatchList(todayMatchList);
   }
 
@@ -631,21 +634,20 @@ class DatabaseService {
   }
 
 
-  Future<bool> checkFree() async{
+  checkFree() async{
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
     DocumentSnapshot data = await userCollection.doc(_user.uid).get();
-    if(data['free'] != null)
-      freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
-    else
+    if(data['free'] == null){
       _controller.isFree.value = true;
-
-    if(freeDate == today && freeDate != null){
-      _controller.isFree.value = false;
-      return Future.value(false);
+    } else {
+      freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
+      if(freeDate == today){
+        _controller.isFree.value = false;
+      } else {
+        _controller.isFree.value = true;
+      }
     }
-    _controller.isFree.value = true;
-    return Future.value(true);
 
   }
 
