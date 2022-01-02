@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
@@ -15,12 +16,28 @@ import 'package:signalmeeting/util/style/btStyle.dart';
 
 import 'custom_drawer.dart';
 
-class InquiryPage extends StatelessWidget {
+class InquiryPage extends StatefulWidget {
+  @override
+  _InquiryPageState createState() => _InquiryPageState();
+}
+
+class _InquiryPageState extends State<InquiryPage> {
   final MainController _controller = Get.find();
-  final LobbyController _lobbyController = Get.find();
+
+  @override
+  void initState() {
+    if (this.mounted && _controller.user.value.stop)
+      1.delay(() {
+        Get.dialog(NotificationDialog(
+          contents: "정지당한 계정입니다.",
+        ));
+      });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: drawerAppBar(context, '문의 및 계정'),
       body: Stack(
@@ -75,7 +92,6 @@ class InquiryPage extends StatelessWidget {
     );
   }
 
-  //텍스트
   Widget TextBox(context) {
     return Column(
       children: [
@@ -125,21 +141,25 @@ class InquiryPage extends StatelessWidget {
     );
   }
 
-  //로그 아웃
   logOut(context) async {
     _controller.updateUser(UserModel.initUser());
     try {
       await FirebaseAuth.instance.signOut();
+      Get.delete<LobbyController>();
+      _controller.todayMatchList.clear();
       Get.offAll(() => Splash());
-    } catch(e) {
+    } catch (e) {
       //Get.defaultDialog(title: "Error", content: Text(e.toString()));
-      Get.dialog(NotificationDialog(contents: e.toString(),));
+      Get.dialog(NotificationDialog(
+        contents: e.toString(),
+      ));
     }
   }
 
-  //회원 탈퇴
   withDraw() async {
     await FirebaseAuth.instance.currentUser.delete();
+    await DatabaseService.instance.userCollection
+        .doc(_controller.user.value.uid)
+        .delete();
   }
 }
-

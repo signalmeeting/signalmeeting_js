@@ -87,13 +87,15 @@ class DatabaseService {
     }
   }
 
-  Future<bool> sendSignal(String oppositeUid, String docId) async {
+  Future<bool> sendSignal(String oppositeUid, String docId, String oppositeName) async {
     Get.dialog(Center(child: CircularProgressIndicator()));
     QuerySnapshot snapshot = await todaySignalCollection
         .where("sender", isEqualTo: oppositeUid)
         .where("receiver", isEqualTo: _user.uid)
         .where("todayMatch", isEqualTo: docId)
         .get();
+    await userCollection.doc(_user.uid).update({"free" : DateTime.now()});
+    _controller.isFree.value = false;
     if (snapshot.docs.length > 0) {
       //상대방이 나한테 보낸 시그널 존재 => 매칭
       print('match success');
@@ -103,8 +105,9 @@ class DatabaseService {
         "manId": _user.man ? _user.uid : oppositeUid,
         "womanId": _user.man ? oppositeUid : _user.uid,
         "push": oppositeUid
-      }).whenComplete(() {
-        alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
+      }).whenComplete(() async{
+        await alarmCollection.doc().set({"body": _user.name, "receiver": oppositeUid, "time": DateTime.now(), "type": "match"});
+        await alarmCollection.doc().set({"body": oppositeName, "receiver": _user.uid, "time": DateTime.now(), "type": "match"});
         Get.back();
         Get.dialog(NotificationDialog(title: "매치 성공", contents: "서로를 선택하셨습니다!",));
         //Get.defaultDialog(title: "매치 성공!", middleText: "서로를 선택하셨습니다!");
@@ -262,7 +265,7 @@ class DatabaseService {
   }
 
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
-    // print('_user.uid : ${_user.uid}');
+    print('_user.uid : ${_user.uid}');
 
     QuerySnapshot snapshot = await meetingApplyCollection
         .where("userId", isEqualTo: _user.uid)
@@ -270,22 +273,22 @@ class DatabaseService {
         .orderBy("createdAt", descending: true)
         .get();
 
-    // print('???? : ${snapshot.docs.length}');
+    print('???? : ${snapshot.docs.length}');
     for(int i = 0; i < snapshot.docs.length; i++) {
-      // print('process : ${snapshot.docs[i]['process']}');
+      print('process : ${snapshot.docs[i]['process']}');
     }
 
     if (snapshot.docs != null) {
       List meetingIdList = [];
       for(int i = 0; i < snapshot.docs.length; i++) {
         if(snapshot.docs[i].data()['process'] != null) {
-          // print('??@@@@ : ${snapshot.docs[i].data()['process']}');
+          print('??@@@@ : ${snapshot.docs[i].data()['process']}');
           meetingIdList.add(snapshot.docs[i].data()['meeting']);
-          // print('process is not null');
-        }
+          print('process is not null');
+        } else print('process is null');
       }
       // List meetingIdList = snapshot.docs.map((e) => e.data()["meeting"]).toList();
-      // print('meetingIdList : $meetingIdList');
+      print('meetingIdList : $meetingIdList');
       List<MeetingModel> meetingList = [];
       for (int i = 0; i < meetingIdList.length; i++) {
         DocumentSnapshot snapshot = await meetingCollection.doc(meetingIdList[i]).get();
@@ -620,23 +623,22 @@ class DatabaseService {
         .snapshots();
   }
 
-  Future<bool> checkFree() async{
+
+  checkFree() async{
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
     DocumentSnapshot data = await userCollection.doc(_user.uid).get();
-    if(data['free'] != null)
+    if(data['free'] == null){
+      _controller.isFree.value = true;
+    } else {
       freeDate = int.parse(Util.dateFormat(data['free'].toDate()).replaceAll('-', ''));
-    if(freeDate == today && freeDate != null){
-      _controller.isFree.value = false;
-      return Future.value(false);
+      if(freeDate == today){
+        _controller.isFree.value = false;
+      } else {
+        _controller.isFree.value = true;
+      }
     }
-    _controller.isFree.value = true;
-    return Future.value(true);
-  }
 
+  }
   updateDailyMeetingActivation(bool bool) async {
     await userCollection.doc(_user.uid).update({"dailyMeetingActivation" : bool});
-  }
-
-
-}

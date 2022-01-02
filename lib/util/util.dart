@@ -50,12 +50,4 @@ class Util {
     return Future<File>.value(null);
   }
 
-  static Future<bool> onWillPop() {
-    //Get.defaultDialog(title: "알림", middleText: "종료하시겠습니까?", textConfirm: "예", onConfirm: () => exit(0), textCancel: "취소", onCancel: () => Get.back());
-    Get.dialog(
-      NotificationDialog(
-        contents: "aa",
-      )
-    );
-  }
 }

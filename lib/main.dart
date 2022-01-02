@@ -7,6 +7,7 @@ import 'package:signalmeeting/controller/meeting_controller.dart';
 import 'package:signalmeeting/controller/my_meeting_controller.dart';
 import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/services/push_notification_handler.dart';
+import 'package:signalmeeting/ui/drawer/inquiry_page.dart';
 import 'package:signalmeeting/ui/lobby.dart';
 import 'package:signalmeeting/ui/start/start_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -89,15 +90,20 @@ class Splash extends StatelessWidget {
             } else {
               String uid = snapshot.data.uid;
               String phone = snapshot.data.phoneNumber;
-              print(snapshot.data.uid);
+              print(snapshot.data);
               return FutureBuilder<bool>(
                   future: DatabaseService.instance.checkAuth(uid, phone),
                   builder: (context, AsyncSnapshot<bool> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData)
                       return Center(child: CircularProgressIndicator());
                     else if (snapshot.data) {
-                      PushNotificationsHandler().init();
-                      return LobbyPage();
+                      MainController _mainController = Get.find();
+                      if(_mainController.user.value.stop)
+                        return InquiryPage(); // 이용문의 페이지
+                      else {
+                        PushNotificationsHandler().init();
+                        return LobbyPage();
+                      }
                     } else {
                       // auth 는 있는데 db 에 userData 없음 => 프로필입력페이지로
                       return StartPage3();

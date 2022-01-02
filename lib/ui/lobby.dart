@@ -18,6 +18,7 @@ import 'package:signalmeeting/util/util.dart';
 import 'alarm/alarmPage.dart';
 import 'drawer/custom_drawer.dart';
 import 'home/home_page.dart';
+import 'menu/menu_page.dart';
 
 
 class LobbyController extends GetxController {
@@ -62,16 +63,12 @@ class LobbyPage extends StatelessWidget {
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
   Future<bool> _onWillPop(BuildContext context) {
-    if (_key.currentState.isDrawerOpen){
-      Get.back();
-      return Future.value(false);
-    }
 
     if (_selectedIndex != 0) {
       _lobbyController.selectedIndex.value = 0;
       return Future.value(false);
     }
-    return Util.onWillPop();
+    return Future.value(true);
 
   }
 

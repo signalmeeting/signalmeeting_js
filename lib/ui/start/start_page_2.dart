@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/main_controller.dart';
 import 'package:signalmeeting/model/userModel.dart';
 import 'package:signalmeeting/services/database.dart';
+import 'package:signalmeeting/ui/drawer/inquiry_page.dart';
 import 'package:signalmeeting/ui/drawer/personalInfo.dart';
 import 'package:signalmeeting/ui/drawer/terms.dart';
 import 'package:signalmeeting/ui/lobby.dart';
@@ -274,7 +275,7 @@ class _StartPage2State extends State<StartPage2> {
                     bool result = await DatabaseService.instance.checkAuth(_auth.currentUser.uid, _auth.currentUser.phoneNumber);
                     //이미 계정 있으면 로그인
                     if (result)
-                      Get.offAll(() => LobbyPage());
+                      user.stop ? Get.offAll(() => InquiryPage()) : Get.offAll(() => LobbyPage());
                     //회원가입 페이지
                     else
                       Get.to(() => StartPage3());

@@ -273,39 +273,6 @@ class _CoinLogState extends State<CoinLog> {
     );
   }
 
-  oppositeUserDialog(String uid) async{
-    UserModel oppositeUser = await DatabaseService.instance.getOppositeUserInfo(uid);
-    Get.dialog(MainDialog(
-      title: "상대 정보",
-      contents: Padding(
-        padding: const EdgeInsets.only(bottom : 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    rowText("이름", oppositeUser.name),
-                    rowText("나이", oppositeUser.age),
-                    rowText("전화번호", phoneNumber(oppositeUser.phone)),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      buttonText: "확인",
-      onPressed: () => Get.back(),
-    ));
-  }
 
   showMeetingDialog(Map<String, dynamic> meeting) {
     String location = meeting['loc1'] + " " + meeting['loc2'] + " " + meeting['loc3'];
@@ -340,47 +307,6 @@ class _CoinLogState extends State<CoinLog> {
     ));
   }
 
-  showMeetingDialog2(Map<String, dynamic> meeting, String uid) async{
-    UserModel oppositeUser = await DatabaseService.instance.getOppositeUserInfo(uid);
-    String location = meeting['loc1'] + " " + meeting['loc2'];
-    Get.dialog(MainDialog(
-      title: "미팅/상대 정보",
-      contents: Padding(
-        padding: const EdgeInsets.only(bottom : 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    rowText("이름", oppositeUser.name),
-                    rowText("나이", oppositeUser.age),
-                    rowText("전화번호", phoneNumber(oppositeUser.phone)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Divider(height: 1, color: Colors.black38,),
-                    ),
-                    rowText("미팅 인원", meeting["number"].toString()),
-                    rowText("위치", location),
-                    rowText("상세 위치", meeting['loc3']),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      buttonText: "확인",
-      onPressed: () => Get.back(),
-    ));
-  }
 
   dialogCase(List logList, int index) {
     switch(logList[index]['usage']) {
@@ -413,27 +339,4 @@ class _CoinLogState extends State<CoinLog> {
       return "-" + coin.toString()  + " 하트";
     }
   }
-
-  datePicker() {
-    var date = DateTime.now();
-    showMaterialDatePicker(
-      context: context,
-      selectedDate: date,
-      onChanged: (value) => setState(() => date = value),
-      onConfirmed: (){},
-      onCancelled: () => Get.back(),
-    );
-  }
-
-  datePicker2() {
-    var date = DateTime.now();
-    showMaterialDatePicker(
-      context: context,
-      selectedDate: date,
-      onChanged: (value) => setState(() => date = value),
-      onConfirmed: (){},
-      onCancelled: () => Get.back(),
-    );
-  }
-
 }
