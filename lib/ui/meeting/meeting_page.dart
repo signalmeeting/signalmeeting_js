@@ -304,7 +304,7 @@ class _MeetingPageState extends State<MeetingPage> {
         Map<String, dynamic> meeting = e.data();
         meeting["_id"] = e.id;
         meeting["isMine"] = meeting["userId"] == user.uid;
-        //
+        meeting['createdAt'] = meeting['createdAt'].toDate().toString();
         //신고 3번 먹으면 노출 안되게
         if(meeting['banList'].length > 2) {
           return;

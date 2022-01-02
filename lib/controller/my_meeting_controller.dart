@@ -49,6 +49,7 @@ class MyMeetingController extends GetxController {
       Map<String, dynamic> meeting = resultList[i].data();
       meeting["_id"] = resultList[i].id;
       meeting["isMine"] = true;
+      meeting['createdAt'] = meeting['createdAt'].toDate().toString();
       if (meeting["process"] == 0 || meeting["process"] == 1) // apply 존재 //인창 수정, 성사 후에도 상대방 확인 위해 meeting["process"] == 1 추가
       {
         QueryDocumentSnapshot applyData = await DatabaseService.instance.getApplyData(resultList[i].id);

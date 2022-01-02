@@ -295,6 +295,7 @@ class DatabaseService {
         Map<String, dynamic> meeting = snapshot.data();
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
+        meeting['createdAt'] = meeting['createdAt'].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
       return meetingList;

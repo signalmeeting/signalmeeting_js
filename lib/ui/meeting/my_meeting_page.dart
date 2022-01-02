@@ -117,13 +117,13 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                   if (short) {
                     return shortTileRow(itemList[index]);
                   } else if (isMine) {
-                    return meetingGridItem(itemList[index], isMine: true);
+                    return meetingGridItem(itemList[index], isMine: true, myMeeting: true);
                   } else {
                     bool refused = false;
                     if(itemList[index].process == null) {
                       refused = true;
                     }
-                    return meetingGridItem(itemList[index], didIApplied: true, refused: refused);
+                    return meetingGridItem(itemList[index], didIApplied: true, refused: refused, myMeeting: true);
                   }
                 },
               ),

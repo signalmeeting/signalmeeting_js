@@ -37,7 +37,7 @@ class MeetingModel {
   int process; // null: 신청 가능 0: 신청중, 1: 연결, 2: 거절 (null 이거나 2 이면 신청 가능)
   ApplyModel apply; //msg, user(id), createdAt, +phone
   UserModel applyUser;
-  DateTime date;
+  DateTime createdAt;
   String meetingImageUrl;
   MeetingModel();
   List<Map<String, dynamic>> banList = [];
@@ -59,5 +59,5 @@ class MeetingModel {
     return toJson().toString();
   }
 
-  String get monthDate => Jiffy(date, "yyyy.MM.dd").format("MM.dd");
+  String get monthDate => Jiffy(createdAt, "yyyy.MM.dd").format("MM.dd");
 }

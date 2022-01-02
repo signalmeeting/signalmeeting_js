@@ -28,8 +28,9 @@ MeetingModel _$MeetingModelFromJson(Map<String, dynamic> json) {
     ..applyUser = json['applyUser'] == null
         ? null
         : UserModel.fromJson(json['applyUser'] as Map<String, dynamic>)
-    ..date =
-        json['date'] == null ? null : DateTime.parse(json['date'] as String)
+    ..createdAt = json['createdAt'] == null
+        ? null
+        : DateTime.parse(json['createdAt'] as String)
     ..meetingImageUrl = json['meetingImageUrl'] as String
     ..banList = (json['banList'] as List)
         ?.map((e) => e as Map<String, dynamic>)
@@ -53,7 +54,7 @@ Map<String, dynamic> _$MeetingModelToJson(MeetingModel instance) =>
       'process': instance.process,
       'apply': instance.apply,
       'applyUser': instance.applyUser,
-      'date': instance.date?.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
       'meetingImageUrl': instance.meetingImageUrl,
       'banList': instance.banList,
     };

@@ -32,5 +32,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'pushInfo': instance.pushInfo,
       'invite': instance.invite,
       'banList': instance.banList,
-      'free' : instance.free,
+      'free': instance.free,
     };

@@ -10,10 +10,10 @@ import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/flush_bar.dart';
-
+import 'package:signalmeeting/util/util.dart';
 import '../cached_image.dart';
 
-Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied = false, bool refused = false}) {
+Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied = false, bool refused = false, bool myMeeting = false}) {
   return InkWell(
     onTap: () {
 
@@ -51,29 +51,36 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
               },));
       }
     },
-    child: OpenContainer(
-        useRootNavigator: true,
-        tappable: ((didIApplied || item.isMine || item.process == null) && !refused) ? true : false,
-        transitionDuration: Duration(milliseconds: 500),
-        openShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.2),
-        ),
-        closedColor: Colors.transparent,
-        closedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.2),
-        ),
-        openElevation: 0,
-        closedElevation: 0,
-        closedBuilder: (context, action) => closedItem(item),
-        onClosed: (Null) async {
-          await 1.delay();
-          Get.delete<MeetingDetailController>(tag: item.id);
-        },
-        openBuilder: (context, action) {
-          print('gridItem clicked : $item');
-          MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item), tag: item.id);
-          return MeetingDetailPage(_meetingDetailController);
-        }
+    child: Stack(
+      children: <Widget>[
+        OpenContainer(
+          useRootNavigator: true,
+          tappable: ((didIApplied || item.isMine || item.process == null) && !refused) ? true : false,
+          transitionDuration: Duration(milliseconds: 500),
+          openShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.2),
+          ),
+          closedColor: Colors.transparent,
+          closedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.2),
+          ),
+          openElevation: 0,
+          closedElevation: 0,
+          closedBuilder: (context, action) => closedItem(item),
+          onClosed: (Null) async {
+            await 1.delay();
+            Get.delete<MeetingDetailController>(tag: item.id);
+          },
+          openBuilder: (context, action) {
+            print('gridItem clicked : $item');
+            MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item), tag: item.id);
+            return MeetingDetailPage(_meetingDetailController);
+          }
+      ),
+        !myMeeting ? Positioned(child: Container(height: 20, color: Colors.white,
+          child: Center(child: Text("D-${(31 - DateTime.now().difference(item.createdAt).inDays).toString()}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)),
+        ), top: 10) : Container(),
+      ]
     ),
   );
 }
