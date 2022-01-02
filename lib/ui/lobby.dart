@@ -10,6 +10,7 @@ import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/coin/coinlog.dart';
 import 'package:signalmeeting/ui/meeting/meeting_detail_page.dart';
 import 'package:signalmeeting/ui/meeting/meeting_page.dart';
+import 'package:signalmeeting/ui/menu/menu_page.dart';
 import 'package:signalmeeting/ui/test/dailymeetingtest2.dart';
 import 'package:signalmeeting/ui/test/dailymeetingtest3.dart';
 import 'package:signalmeeting/util/util.dart';
@@ -83,7 +84,7 @@ class LobbyPage extends StatelessWidget {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,
           appBar: buildAppBar(context),
-          body: Obx(() => Center(child: _widgetOptions.elementAt(_selectedIndex))),
+          body: Obx(() => _widgetOptions.elementAt(_selectedIndex)),
           bottomNavigationBar: SizedBox(
               height: 60,
               child: Obx(

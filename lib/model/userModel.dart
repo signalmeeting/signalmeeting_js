@@ -18,6 +18,7 @@ class UserModel {
   bool invite;
   List<Map<String, dynamic>> banList = []; //[{'from' : 'id', 'to' : 'id', 'time' : 'date'}, ...]
   var free;
+  bool dailyMeetingActivation;
 
   UserModel(
       {this.uid,
@@ -28,7 +29,8 @@ class UserModel {
       this.profileInfo,
       this.invite,
       this.banList,
-      this.free
+      this.free,
+      this.dailyMeetingActivation
       });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
@@ -36,7 +38,15 @@ class UserModel {
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   static UserModel initUser() {
-    return new UserModel(phone: '', coin: 0, stop: false, profileInfo: {"pics": []}, invite: false, banList: [], free : null);
+    return new UserModel(
+        phone: '',
+        coin: 0,
+        stop: false,
+        profileInfo: {"pics": []},
+        invite: false,
+        banList: [],
+        free: null,
+        dailyMeetingActivation: true);
   }
 
   @override

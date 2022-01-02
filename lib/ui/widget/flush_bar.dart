@@ -7,7 +7,8 @@ Widget CustomedFlushBar(BuildContext context, String text) {
     backgroundColor:
     Colors.black.withOpacity(0.7),
     margin: EdgeInsets.all(8),
-    borderRadius: BorderRadius.circular(8.0),
+    borderWidth: 8,
+    borderRadius: BorderRadius.all(Radius.circular(8)),
     message: text,
     duration: Duration(seconds: 2),
   )..show(context);

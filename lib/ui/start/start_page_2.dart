@@ -296,9 +296,9 @@ class _StartPage2State extends State<StartPage2> {
         children: <Widget>[
           Checkbox(
             activeColor: Colors.blue,
-              shape: RoundedRectangleBorder( // Making around shape
-                  borderRadius: BorderRadius.circular(4)),
               value: isChecked,
+              // shape: RoundedRectangleBorder( // Making around shape
+              //     borderRadius: BorderRadius.circular(4)),
               onChanged: (value) {
                 setState(() {
                   isChecked = value;

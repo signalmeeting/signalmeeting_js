@@ -19,6 +19,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
         ?.map((e) => e as Map<String, dynamic>)
         ?.toList(),
     free: json['free'],
+    dailyMeetingActivation: json['dailyMeetingActivation'] as bool,
   )..pushInfo = json['pushInfo'] as Map<String, dynamic>;
 }
 
@@ -33,4 +34,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'invite': instance.invite,
       'banList': instance.banList,
       'free': instance.free,
+      'dailyMeetingActivation': instance.dailyMeetingActivation,
     };

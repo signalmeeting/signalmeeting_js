@@ -397,14 +397,6 @@ class DatabaseService {
       return Future.value(false);
   }
 
-  Future<bool> checkStop(String uid) async{
-    DocumentSnapshot data = await userCollection.doc(uid).get();
-    if(data['stop']){
-      return Future.value(true);
-    }
-    return Future.value(false);
-  }
-
   Future<bool> newUser() async {
     bool result;
     List uploadedPics = [];
@@ -516,9 +508,7 @@ class DatabaseService {
       }
       TodayMatch todayMatch = TodayMatch(documentId: element.id, sameGenders: sameGenders, oppositeGenders: oppositeGenders);
       todayMatchList.add(todayMatch);
-      print("todayMatch : $todayMatch");
     });
-
     _controller.updateTodayMatchList(todayMatchList);
   }
 
@@ -651,6 +641,5 @@ class DatabaseService {
     }
 
   }
-
-
-}
+  updateDailyMeetingActivation(bool bool) async {
+    await userCollection.doc(_user.uid).update({"dailyMeetingActivation" : bool});
