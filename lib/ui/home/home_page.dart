@@ -48,7 +48,49 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildTodayMatch() {
     return todayMatchList.length == 0
-        ? Center(child: Text('밤 12시 마다 업데이트됩니다 '))
+        ? Center(
+      child: Stack(children: [
+        Column(
+          children: [
+            indicator(isItDummy: true),
+            Expanded(
+              child: Row(children: [
+                for(int i = 0; i < 2; i++)
+                  Expanded(child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          for (int j = 0; j < 4; j++)
+                            Container(
+                              width: Get.height * 0.17,
+                              height: Get.height * 0.17,
+                              decoration: BoxDecoration(
+                                color: i == 0
+                                    ? Colors.blue[100].withOpacity(0.1)
+                                    : Colors.red[100].withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  width: 1.5,
+                                  color: i == 0 ? Colors.blue[50] : Colors.red[50],
+                                ),
+                              ),
+
+                              child: Icon(
+                                Icons.favorite,
+                                color: Colors.red[50],
+                                size: Get.height * 0.17 * 0.4,
+                              ),
+                            ),
+                        ]),
+                  )),
+              ]),
+            ),
+          ],
+        ),
+        Center(child: Text('매일 밤 12시 마다 업데이트됩니다 \u{1F618}', style: TextStyle(fontFamily: "AppleSDGothicNeoB"),)),
+      ]),
+    )
         : ScrollConfiguration(
             behavior: ScrollBehavior(),
             child: GlowingOverscrollIndicator(
@@ -82,7 +124,7 @@ class _HomePageState extends State<HomePage> {
           );
   }
 
-  Widget indicator() {
+  Widget indicator({bool isItDummy = false}) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: Row(
@@ -98,7 +140,7 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
               activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
             ),
-            dotsCount: todayMatchList.length,
+            dotsCount: !isItDummy ? todayMatchList.length : 2,
             position: currentIndex,
           )
         ],
