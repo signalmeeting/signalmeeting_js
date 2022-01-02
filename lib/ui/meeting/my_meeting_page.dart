@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:signalmeeting/controller/my_meeting_controller.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/services/database.dart';
 import 'package:signalmeeting/ui/home/opposite_profile.dart';
 import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:signalmeeting/ui/widget/deletedUser.dart';
 import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
 import 'package:signalmeeting/ui/widget/meeting/meetingGridItem.dart';
 
@@ -81,13 +83,6 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
           )
         ],
       ),
-    );
-  }
-
-  buildTodayConnectionList() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
-      child: Wrap(children: _controller.todayConnectionList.map<Widget>((element) => shortTileRow(element)).toList()),
     );
   }
 
@@ -237,7 +232,9 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   //   );
   // }
 
-  Widget shortTileRow(UserModel user) {
+  Widget shortTileRow(Map<String, UserModel> connection) {
+    String docId = connection.keys.toList()[0];
+    UserModel user = connection.values.toList()[0];
     return Card(
       elevation: 1.5,
       shape: RoundedRectangleBorder(
@@ -245,7 +242,11 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(3.0),
-        child: Column(
+        child: user.deleted == true ? deletedUser(onPressed: () async{
+          await DatabaseService.instance.deleteTodayConnection(docId);
+          _controller.todayConnectionList.removeWhere((element) => element.keys.toList()[0] == docId);
+          Get.back();
+        }) : Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(

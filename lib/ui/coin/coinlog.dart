@@ -307,7 +307,10 @@ class _CoinLogState extends State<CoinLog> {
     ));
   }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> kunhee
   dialogCase(List logList, int index) {
     switch(logList[index]['usage']) {
       case '시그널 보내기' : {

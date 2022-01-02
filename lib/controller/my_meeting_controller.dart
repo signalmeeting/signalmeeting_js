@@ -10,7 +10,7 @@ class MyMeetingController extends GetxController {
 
   UserModel get user => _mainController.user.value;
 
-  RxList<UserModel> todayConnectionList = <UserModel>[].obs;
+  RxList<Map<String,UserModel>> todayConnectionList = <Map<String,UserModel>>[].obs;
   RxList<MeetingModel> myMeetingList = <MeetingModel>[].obs;
   RxList<MeetingModel> myMeetingApplyList = <MeetingModel>[].obs;
 
@@ -30,15 +30,15 @@ class MyMeetingController extends GetxController {
   getTodayConnectionList() async {
     List<QueryDocumentSnapshot> resultList = await DatabaseService.instance.getTodayConnectionList();
     if(resultList.length > 0) {
-      List<UserModel> userList = [];
+      List<Map<String,UserModel>> connectionList = [];
       for (int i = 0; i < resultList.length; i++) {
         QueryDocumentSnapshot e = resultList[i];
         UserModel opposite = user.man
             ? await DatabaseService.instance.getOppositeUserInfo(e.data()["womanId"])
             : await DatabaseService.instance.getOppositeUserInfo(e.data()["manId"]);
-        userList.add(opposite);
+        connectionList.add({e.id : opposite});
       }
-      this.todayConnectionList.assignAll(userList);
+      this.todayConnectionList.assignAll(connectionList);
     }
   }
 

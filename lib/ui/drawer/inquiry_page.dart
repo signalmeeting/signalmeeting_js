@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,7 +80,7 @@ class _InquiryPageState extends State<InquiryPage> {
                     ConfirmDialog(
                       title: '회원 탈퇴',
                       text: '탈퇴하시면 복구가 불가능합니다.\n정말로 탈퇴하시겠습니까?',
-                      onConfirmed: withDraw,
+                      onConfirmed: DatabaseService.instance.withDraw,
                       confirmText: '탈퇴',
                     ),
                   );
@@ -146,6 +147,10 @@ class _InquiryPageState extends State<InquiryPage> {
     try {
       await FirebaseAuth.instance.signOut();
       Get.delete<LobbyController>();
+<<<<<<< HEAD
+=======
+      _controller.user = UserModel().obs;
+>>>>>>> kunhee
       _controller.todayMatchList.clear();
       Get.offAll(() => Splash());
     } catch (e) {
@@ -154,12 +159,5 @@ class _InquiryPageState extends State<InquiryPage> {
         contents: e.toString(),
       ));
     }
-  }
-
-  withDraw() async {
-    await FirebaseAuth.instance.currentUser.delete();
-    await DatabaseService.instance.userCollection
-        .doc(_controller.user.value.uid)
-        .delete();
   }
 }
