@@ -13,7 +13,9 @@ import 'package:signalmeeting/model/alarmModel.dart';
 import 'package:signalmeeting/model/meetingModel.dart';
 import 'package:signalmeeting/model/todayMatch.dart';
 import 'package:signalmeeting/model/userModel.dart';
+import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
 import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
+import 'package:signalmeeting/ui/widget/flush_bar.dart';
 import 'package:signalmeeting/util/uiData.dart';
 import 'dart:math';
 
@@ -260,7 +262,7 @@ class DatabaseService {
   }
 
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
-    print('_user.uid : ${_user.uid}');
+    // print('_user.uid : ${_user.uid}');
 
     QuerySnapshot snapshot = await meetingApplyCollection
         .where("userId", isEqualTo: _user.uid)
@@ -268,22 +270,22 @@ class DatabaseService {
         .orderBy("createdAt", descending: true)
         .get();
 
-    print('???? : ${snapshot.docs.length}');
+    // print('???? : ${snapshot.docs.length}');
     for(int i = 0; i < snapshot.docs.length; i++) {
-      print('process : ${snapshot.docs[i]['process']}');
+      // print('process : ${snapshot.docs[i]['process']}');
     }
 
     if (snapshot.docs != null) {
       List meetingIdList = [];
       for(int i = 0; i < snapshot.docs.length; i++) {
         if(snapshot.docs[i].data()['process'] != null) {
-          print('??@@@@ : ${snapshot.docs[i].data()['process']}');
+          // print('??@@@@ : ${snapshot.docs[i].data()['process']}');
           meetingIdList.add(snapshot.docs[i].data()['meeting']);
-          print('process is not null');
-        } else print('process is null');
+          // print('process is not null');
+        }
       }
       // List meetingIdList = snapshot.docs.map((e) => e.data()["meeting"]).toList();
-      print('meetingIdList : $meetingIdList');
+      // print('meetingIdList : $meetingIdList');
       List<MeetingModel> meetingList = [];
       for (int i = 0; i < meetingIdList.length; i++) {
         DocumentSnapshot snapshot = await meetingCollection.doc(meetingIdList[i]).get();
@@ -618,7 +620,6 @@ class DatabaseService {
         .snapshots();
   }
 
-
   Future<bool> checkFree() async{
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
@@ -631,7 +632,10 @@ class DatabaseService {
     }
     _controller.isFree.value = true;
     return Future.value(true);
+  }
 
+  updateDailyMeetingActivation(bool bool) async {
+    await userCollection.doc(_user.uid).update({"dailyMeetingActivation" : bool});
   }
 
 

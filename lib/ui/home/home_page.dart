@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildTodayMatch() {
     return todayMatchList.length == 0
-        ? Center(child: Text('오늘의 소개팅이 준비중입니다!'))
+        ? Center(child: Text('밤 12시 마다 업데이트됩니다 '))
         : ScrollConfiguration(
             behavior: ScrollBehavior(),
             child: GlowingOverscrollIndicator(
