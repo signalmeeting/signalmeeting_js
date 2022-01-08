@@ -16,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:byule/ui/start/start_page_3.dart';
 
 import 'model/userModel.dart';
+import 'services/inAppManager.dart';
 import 'services/push_notification_handler.dart';
 import 'services/push_notification_handler.dart';
 
@@ -102,6 +103,7 @@ class Splash extends StatelessWidget {
                         return InquiryPage(); // 이용문의 페이지
                       else {
                         PushNotificationsHandler().init();
+                        _mainController.inAppManager = InAppManager()..init();
                         return LobbyPage();
                       }
                     } else {
