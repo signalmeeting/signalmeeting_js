@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:byule/controller/my_meeting_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -150,7 +151,7 @@ class DatabaseService {
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl": meetingImageUrl,
       "banList": [],
-      'deletedTime': '',
+      "deletedTime" : "",
     };
 
     meetingDoc.set(newMeeting);
@@ -158,13 +159,13 @@ class DatabaseService {
     Get.back();
   }
 
-  deleteMeeting(String docId) async {
-    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now()});
+  deleteMeeting(String docId, {int process}) async {
+    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now(), "process" : process,});
   }
 
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: "")
         .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 31)))
         .orderBy("createdAt", descending: true)
         .snapshots();
@@ -220,7 +221,7 @@ class DatabaseService {
 
   Future<List<QueryDocumentSnapshot>> getMyMeetingList() async {
     QuerySnapshot snapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: "")
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -271,7 +272,8 @@ class DatabaseService {
     if (snapshot.docs != null) {
       List meetingIdList = [];
       for (int i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].data()['process'] != null) {
+        if (snapshot.docs[i].data()['process'] != null
+        ) {
           meetingIdList.add(snapshot.docs[i].data()['meeting']);
         } else
           print('process is null');
@@ -284,7 +286,7 @@ class DatabaseService {
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
         meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-        if(meeting["deletedTime"].length > 0)
+        if(meeting["deletedTime"] != "" )
           meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
@@ -688,7 +690,7 @@ class DatabaseService {
     List<String> meetingDocList = [];
     List<String> applyDocList = [];
     QuerySnapshot myMeetingSnapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: "")
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -731,5 +733,13 @@ class DatabaseService {
 
   deleteApply(String docId) async {
     await meetingApplyCollection.doc(docId).delete();
+  }
+
+  deleteDaily(String docId) async{
+    await todayConnectionCollection.doc(docId).update({"deletedTime" : DateTime.now(), "deleteUser" : _user.uid});
+  }
+
+  deleteMeetingApply(String docId) async{
+    await meetingApplyCollection.doc(docId).update({"process" : 3});
   }
 }
