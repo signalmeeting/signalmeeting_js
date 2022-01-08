@@ -17,11 +17,11 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
   return InkWell(
     onTap: () {
       //print('is it refused ? : $refused');
-
+      print("ttttt : ${item.id}");
       if(refusedOrDeleted) {
         //Get.defaultDialog(title: '거절된 미팅\n미팅이 거절되었습니다');
         Get.dialog(NotificationDialog(contents: item.process == 3 ? "미팅이 삭제되었습니다" : "미팅이 거절되었습니다",));
-        DatabaseService.instance.checkRefused(item.id);
+        DatabaseService.instance.checkRefused(item.id, item.process != 3 ? true : false);
         MyMeetingController _controller = Get.find();
         _controller.myMeetingApplyList.remove(item);
       }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -349,11 +350,11 @@ class DatabaseService {
     }
   }
 
-  checkRefused(String meetingId) async {
+  checkRefused(String meetingId, bool isRefused) async {
     QuerySnapshot snapshot = await meetingApplyCollection
         .where("userId", isEqualTo: _user.uid)
         .where("meeting", isEqualTo: meetingId)
-        .where("process", isEqualTo: 2)
+        .where("process", isEqualTo: isRefused ? 2 : 1)
         .get();
     QueryDocumentSnapshot doc = snapshot.docs[0];
     DocumentReference docRef = doc.reference;
