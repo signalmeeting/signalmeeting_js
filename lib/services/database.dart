@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:byule/controller/my_meeting_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -67,6 +67,9 @@ class DatabaseService {
 
   //Coin UsageLog
   final CollectionReference coinLogCollection = FirebaseFirestore.instance.collection('coinLog');
+
+  //Coin purchase
+  final CollectionReference receiptCollection = FirebaseFirestore.instance.collection('receipts');
 
   //today signalting
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
@@ -221,7 +224,7 @@ class DatabaseService {
 
   Future<List<QueryDocumentSnapshot>> getMyMeetingList() async {
     QuerySnapshot snapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: "")
+        .where("deletedTime", isEqualTo: '')
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -272,8 +275,7 @@ class DatabaseService {
     if (snapshot.docs != null) {
       List meetingIdList = [];
       for (int i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].data()['process'] != null
-        ) {
+        if (snapshot.docs[i].data()['process'] != null) {
           meetingIdList.add(snapshot.docs[i].data()['meeting']);
         } else
           print('process is null');
@@ -644,6 +646,48 @@ class DatabaseService {
     return coinLogCollection.where('userid', isEqualTo: _user.uid).orderBy('date', descending: true).snapshots();
   }
 
+  Future<Map> purchaseReceipt(PurchasedItem purchasedItem) async {
+    Map transactionReceipt;
+    String productId = purchasedItem.productId;
+    String orderId;
+    String purchaseToken;
+    String packageName;
+    // TODO 테스트 해봐야됨
+    if (Platform.isAndroid) {
+      transactionReceipt = jsonDecode(purchasedItem.transactionReceipt); //string => map
+    } else {
+      transactionReceipt = jsonDecode(purchasedItem.originalTransactionIdentifierIOS); //string => map
+    }
+    orderId = transactionReceipt["orderId"];
+    purchaseToken = transactionReceipt["purchaseToken"];
+    packageName = transactionReceipt["packageName"];
+
+    int addCoin = int.parse(productId.replaceFirst('coin', ''));
+
+    Map receiptInfo = {
+      "userId": _user.uid,
+      "coin": addCoin,
+      "userCoin": _user.coin + addCoin,
+      "data": {
+        "orderId": orderId,
+        "productId": productId,
+        "purchaseToken": purchaseToken,
+        "packageName": packageName,
+        "verified": "영수증 확인중"
+      },
+      "date": DateTime.now(),
+    };
+
+    Map resultMap;
+    DocumentReference receiptDoc = receiptCollection.doc(orderId);
+    await receiptDoc.set(receiptInfo).whenComplete(() {
+      userCollection.doc(_user.uid).update({"coin": FieldValue.increment(addCoin)});
+      resultMap = {"result": true, "coin": addCoin};
+    }).onError((error, stackTrace) => resultMap = {"result": false}); //TODO 에러 로그 남겨야될듯?
+
+    return Future.value(resultMap);
+  }
+
   checkFree() async {
     int today = int.parse(Util.dateFormat(DateTime.now()).replaceAll('-', ''));
     int freeDate;
@@ -690,7 +734,7 @@ class DatabaseService {
     List<String> meetingDocList = [];
     List<String> applyDocList = [];
     QuerySnapshot myMeetingSnapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: "")
+        .where("deletedTime", isEqualTo: '')
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();

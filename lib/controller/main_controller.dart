@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:byule/services/inAppManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +27,7 @@ class MainController extends GetxController {
   RxBool isFree = false.obs;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  InAppManager inAppManager;
 
   logOut() async {
     await FirebaseAuth.instance.signOut();
