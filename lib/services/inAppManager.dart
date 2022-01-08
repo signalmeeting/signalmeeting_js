@@ -48,13 +48,9 @@ class InAppManager {
     }
   }
 
-  void requestPurchase(String productId, {isConsumable = true}) {
-    //아이템 구매 , 컨슘 아니면 구독
+  void requestPurchase(String productId) {
     print('productId $productId');
-    if (isConsumable)
-      FlutterInappPurchase.instance.requestPurchase(productId);
-    else
-      FlutterInappPurchase.instance.requestSubscription(productId);
+    FlutterInappPurchase.instance.requestPurchase(productId);
   }
 
   Future<bool> consumePurchase(PurchasedItem purchasedItem) async {
