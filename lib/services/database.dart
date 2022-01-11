@@ -66,11 +66,8 @@ class DatabaseService {
   //invite freind
   final CollectionReference inviteCollection = FirebaseFirestore.instance.collection('invites');
 
-  //Coin UsageLog
+  //Coin receipt/usage Log
   final CollectionReference coinLogCollection = FirebaseFirestore.instance.collection('coinLog');
-
-  //Coin purchase
-  final CollectionReference receiptCollection = FirebaseFirestore.instance.collection('receipts');
 
   //today signalting
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
@@ -155,7 +152,6 @@ class DatabaseService {
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl": meetingImageUrl,
       "banList": [],
-      "deletedTime" : "",
     };
 
     meetingDoc.set(newMeeting);
@@ -665,8 +661,9 @@ class DatabaseService {
 
     int addCoin = int.parse(productId.replaceFirst('coin', ''));
 
-    Map receiptInfo = {
-      "userId": _user.uid,
+    Map<String, dynamic> receiptInfo = {
+      "userid": _user.uid,
+      "usage" : "하트 충전",
       "coin": addCoin,
       "userCoin": _user.coin + addCoin,
       "data": {
@@ -679,12 +676,14 @@ class DatabaseService {
       "date": DateTime.now(),
     };
 
-    Map resultMap;
-    DocumentReference receiptDoc = receiptCollection.doc(orderId);
-    await receiptDoc.set(receiptInfo).whenComplete(() {
+    Map<String, dynamic> resultMap;
+    await coinLogCollection.doc().set(receiptInfo).whenComplete(() {
       userCollection.doc(_user.uid).update({"coin": FieldValue.increment(addCoin)});
-      resultMap = {"result": true, "coin": addCoin};
-    }).onError((error, stackTrace) => resultMap = {"result": false}); //TODO 에러 로그 남겨야될듯?
+      resultMap = {"result": true, "coin": _user.coin + addCoin};
+    }).onError((error, stackTrace) {
+      print("collection error : $error");
+      return resultMap = {"result": false};
+    }); //TODO 에러 로그 남겨야될듯?
 
     return Future.value(resultMap);
   }

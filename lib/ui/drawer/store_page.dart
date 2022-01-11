@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:byule/controller/main_controller.dart';
 
 class StorePage extends StatelessWidget {
+
+  MainController _mainConroller = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +66,10 @@ class StorePage extends StatelessWidget {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      ItemTile(10, '2,900'),
-                      ItemTile(30, '5,900'),
-                      ItemTile(50, '8,900'),
-                      ItemTile(99, '13,900'),
+                      ItemTile(10, '3,900'),
+                      ItemTile(30, '9,500'),
+                      ItemTile(50, '14,500'),
+                      ItemTile(110, '29,500'),
                     ],
                   ),
                 ],
@@ -80,7 +82,10 @@ class StorePage extends StatelessWidget {
   }
   Widget ItemTile(number, price) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        print("ontap item");
+        _mainConroller.inAppManager.requestPurchase("coin$number");
+      },
       child: Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 0, left: 18, right: 18),
         child: Card(

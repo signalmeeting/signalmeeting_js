@@ -7,15 +7,16 @@ import 'package:get/get.dart';
 
 import 'database.dart';
 
-final List<String> _productLists = Platform.isAndroid? ['coin1','coin3', 'coin10', 'coin30']
-    : ['coin1', 'coin3', 'coin10', 'coin30'].map((item) =>'com.signalmeeting.'+item).toList();
+final List<String> _productLists = Platform.isAndroid? ['coin10','coin30', 'coin50', 'coin110']
+    : ['coin10','coin30', 'coin50', 'coin110'].map((item) =>'com.signalmeeting.'+item).toList();
 
 class InAppManager {
   MainController _mainController = Get.find();
 
   init() async {
     await FlutterInappPurchase.instance.initConnection;
-    await FlutterInappPurchase.instance.getProducts(_productLists); //상품 목록 로드 , 아이폰은 구독로드가 따로 없음 (~11.2)
+    dynamic productList=  await FlutterInappPurchase.instance.getProducts(_productLists); //상품 목록 로드 , 아이폰은 구독로드가 따로 없음 (~11.2)
+    print("productList : $productList");
     FlutterInappPurchase.purchaseUpdated.listen((productItem) {
       print('purchase-updated: $productItem');
       // 구매성공 했을때 들어오는곳
@@ -55,13 +56,13 @@ class InAppManager {
 
   Future<bool> consumePurchase(PurchasedItem purchasedItem) async {
     print('consumePurchase start');
-    Map result = await DatabaseService.instance.purchaseReceipt(purchasedItem);
+    Map<String, dynamic> resultMap = await DatabaseService.instance.purchaseReceipt(purchasedItem);
     print('consumePurchase done');
 
-    if (result['result']) {
-      _mainController.updateUser(_mainController.user.value..coin = result['coin']);
+    if (resultMap['result']) {
+      _mainController.updateUser(_mainController.user.value..coin = resultMap['coin']);
       await FlutterInappPurchase.instance.finishTransaction(purchasedItem, isConsumable: (purchasedItem.productId.startsWith('coin')));
     }
-    return result['result'];
+    return resultMap['result'];
   }
 }
