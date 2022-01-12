@@ -32,7 +32,7 @@ class UserModel {
       this.banList,
       this.free,
       this.dailyMeetingActivation,
-        this.deleted
+      this.deleted,
       });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

@@ -33,28 +33,31 @@ class _CoinLogState extends State<CoinLog> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: buildAppBar(context),
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              //Obx(() => top()),
-              Obx(() => top2()),
-              //divider("사용 내역"),
-              mid()
-              ,
-              Divider(height: 1, color: Colors.black38,),
-              StreamBuilder<QuerySnapshot>(
-                  stream: DatabaseService.instance.getCoinLog(),
-                  builder: (BuildContext context ,AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if(snapshot.connectionState == ConnectionState.waiting)
-                      return Center(child: CircularProgressIndicator(),);
-                    if(!snapshot.hasData)
-                      return Center(child:Text("데이터가 없습니다"));
-                    if(snapshot.data.size == 0)
-                      return Expanded(child: Center(child:Text("사용 기록이 없습니다")));
-                    return bottom(snapshot.data.docs);
-                  }
-              ),
-            ],
+        body: Container(
+          color: Colors.white,
+          child: SafeArea(
+            child: Column(
+              children: <Widget>[
+                //Obx(() => top()),
+                Obx(() => top2()),
+                //divider("사용 내역"),
+                mid()
+                ,
+                Divider(height: 1, color: Colors.black38,),
+                StreamBuilder<QuerySnapshot>(
+                    stream: DatabaseService.instance.getCoinLog(),
+                    builder: (BuildContext context ,AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting)
+                        return Center(child: CircularProgressIndicator(),);
+                      if(!snapshot.hasData)
+                        return Center(child:Text("데이터가 없습니다"));
+                      if(snapshot.data.size == 0)
+                        return Expanded(child: Center(child:Text("사용 기록이 없습니다")));
+                      return bottom(snapshot.data.docs);
+                    }
+                ),
+              ],
+            ),
           ),
         )
     );

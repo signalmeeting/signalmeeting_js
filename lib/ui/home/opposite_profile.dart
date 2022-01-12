@@ -103,7 +103,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                           ),
                         ],
                       )
-                          : isFree ? Text('시그널 보내기 (무료)') : Text('시그널 보내기'),
+                          : Text('시그널 보내기'),
                       onPressed: _buttonClicked ? () => onPressSignalButton() : isFree ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
                     ),
                     secondChild: Container(),

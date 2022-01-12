@@ -59,8 +59,11 @@ class PushNotificationsHandler {
     // FlutterLocalNotificationsPlugin 초기화. 이 부분은 notification icon 부분에서 다시 다룬다.
     await flutterLocalNotificationsPlugin.initialize(
         InitializationSettings(
-            android: AndroidInitializationSettings('@mipmap/launcher_icon'), iOS: IOSInitializationSettings()),
+            android: AndroidInitializationSettings('@mipmap/launcher_icon'),
+            iOS: IOSInitializationSettings()),
         onSelectNotification: onLocalMessage);
+
+
 
     FirebaseMessaging.onMessage.listen((RemoteMessage rm) {
       RemoteNotification notification = rm.notification;
@@ -75,6 +78,7 @@ class PushNotificationsHandler {
       //   data = {'type': data['type'], 'id': data['id'], 'name': data['name']};
       // }
 
+      print('foreground data : $data');
 
       if (notification != null && !isSameRoom(data["roomId"])) {
         flutterLocalNotificationsPlugin.show(

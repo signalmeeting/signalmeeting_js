@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,13 +29,15 @@ void main() async {
     app = await Firebase.initializeApp(
       name: 'signalmeeting',
       options: FirebaseOptions(
-        appId: '1:387245324127:android:f336e996594ce3e0a3a8ea',
+        appId: (Platform.isIOS || Platform.isMacOS) ? '1:387245324127:ios:488a89f7e82800aca3a8ea' : '1:387245324127:android:f336e996594ce3e0a3a8ea',
         apiKey: 'AIzaSyDnw8E0LXbk8cwCNbI8ujSWyMzLZ7iivMA',
         messagingSenderId: '387245324127',
         projectId: 'signalmeeting-8ee89',
         databaseURL: 'https://signalmeeting-8ee89-default-rtdb.asia-southeast1.firebasedatabase.app/',
       ),
     );
+
+
   } on FirebaseException catch (e) {
     if (e.code == 'duplicate-app') {
       app = Firebase.app('signalmeeting');

@@ -276,6 +276,7 @@ class DatabaseService {
         } else
           print('process is null');
       }
+
       // List meetingIdList = snapshot.docs.map((e) => e.data()["meeting"]).toList();
       List<MeetingModel> meetingList = [];
       for (int i = 0; i < meetingIdList.length; i++) {

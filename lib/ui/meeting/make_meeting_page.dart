@@ -35,390 +35,396 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          highlightColor: Colors.white,
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        centerTitle: true,
-        title: Text(
-          '미팅 등록',
-          style: TextStyle(
-            color: Colors.black,
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              highlightColor: Colors.white,
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            iconTheme: IconThemeData(
+              color: Colors.black,
+            ),
+            centerTitle: true,
+            title: Text(
+              '미팅 등록',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.5], colors: [Colors.red[50], Colors.white])),
-          ),
-          Column(
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
+          body: Stack(
             children: [
-              Expanded(
-                flex: 9,
-                child: ScrollConfiguration(
-                  behavior: ScrollBehavior(),
-                  child: GlowingOverscrollIndicator(
-                    axisDirection: AxisDirection.down,
-                    color: Colors.white,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-                        child: Card(
-                          margin: EdgeInsets.all(8),
-                          elevation: 1.5,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
+              Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.5], colors: [Colors.red[50], Colors.white])),
+              ),
+              Column(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 9,
+                    child: ScrollConfiguration(
+                      behavior: ScrollBehavior(),
+                      child: GlowingOverscrollIndicator(
+                        axisDirection: AxisDirection.down,
+                        color: Colors.white,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+                            child: Card(
+                              margin: EdgeInsets.all(8),
+                              elevation: 1.5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
 //                              color: Colors.white,
-                            ),
-                            padding: EdgeInsets.fromLTRB(30, 15, 30, 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                //기본정보
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Text(
-                                    '기본 정보',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "AppleSDGothicNeoB",
-                                    ),
-                                  ),
                                 ),
-                                //제목
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0, top: 8),
-                                  child: Form(
-                                    key: _formKeyTitle,
-                                    //바뀔때 마다 validator 실행해서 비었는지 확인
-                                    onChanged: () {
-                                      setState(() {
-                                        if (_formKeyTitle.currentState.validate()) {
-                                          confirmTitle = true;
-                                        } else {
-                                          confirmTitle = false;
-                                        }
-                                      });
-                                    },
-                                    child: Row(
-                                      //validator 실행시, 아이콘과 같은 높이 유지
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: TextFormField(
-                                            controller: _titleController,
-                                            //몇글자로 할지 추후 조정(기타 텍스트 들에 대해서도)
-                                            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                                            //최대 글자 수 조정
-                                            maxLength: 30,
-                                            cursorColor: Colors.red[100],
-                                            decoration: InputDecoration(
-                                              //Icon이 오른쪽에 디폴트 패딩이 있어서 Row로 조정
-                                              suffixIcon: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.check_circle_outline,
-                                                    color: confirmTitle ? Colors.red[400] : Colors.grey[400],
+                                padding: EdgeInsets.fromLTRB(30, 15, 30, 10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    //기본정보
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15.0),
+                                      child: Text(
+                                        '기본 정보',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "AppleSDGothicNeoB",
+                                        ),
+                                      ),
+                                    ),
+                                    //제목
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0, top: 8),
+                                      child: Form(
+                                        key: _formKeyTitle,
+                                        //바뀔때 마다 validator 실행해서 비었는지 확인
+                                        onChanged: () {
+                                          setState(() {
+                                            if (_formKeyTitle.currentState.validate()) {
+                                              confirmTitle = true;
+                                            } else {
+                                              confirmTitle = false;
+                                            }
+                                          });
+                                        },
+                                        child: Row(
+                                          //validator 실행시, 아이콘과 같은 높이 유지
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: TextFormField(
+                                                controller: _titleController,
+                                                //몇글자로 할지 추후 조정(기타 텍스트 들에 대해서도)
+                                                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                                //최대 글자 수 조정
+                                                maxLength: 30,
+                                                cursorColor: Colors.red[100],
+                                                decoration: InputDecoration(
+                                                  //Icon이 오른쪽에 디폴트 패딩이 있어서 Row로 조정
+                                                  suffixIcon: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.check_circle_outline,
+                                                        color: confirmTitle ? Colors.red[400] : Colors.grey[400],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
+                                                  //사용가능일 때, border 색 지정(안해주면 theme color로 지정)
+                                                  focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.grey[500]),
+                                                  ),
+                                                  //maxLength 표시 지워줌
+                                                  counterText: "",
+                                                  // 텍스트 입력시 지워지는 hint 사용 (not label)
+                                                  hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15, fontFamily: "AppleSDGothicNeoM"),
+                                                  hintText: '제목',
+                                                ),
+                                                style: TextStyle(fontFamily: "AppleSDGothicNeoM",),
+                                                validator: (value) {
+                                                  if (value.isEmpty) {
+                                                    return '제목을 입력해주세요';
+                                                  }
+                                                  return null;
+                                                },
                                               ),
-                                              //사용가능일 때, border 색 지정(안해주면 theme color로 지정)
-                                              focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey[500]),
-                                              ),
-                                              //maxLength 표시 지워줌
-                                              counterText: "",
-                                              // 텍스트 입력시 지워지는 hint 사용 (not label)
-                                              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15, fontFamily: "AppleSDGothicNeoM"),
-                                              hintText: '제목',
                                             ),
-                                            style: TextStyle(fontFamily: "AppleSDGothicNeoM",),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return '제목을 입력해주세요';
-                                              }
-                                              return null;
-                                            },
-                                          ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    //미팅 인원
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0, top: 8),
+                                      child: Row(
+                                        //validator 실행시, 아이콘과 같은 높이 유지
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Number(),
+                                        ],
+                                      ),
+                                    ),
+                                    //위치
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15.0),
+                                      child: Text(
+                                        '위치',
+                                        style: TextStyle(
+                                          fontFamily: "AppleSDGothicNeoB",
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    //시.도
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0, top: 8),
+                                      child: Row(
+                                        //validator 실행시, 아이콘과 같은 높이 유지
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Cityt1(),
+                                        ],
+                                      ),
+                                    ),
+                                    //시.군.구
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0, top: 8),
+                                      child: Row(
+                                        //validator 실행시, 아이콘과 같은 높이 유지
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          City2(city1),
+                                        ],
+                                      ),
+                                    ),
+                                    //세부 위치
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0, top: 8),
+                                      child: Form(
+                                        key: _formKeyLocation,
+                                        //바뀔때 마다 validator 실행해서 비었는지 확인
+                                        onChanged: () {
+                                          setState(() {
+                                            if (_formKeyLocation.currentState.validate()) {
+                                              confirmLocation = true;
+                                            } else {
+                                              confirmLocation = false;
+                                            }
+                                          });
+                                        },
+                                        child: city2 == "미정" ? Container() : Row(
+                                          //validator 실행시, 아이콘과 같은 높이 유지
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: TextFormField(
+                                                controller: _locationController,
+                                                //몇글자로 할지 추후 조정(기타 텍스트 들에 대해서도)
+                                                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                                //최대 글자 수 조정
+                                                maxLength: 30,
+                                                cursorColor: Colors.red[100],
+                                                decoration: InputDecoration(
+                                                  //Icon이 오른쪽에 디폴트 패딩이 있어서 Row로 조정
+                                                  suffixIcon: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: <Widget>[
+                                                      /*
+                                                      Icon(
+                                                        Icons.check_circle_outline,
+                                                        color: confirmLocation ? Colors.red[400] : Colors.grey[400],
+                                                      ),
+
+                                                       */
+                                                    ],
+                                                  ),
+                                                  //사용가능일 때, border 색 지정(안해주면 theme color로 지정)
+                                                  focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.grey[500]),
+                                                  ),
+                                                  //maxLength 표시 지워줌
+                                                  counterText: "",
+                                                  // 텍스트 입력시 지워지는 hint 사용 (not label)
+                                                  hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15, fontFamily: "AppleSDGothicNeoM"),
+                                                  hintText: '세부 위치',
+                                                ),
+                                                style: TextStyle(fontFamily: "AppleSDGothicNeoM",),
+                                                /*
+                                                validator: (value) {
+                                                  if (value.isEmpty) {
+                                                    return '세부 위치를 입력해주세요';
+                                                  }
+                                                  return null;
+                                                },
+
+                                                 */
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    //소개
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15.0),
+                                      child: Text(
+                                        '소개',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "AppleSDGothicNeoB",
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        photoBox(),
+                                        Icon(
+                                          Icons.check_circle_outline,
+                                          color: imageFile != null ? Colors.red[400] : Colors.grey[400],
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
-                                //미팅 인원
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0, top: 8),
-                                  child: Row(
-                                    //validator 실행시, 아이콘과 같은 높이 유지
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Number(),
-                                    ],
-                                  ),
-                                ),
-                                //위치
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Text(
-                                    '위치',
-                                    style: TextStyle(
-                                      fontFamily: "AppleSDGothicNeoB",
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                                //시.도
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0, top: 8),
-                                  child: Row(
-                                    //validator 실행시, 아이콘과 같은 높이 유지
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Cityt1(),
-                                    ],
-                                  ),
-                                ),
-                                //시.군.구
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0, top: 8),
-                                  child: Row(
-                                    //validator 실행시, 아이콘과 같은 높이 유지
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      City2(city1),
-                                    ],
-                                  ),
-                                ),
-                                //세부 위치
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0, top: 8),
-                                  child: Form(
-                                    key: _formKeyLocation,
-                                    //바뀔때 마다 validator 실행해서 비었는지 확인
-                                    onChanged: () {
-                                      setState(() {
-                                        if (_formKeyLocation.currentState.validate()) {
-                                          confirmLocation = true;
-                                        } else {
-                                          confirmLocation = false;
-                                        }
-                                      });
-                                    },
-                                    child: city2 == "미정" ? Container() : Row(
-                                      //validator 실행시, 아이콘과 같은 높이 유지
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: TextFormField(
-                                            controller: _locationController,
-                                            //몇글자로 할지 추후 조정(기타 텍스트 들에 대해서도)
-                                            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                                            //최대 글자 수 조정
-                                            maxLength: 30,
-                                            cursorColor: Colors.red[100],
-                                            decoration: InputDecoration(
-                                              //Icon이 오른쪽에 디폴트 패딩이 있어서 Row로 조정
-                                              suffixIcon: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: <Widget>[
-                                                  /*
-                                                  Icon(
-                                                    Icons.check_circle_outline,
-                                                    color: confirmLocation ? Colors.red[400] : Colors.grey[400],
-                                                  ),
-
-                                                   */
-                                                ],
-                                              ),
-                                              //사용가능일 때, border 색 지정(안해주면 theme color로 지정)
-                                              focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey[500]),
-                                              ),
-                                              //maxLength 표시 지워줌
-                                              counterText: "",
-                                              // 텍스트 입력시 지워지는 hint 사용 (not label)
-                                              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15, fontFamily: "AppleSDGothicNeoM"),
-                                              hintText: '세부 위치',
+                                    //미팅 소개
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15.0, bottom: 8),
+                                      child: Form(
+                                        key: _formKeyIntroduce,
+                                        child: TextFormField(
+                                          cursorColor: Colors.red[100],
+                                          validator: (value) {
+                                            if (value.length > 500) {
+                                              return '500자 초과';
+                                            }
+                                            return null;
+                                          },
+                                          controller: _introduceController,
+                                          maxLength: 500,
+                                          minLines: 5,
+                                          maxLines: 15,
+                                          decoration: InputDecoration(
+                                            counterText: '',
+                                            hintText: '미팅 구성원을 자유롭게 소개해주세요!',
+                                            filled: true,
+                                            fillColor: Colors.grey[50],
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                              borderSide: BorderSide(color: Colors.grey[300]),
                                             ),
-                                            style: TextStyle(fontFamily: "AppleSDGothicNeoM",),
-                                            /*
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return '세부 위치를 입력해주세요';
-                                              }
-                                              return null;
-                                            },
-
-                                             */
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                              borderSide: BorderSide(color: Colors.grey[300]),
+                                            ),
+                                            border: OutlineInputBorder(),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                //소개
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Text(
-                                    '소개',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "AppleSDGothicNeoB",
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    photoBox(),
-                                    Icon(
-                                      Icons.check_circle_outline,
-                                      color: imageFile != null ? Colors.red[400] : Colors.grey[400],
+                                      ),
                                     ),
                                   ],
                                 ),
-                                //미팅 소개
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15.0, bottom: 8),
-                                  child: Form(
-                                    key: _formKeyIntroduce,
-                                    child: TextFormField(
-                                      cursorColor: Colors.red[100],
-                                      validator: (value) {
-                                        if (value.length > 500) {
-                                          return '500자 초과';
-                                        }
-                                        return null;
-                                      },
-                                      controller: _introduceController,
-                                      maxLength: 500,
-                                      minLines: 5,
-                                      maxLines: 15,
-                                      decoration: InputDecoration(
-                                        counterText: '',
-                                        hintText: '미팅 구성원을 자유롭게 소개해주세요!',
-                                        filled: true,
-                                        fillColor: Colors.grey[50],
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                                          borderSide: BorderSide(color: Colors.grey[300]),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                                          borderSide: BorderSide(color: Colors.grey[300]),
-                                        ),
-                                        border: OutlineInputBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              Container(
-                color: Colors.grey[300],
-                height: 1,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Container(
-                  height: 45,
-                  width: Get.width - 16,
-                  child: TextButton(
-                    child: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
-                        ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '20',
+                  Container(
+                    color: Colors.grey[300],
+                    height: 1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Container(
+                      height: 45,
+                      width: Get.width - 16,
+                      child: TextButton(
+                        child: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
+                            ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              '20',
+                              style: TextStyle(
+                                color: Colors.red[200],
+                                fontSize: 18,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.favorite,
+                              color: Colors.red[200],
+                              size: 20,
+                            ),
+                          ],
+                        )
+                            : Text(
+                          '미팅 만들기',
                           style: TextStyle(
-                            color: Colors.red[200],
-                            fontSize: 18,
+                            color: Colors.white,
+                            fontFamily: "AppleSDGothicNeoB",
+                            fontSize: 16,
                           ),
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Icon(
-                          Icons.favorite,
-                          color: Colors.red[200],
-                          size: 20,
-                        ),
-                      ],
-                    )
-                        : Text(
-                      '미팅 만들기',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "AppleSDGothicNeoB",
-                        fontSize: 16,
+                        style: BtStyle.sideLine,
+                        onPressed: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
+                            ? () async {
+                          await DatabaseService.instance.makeMeeting(
+                            title: this._titleController.text,
+                            number: int.parse(this.number.split(':')[0]),
+                            loc1: this.city1,
+                            loc2: this.city2,
+                            loc3: this._locationController.text,
+                            introduce: this._introduceController.text,
+                            imageFile: imageFile,
+                          );
+                          Map<String, dynamic> meeting = {
+                            "title": this._titleController.text,
+                            "number": int.parse(this.number.split(':')[0]),
+                            "loc1": this.city1,
+                            "loc2": this.city2,
+                            "loc3": this._locationController.text,
+                            "introduce": this._introduceController.text,
+                          };
+                          await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
+                          FocusScope.of(context).unfocus();
+                          Navigator.pop(context);
+                          CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
+                        } : null,
                       ),
                     ),
-                    style: BtStyle.sideLine,
-                    onPressed: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
-                        ? () async {
-                      await DatabaseService.instance.makeMeeting(
-                        title: this._titleController.text,
-                        number: int.parse(this.number.split(':')[0]),
-                        loc1: this.city1,
-                        loc2: this.city2,
-                        loc3: this._locationController.text,
-                        introduce: this._introduceController.text,
-                        imageFile: imageFile,
-                      );
-                      Map<String, dynamic> meeting = {
-                        "title": this._titleController.text,
-                        "number": int.parse(this.number.split(':')[0]),
-                        "loc1": this.city1,
-                        "loc2": this.city2,
-                        "loc3": this._locationController.text,
-                        "introduce": this._introduceController.text,
-                      };
-                      await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
-                      FocusScope.of(context).unfocus();
-                      Navigator.pop(context);
-                      CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
-                    } : null,
                   ),
-                ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

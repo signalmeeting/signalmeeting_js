@@ -77,26 +77,29 @@ class LobbyPage extends StatelessWidget {
     print('build lobby');
     return WillPopScope(
       onWillPop: () => _onWillPop(context),
-      child: SafeArea(
-        bottom: false,
-        child: Scaffold(
-          key: _key,
-          backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: false,
-          appBar: buildAppBar(context),
-          body: Obx(() => _widgetOptions.elementAt(_selectedIndex)),
-          bottomNavigationBar: SizedBox(
-              height: 60,
-              child: Obx(
-                () => Row(
-                  children: <Widget>[
-                    buildTabbar('데일리', 0),
-                    buildTabbar('미팅', 1),
-                    buildTabbar('알림', 2),
-                    buildTabbar('설정', 3),
-                  ],
-                ),
-              )),
+      child: Container(
+        color: Colors.white,
+        child: SafeArea(
+          top: false,
+          child: Scaffold(
+            key: _key,
+            backgroundColor: Colors.white,
+            resizeToAvoidBottomInset: false,
+            appBar: buildAppBar(context),
+            body: Obx(() => _widgetOptions.elementAt(_selectedIndex)),
+            bottomNavigationBar: SizedBox(
+                height: 60,
+                child: Obx(
+                  () => Row(
+                    children: <Widget>[
+                      buildTabbar('데일리', 0),
+                      buildTabbar('미팅', 1),
+                      buildTabbar('알림', 2),
+                      buildTabbar('설정', 3),
+                    ],
+                  ),
+                )),
+          ),
         ),
       ),
     );

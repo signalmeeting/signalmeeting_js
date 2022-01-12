@@ -28,73 +28,77 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ScrollConfiguration(
-          behavior: ScrollBehavior(),
-          child: GlowingOverscrollIndicator(
-            axisDirection: AxisDirection.down,
-            color: Colors.white,
-            child: Stack(
-              children: [
-                Container(color: Colors.white),
-                SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            width: _width,
-                            height: _width,
-                            color: Colors.transparent,
-                            child: Obx(
-                              () => Swiper(
-                                itemBuilder: (BuildContext context, int index) {
-                                  return cachedImage(
-                                    user.pics[index],
-                                    width: _width,
-                                    height: _width,
-                                    radius: 0,
-                                  );
-                                },
-                                loop: false,
-                                itemCount: user.pics.length,
-                                pagination: new SwiperPagination(
-                                  builder: new DotSwiperPaginationBuilder(
-                                      color: Colors.white30,
-                                      activeColor: Colors.white70),
+      body: Container(
+        color: Colors.white,
+        child: SafeArea(
+          bottom: false,
+          child: ScrollConfiguration(
+            behavior: ScrollBehavior(),
+            child: GlowingOverscrollIndicator(
+              axisDirection: AxisDirection.down,
+              color: Colors.white,
+              child: Stack(
+                children: [
+                  Container(color: Colors.white),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: _width,
+                              height: _width,
+                              color: Colors.transparent,
+                              child: Obx(
+                                () => Swiper(
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return cachedImage(
+                                      user.pics[index],
+                                      width: _width,
+                                      height: _width,
+                                      radius: 0,
+                                    );
+                                  },
+                                  loop: false,
+                                  itemCount: user.pics.length,
+                                  pagination: new SwiperPagination(
+                                    builder: new DotSwiperPaginationBuilder(
+                                        color: Colors.white30,
+                                        activeColor: Colors.white70),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      _editProfileImageButton(context),
-                      Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Container(height: 10, color: Colors.grey[100])),
-                      _buildName(user),
-                      _profileItem('나이', user.age, () => agePick()),
-                      _profileItem('키', user.tall, () => tallPick()),
-                      _profileItem('직업', user.career, () => careerPick()),
-                      _profileItem('지역', user.loc1, () => locationPick()),
-                      _profileItem('세부 지역', user.loc2, () => locationPick2()),
-                      Container(
-                          height: 10,
-                          width: double.infinity,
-                          color: Colors.grey[100]),
-                      _profileItem('체형', user.bodyType, () => bodyTypePick()),
-                      _profileItem('흡연', user.smoke, () => smokePick()),
-                      _profileItem('음주', user.drink, () => drinkPick()),
-                      _profileItem('종교', user.religion, () => religionPick()),
-                      _profileItem('MBTI', user.mbti, () => mbtiPick()),
-                      Obx(() => _profileItem(
-                          '간단소개', user.introduce, () => introducePick())),
-                    ],
+                        _editProfileImageButton(context),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Container(height: 10, color: Colors.grey[100])),
+                        _buildName(user),
+                        _profileItem('나이', user.age, () => agePick()),
+                        _profileItem('키', user.tall, () => tallPick()),
+                        _profileItem('직업', user.career, () => careerPick()),
+                        _profileItem('지역', user.loc1, () => locationPick()),
+                        _profileItem('세부 지역', user.loc2, () => locationPick2()),
+                        Container(
+                            height: 10,
+                            width: double.infinity,
+                            color: Colors.grey[100]),
+                        _profileItem('체형', user.bodyType, () => bodyTypePick()),
+                        _profileItem('흡연', user.smoke, () => smokePick()),
+                        _profileItem('음주', user.drink, () => drinkPick()),
+                        _profileItem('종교', user.religion, () => religionPick()),
+                        _profileItem('MBTI', user.mbti, () => mbtiPick()),
+                        Obx(() => _profileItem(
+                            '간단소개', user.introduce, () => introducePick())),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
