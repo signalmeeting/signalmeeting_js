@@ -4,13 +4,13 @@ import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/ui/drawer/my_profile_Intoduce_edit_page.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/util/city_list_Info.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/ui/drawer/my_profile_Intoduce_edit_page.dart';
+import 'package:byule/ui/widget/cached_image.dart';
+import 'package:byule/util/city_list_Info.dart';
+import 'package:byule/util/style/appColor.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 import 'my_profile_pic_edit_page.dart';
 

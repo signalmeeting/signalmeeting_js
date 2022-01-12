@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
+import 'package:byule/controller/main_controller.dart';
 
 import 'dialog/notification_dialog.dart';
 

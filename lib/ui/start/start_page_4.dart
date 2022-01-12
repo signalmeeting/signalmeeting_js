@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/util/style/appColor.dart';
+import 'package:byule/util/style/btStyle.dart';
+import 'package:byule/util/util.dart';
 
 import '../lobby.dart';
 

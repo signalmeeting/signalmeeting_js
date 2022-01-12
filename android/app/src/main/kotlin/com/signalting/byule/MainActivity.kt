@@ -1,4 +1,4 @@
-package com.signal.signalmeeting
+package com.signalting.byule
 
 import io.flutter.embedding.android.FlutterActivity
 

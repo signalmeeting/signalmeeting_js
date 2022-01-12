@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
 
 class MeetingController extends GetxController {
   MainController _mainController = Get.find();

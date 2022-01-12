@@ -9,11 +9,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:signalmeeting/controller/chat_controller.dart';
-import 'package:signalmeeting/model/messageModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/ui/home/opposite_profile.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
+import 'package:byule/controller/chat_controller.dart';
+import 'package:byule/model/messageModel.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/ui/home/opposite_profile.dart';
+import 'package:byule/ui/widget/cached_image.dart';
 
 class ChatPage extends StatelessWidget {
   ChatController get _chatController => Get.find(tag: Get.arguments);

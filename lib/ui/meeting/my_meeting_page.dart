@@ -1,16 +1,18 @@
 import 'package:animations/animations.dart';
 import 'package:auto_animated/auto_animated.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/my_meeting_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/home/opposite_profile.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/deletedUser.dart';
-import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
-import 'package:signalmeeting/ui/widget/meeting/meetingGridItem.dart';
+import 'package:byule/controller/my_meeting_controller.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/home/opposite_profile.dart';
+import 'package:byule/ui/widget/cached_image.dart';
+import 'package:byule/ui/widget/deletedUser.dart';
+import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/widget/meeting/meetingGridItem.dart';
 
 import 'meeting_detail_page.dart';
 
@@ -69,12 +71,17 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                     children: [
                       categoryText('데일리 미팅'),
                       _controller.todayConnectionList.length != 0
-                          ? buildList(_controller.todayConnectionList, short: true)
+                          ? buildList(_controller.todayConnectionList,
+                              short: true)
                           : noMeeting('성사된 데일리 미팅이 없습니다'),
                       categoryText('만든 미팅'),
-                      _controller.myMeetingList.length != 0 ? buildList(_controller.myMeetingList, isMine: true) : noMeeting('만든 미팅이 없습니다'),
+                      _controller.myMeetingList.length != 0
+                          ? buildList(_controller.myMeetingList, isMine: true)
+                          : noMeeting('만든 미팅이 없습니다'),
                       categoryText('신청한 미팅'),
-                      _controller.myMeetingApplyList.length != 0 ? buildList(_controller.myMeetingApplyList) : noMeeting('신청한 미팅이 없습니다'),
+                      _controller.myMeetingApplyList.length != 0
+                          ? buildList(_controller.myMeetingApplyList)
+                          : noMeeting('신청한 미팅이 없습니다'),
                     ],
                   ),
                 ),
@@ -112,13 +119,15 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                   if (short) {
                     return shortTileRow(itemList[index]);
                   } else if (isMine) {
-                    return meetingGridItem(itemList[index], isMine: true, myMeeting: true);
+                    return meetingGridItem(itemList[index],
+                        isMine: true, myMeeting: true);
                   } else {
-                    bool refused = false;
-                    if(itemList[index].process == null) {
-                      refused = true;
+                    bool refusedOrDeleted = false;
+                    if (itemList[index].process == null || itemList[index].process == 3) {
+                      refusedOrDeleted = true;
                     }
-                    return meetingGridItem(itemList[index], didIApplied: true, refused: refused, myMeeting: true);
+                    return meetingGridItem(itemList[index],
+                        didIApplied: true, refusedOrDeleted: refusedOrDeleted, myMeeting: true);
                   }
                 },
               ),
@@ -235,43 +244,59 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   Widget shortTileRow(Map<String, UserModel> connection) {
     String docId = connection.keys.toList()[0];
     UserModel user = connection.values.toList()[0];
-    return Card(
-      elevation: 1.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: user.deleted == true ? deletedUser(onPressed: () async{
-          await DatabaseService.instance.deleteTodayConnection(docId);
-          _controller.todayConnectionList.removeWhere((element) => element.keys.toList()[0] == docId);
-          Get.back();
-        }) : Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Container(
-                child: ProfileImageForm2(user),
-              ),
-            ),
-            Container(
-              constraints: BoxConstraints(
-                maxWidth: (Get.width - 54) / 3 - 10,
-              ),
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(3),
-              child: Text(
-                user.name,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          ],
+    return GestureDetector(
+      // onTap: _controller.deletedDaily.contains(docId) ? () {
+      //   Get.dialog(NotificationDialog(contents: "삭제된 데일리 미팅입니다",));
+      // } : null,
+      onLongPress: () => Get.dialog(NotificationDialog(
+          contents: "삭제하시겠습니까?",
+          onPressed: () async{
+            DatabaseService.instance.deleteDaily(docId);
+            _controller.todayConnectionList.removeWhere(
+                    (element) => element.keys.toList()[0] == docId);
+            Get.back();
+          })),
+      child: Card(
+        elevation: 1.5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: user.deleted == true
+              ? deletedUser(onPressed: () async {
+                  await DatabaseService.instance.deleteTodayConnection(docId);
+                  _controller.todayConnectionList.removeWhere(
+                      (element) => element.keys.toList()[0] == docId);
+                  Get.back();
+                })
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        child: ProfileImageForm2(user, docId),
+                      ),
+                    ),
+                    Container(
+                      constraints: BoxConstraints(
+                        maxWidth: (Get.width - 54) / 3 - 10,
+                      ),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(3),
+                      child: Text(
+                        user.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  ],
+                ),
         ),
       ),
     );
   }
 
-  Widget ProfileImageForm2(UserModel user) {
+  Widget ProfileImageForm2(UserModel user, String docId) {
     return GestureDetector(
       /* 데일리미팅 삭제
       onLongPress: (){
@@ -282,7 +307,15 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
             onCancel: (){});
       },
        */
-      onTap: () {
+      onTap: _controller.deletedDaily.contains(docId) ? () {
+        Get.dialog(NotificationDialog(contents: "삭제된 데일리 미팅입니다", onPressed: () async{
+          await DatabaseService.instance.deleteTodayConnection(docId);
+          _controller.todayConnectionList.removeWhere(
+                  (element) => element.keys.toList()[0] == docId);
+          _controller.deletedDaily.remove(docId);
+          Get.back();
+        },));
+      } : (){
         Get.to(() => OppositeProfilePage(user));
         print('this is opposite : ${'today_signal' + user.uid}');
       },
@@ -307,7 +340,8 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
         )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text(text, style: TextStyle(fontSize: 15, fontFamily: 'AppleSDGothicNeoB')),
+          child: Text(text,
+              style: TextStyle(fontSize: 15, fontFamily: 'AppleSDGothicNeoB')),
         ),
         Expanded(
             child: Container(

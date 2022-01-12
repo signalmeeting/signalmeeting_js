@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/dialog/main_dialog.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 
 class Util {
 

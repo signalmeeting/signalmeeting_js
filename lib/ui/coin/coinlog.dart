@@ -5,12 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/drawer/store_page.dart';
-import 'package:signalmeeting/util/util.dart';
-import 'package:signalmeeting/ui/widget/dialog/main_dialog.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/drawer/store_page.dart';
+import 'package:byule/util/util.dart';
+import 'package:byule/ui/widget/dialog/main_dialog.dart';
 
 class CoinLog extends StatefulWidget {
 
@@ -18,15 +18,8 @@ class CoinLog extends StatefulWidget {
   _CoinLogState createState() => _CoinLogState();
 }
 
-class DateController extends GetxController{
-  RxString startDate = ''.obs;
-  RxString endDate = ''.obs;
-  RxBool filtered = false.obs;
-}
-
 class _CoinLogState extends State<CoinLog> {
   MainController _mainController = Get.find();
-  DateController dateController = Get.put(DateController());
   UserModel get user => _mainController.user.value;
 
   @override
@@ -218,12 +211,20 @@ class _CoinLogState extends State<CoinLog> {
                 child: ListTile(
                   title: Text(logList[index]['usage']),
                   subtitle: Text(Util.coinLogDateFormat(logList[index]['date'].toDate())),
-                  trailing: Text(coinUsage(logList[index]['usage'], logList[index]['coin']),
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: (logList[index]['usage'] == "친구 초대" || logList[index]['usage'] == "하트 충전")
-                            ? Colors.red : Colors.blue
-                    ),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(coinUsage(logList[index]['usage'], logList[index]['coin']),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: (logList[index]['usage'] == "친구 초대" || logList[index]['usage'] == "하트 충전")
+                                ? Colors.red : Colors.blue
+                        ),
+                      ),
+                      SizedBox(height: 3,),
+                      Text(logList[index]['userCoin'].toString() + " 하트", style: TextStyle(fontSize: 12, color: Colors.black38),)
+                    ],
                   ),
                 ),
               );

@@ -6,7 +6,7 @@ part 'alarmModel.g.dart';
 @JsonSerializable(nullable: true)
 class AlarmModel {
   String id;
-  String type; // signal (toMe), match
+  String type; // signalting (toMe), match
   String body; // 내용
   DateTime time;
   @override

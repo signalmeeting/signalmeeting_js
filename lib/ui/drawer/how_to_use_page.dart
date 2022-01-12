@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/ui/drawer/custom_drawer.dart';
+import 'package:byule/ui/drawer/custom_drawer.dart';
 
 class HowToUsePage extends StatelessWidget {
   @override

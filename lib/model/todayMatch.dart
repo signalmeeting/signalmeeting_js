@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:signalmeeting/model/userModel.dart';
+import 'package:byule/model/userModel.dart';
 
 part 'todayMatch.g.dart';
 

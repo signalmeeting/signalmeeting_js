@@ -5,21 +5,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/chat_controller.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/ui/chat/chat_page.dart';
-import 'package:signalmeeting/ui/home/opposite_profile.dart';
-import 'package:signalmeeting/ui/widget/cached_image.dart';
-import 'package:signalmeeting/ui/widget/deletedUser.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/noCoinDialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/util/style/appColor.dart';
-import 'package:signalmeeting/util/style/btStyle.dart';
+import 'package:byule/controller/chat_controller.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/ui/chat/chat_page.dart';
+import 'package:byule/ui/home/opposite_profile.dart';
+import 'package:byule/ui/widget/cached_image.dart';
+import 'package:byule/ui/widget/deletedUser.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/dialog/noCoinDialog.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/dialog/report_dialog.dart';
+import 'package:byule/util/style/appColor.dart';
+import 'package:byule/util/style/btStyle.dart';
 
 //oppositeUser > '방장 - 지원자' 간 서로
 //applyUser > 지원자

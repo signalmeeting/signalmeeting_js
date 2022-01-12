@@ -181,7 +181,7 @@ class Terms extends StatelessWidget {
 1. 상호 : ByulE
 2. 대표자 : 최인창
 3. 사업자등록번호 : 524-28-01299
-4. 고객센터 : signalmeeting@gmail.com
+4. 고객센터 : byule@gmail.com
 부칙
 시행일 : 이 약관은 2021년 12월 29일부터 시행합니다.
               """),

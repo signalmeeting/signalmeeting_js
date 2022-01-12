@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/services/database.dart';
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/services/database.dart';
+import 'package:byule/util/util.dart';
 
 import 'custom_drawer.dart';
 

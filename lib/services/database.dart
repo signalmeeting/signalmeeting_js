@@ -1,25 +1,27 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:signalmeeting/controller/main_controller.dart';
-import 'package:signalmeeting/model/alarmModel.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
-import 'package:signalmeeting/model/todayMatch.dart';
-import 'package:signalmeeting/model/userModel.dart';
-import 'package:signalmeeting/ui/widget/dialog/notification_dialog.dart';
-import 'package:signalmeeting/ui/widget/dialog/report_dialog.dart';
-import 'package:signalmeeting/ui/widget/flush_bar.dart';
-import 'package:signalmeeting/util/uiData.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/model/alarmModel.dart';
+import 'package:byule/model/meetingModel.dart';
+import 'package:byule/model/todayMatch.dart';
+import 'package:byule/model/userModel.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/dialog/report_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
+import 'package:byule/util/uiData.dart';
 import 'dart:math';
 
-import 'package:signalmeeting/util/util.dart';
+import 'package:byule/util/util.dart';
 
 class DatabaseService {
   DatabaseService._privateConstructor();
@@ -44,7 +46,7 @@ class DatabaseService {
   final CollectionReference todayMatchCollection = FirebaseFirestore.instance.collection('todayMatch'); // 매일 자정에 생성
 
   //todaySignal collection reference
-  final CollectionReference todaySignalCollection = FirebaseFirestore.instance.collection('todaySignal'); // signal 보낸거
+  final CollectionReference todaySignalCollection = FirebaseFirestore.instance.collection('todaySignal'); // signalting 보낸거
 
   //todayMatch connection collection reference
   final CollectionReference todayConnectionCollection = FirebaseFirestore.instance.collection('todayConnection'); // todayMatch 성사된거
@@ -64,10 +66,10 @@ class DatabaseService {
   //invite freind
   final CollectionReference inviteCollection = FirebaseFirestore.instance.collection('invites');
 
-  //Coin UsageLog
+  //Coin receipt/usage Log
   final CollectionReference coinLogCollection = FirebaseFirestore.instance.collection('coinLog');
 
-  //today signal
+  //today signalting
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
   Future<Map<String, dynamic>> checkConnectionAndSignal(String oppositeUid) async {
     print("checkConnectionAndSignal");
@@ -122,7 +124,7 @@ class DatabaseService {
     } else {
       await todaySignalCollection.doc().set(
           {"sender": _user.uid, "receiver": oppositeUid, "todayMatch": docId, "time": DateTime.now(), "today": today}).whenComplete(() {
-        alarmCollection.doc().set({"body": "", "receiver": oppositeUid, "time": DateTime.now(), "type": "signal"});
+        alarmCollection.doc().set({"body": "", "receiver": oppositeUid, "time": DateTime.now(), "type": "signalting"});
       }).catchError((e) {
         Get.back();
         return false;
@@ -150,7 +152,6 @@ class DatabaseService {
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl": meetingImageUrl,
       "banList": [],
-      'deletedTime': '',
     };
 
     meetingDoc.set(newMeeting);
@@ -158,13 +159,13 @@ class DatabaseService {
     Get.back();
   }
 
-  deleteMeeting(String docId) async {
-    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now()});
+  deleteMeeting(String docId, {int process}) async {
+    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now(), "process" : process,});
   }
 
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: null)
         .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 31)))
         .orderBy("createdAt", descending: true)
         .snapshots();
@@ -220,7 +221,7 @@ class DatabaseService {
 
   Future<List<QueryDocumentSnapshot>> getMyMeetingList() async {
     QuerySnapshot snapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: null)
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -285,7 +286,8 @@ class DatabaseService {
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
         meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-        meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
+        if(meeting["deletedTime"] != null)
+          meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
       return meetingList;
@@ -345,11 +347,11 @@ class DatabaseService {
     }
   }
 
-  checkRefused(String meetingId) async {
+  checkRefused(String meetingId, bool isRefused) async {
     QuerySnapshot snapshot = await meetingApplyCollection
         .where("userId", isEqualTo: _user.uid)
         .where("meeting", isEqualTo: meetingId)
-        .where("process", isEqualTo: 2)
+        .where("process", isEqualTo: isRefused ? 2 : 1)
         .get();
     QueryDocumentSnapshot doc = snapshot.docs[0];
     DocumentReference docRef = doc.reference;
@@ -553,6 +555,7 @@ class DatabaseService {
         "usage": "친구 초대",
         "oppositeUserid": snapshot.docs[0].id,
         "date": DateTime.now(),
+        "userCoin" : _user.coin + 50
       });
       await coinLogCollection.doc().set({
         "userid": snapshot.docs[0].id,
@@ -560,6 +563,7 @@ class DatabaseService {
         "usage": "친구 초대",
         "oppositeUserid": _user.uid,
         "date": DateTime.now(),
+        "userCoin" : snapshot.docs[0]['coin'] + 50
       });
       await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(50)});
       await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(50)});
@@ -612,19 +616,6 @@ class DatabaseService {
           break;
       }
     }
-    /*
-    String meetingImageUrl = await uploadMeetingImage(newMeeting['imageFile'], coinLogDoc.id);
-    Map<String, dynamic> _newMeeting = {
-      "title": newMeeting['title'],
-      "number": newMeeting['number'],
-      "loc1": newMeeting['loc1'],
-      "loc2": newMeeting['loc2'],
-      "loc3": newMeeting['loc3'],
-      "introduce": newMeeting['introduce'],
-      "imageFile": meetingImageUrl,
-    };
-     */
-
     Map<String, dynamic> newCoinLog = {
       "userid": _user.uid,
       "coin": coin,
@@ -632,6 +623,7 @@ class DatabaseService {
       "oppositeUserid": oppositeUserid ?? "",
       "meeting": newMeeting ?? {},
       "date": DateTime.now(),
+      "userCoin" : _user.coin - coin,
     };
     await coinLogDoc.set(newCoinLog);
     _controller.useCoin(coin);
@@ -640,6 +632,51 @@ class DatabaseService {
 
   Stream<QuerySnapshot> getCoinLog() {
     return coinLogCollection.where('userid', isEqualTo: _user.uid).orderBy('date', descending: true).snapshots();
+  }
+
+  Future<Map> purchaseReceipt(PurchasedItem purchasedItem) async {
+    Map transactionReceipt;
+    String productId = purchasedItem.productId;
+    String orderId;
+    String purchaseToken;
+    String packageName;
+    // TODO 테스트 해봐야됨
+    if (Platform.isAndroid) {
+      transactionReceipt = jsonDecode(purchasedItem.transactionReceipt); //string => map
+    } else {
+      transactionReceipt = jsonDecode(purchasedItem.originalTransactionIdentifierIOS); //string => map
+    }
+    orderId = transactionReceipt["orderId"];
+    purchaseToken = transactionReceipt["purchaseToken"];
+    packageName = transactionReceipt["packageName"];
+
+    int addCoin = int.parse(productId.replaceFirst('coin', ''));
+
+    Map<String, dynamic> receiptInfo = {
+      "userid": _user.uid,
+      "usage" : "하트 충전",
+      "coin": addCoin,
+      "userCoin": _user.coin + addCoin,
+      "data": {
+        "orderId": orderId,
+        "productId": productId,
+        "purchaseToken": purchaseToken,
+        "packageName": packageName,
+        "verified": "영수증 확인중"
+      },
+      "date": DateTime.now(),
+    };
+
+    Map<String, dynamic> resultMap;
+    await coinLogCollection.doc().set(receiptInfo).whenComplete(() {
+      userCollection.doc(_user.uid).update({"coin": FieldValue.increment(addCoin)});
+      resultMap = {"result": true, "coin": _user.coin + addCoin};
+    }).onError((error, stackTrace) {
+      print("collection error : $error");
+      return resultMap = {"result": false};
+    }); //TODO 에러 로그 남겨야될듯?
+
+    return Future.value(resultMap);
   }
 
   checkFree() async {
@@ -688,7 +725,7 @@ class DatabaseService {
     List<String> meetingDocList = [];
     List<String> applyDocList = [];
     QuerySnapshot myMeetingSnapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: null)
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -731,5 +768,13 @@ class DatabaseService {
 
   deleteApply(String docId) async {
     await meetingApplyCollection.doc(docId).delete();
+  }
+
+  deleteDaily(String docId) async{
+    await todayConnectionCollection.doc(docId).update({"deletedTime" : DateTime.now(), "deleteUser" : _user.uid});
+  }
+
+  deleteMeetingApply(String docId) async{
+    await meetingApplyCollection.doc(docId).update({"process" : 3});
   }
 }

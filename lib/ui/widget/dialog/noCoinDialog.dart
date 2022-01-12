@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:signalmeeting/ui/drawer/store_page.dart';
-import 'package:signalmeeting/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/drawer/store_page.dart';
+import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
 import 'notification_dialog.dart';
 import 'package:get/get.dart';
 

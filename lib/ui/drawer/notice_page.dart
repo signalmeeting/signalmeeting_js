@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:signalmeeting/model/noticeModel.dart';
-import 'package:signalmeeting/services/database.dart';
+import 'package:byule/model/noticeModel.dart';
+import 'package:byule/services/database.dart';
 
 import 'custom_drawer.dart';
 

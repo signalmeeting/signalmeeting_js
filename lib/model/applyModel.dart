@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:signalmeeting/model/meetingModel.dart';
+import 'package:byule/model/meetingModel.dart';
 
 part 'applyModel.g.dart';
 
