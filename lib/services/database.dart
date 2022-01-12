@@ -165,7 +165,7 @@ class DatabaseService {
 
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
-        .where("deletedTime", isEqualTo: "")
+        .where("deletedTime", isEqualTo: null)
         .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 31)))
         .orderBy("createdAt", descending: true)
         .snapshots();
@@ -221,7 +221,7 @@ class DatabaseService {
 
   Future<List<QueryDocumentSnapshot>> getMyMeetingList() async {
     QuerySnapshot snapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: null)
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -285,7 +285,7 @@ class DatabaseService {
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
         meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-        if(meeting["deletedTime"] != "" )
+        if(meeting["deletedTime"] != null)
           meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
@@ -554,6 +554,7 @@ class DatabaseService {
         "usage": "친구 초대",
         "oppositeUserid": snapshot.docs[0].id,
         "date": DateTime.now(),
+        "userCoin" : _user.coin + 50
       });
       await coinLogCollection.doc().set({
         "userid": snapshot.docs[0].id,
@@ -561,6 +562,7 @@ class DatabaseService {
         "usage": "친구 초대",
         "oppositeUserid": _user.uid,
         "date": DateTime.now(),
+        "userCoin" : snapshot.docs[0]['coin'] + 50
       });
       await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(50)});
       await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(50)});
@@ -613,19 +615,6 @@ class DatabaseService {
           break;
       }
     }
-    /*
-    String meetingImageUrl = await uploadMeetingImage(newMeeting['imageFile'], coinLogDoc.id);
-    Map<String, dynamic> _newMeeting = {
-      "title": newMeeting['title'],
-      "number": newMeeting['number'],
-      "loc1": newMeeting['loc1'],
-      "loc2": newMeeting['loc2'],
-      "loc3": newMeeting['loc3'],
-      "introduce": newMeeting['introduce'],
-      "imageFile": meetingImageUrl,
-    };
-     */
-
     Map<String, dynamic> newCoinLog = {
       "userid": _user.uid,
       "coin": coin,
@@ -633,6 +622,7 @@ class DatabaseService {
       "oppositeUserid": oppositeUserid ?? "",
       "meeting": newMeeting ?? {},
       "date": DateTime.now(),
+      "userCoin" : _user.coin - coin,
     };
     await coinLogDoc.set(newCoinLog);
     _controller.useCoin(coin);
@@ -734,7 +724,7 @@ class DatabaseService {
     List<String> meetingDocList = [];
     List<String> applyDocList = [];
     QuerySnapshot myMeetingSnapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: '')
+        .where("deletedTime", isEqualTo: null)
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();

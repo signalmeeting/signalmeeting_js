@@ -60,7 +60,7 @@ class MyMeetingController extends GetxController {
       meeting["_id"] = resultList[i].id;
       meeting["isMine"] = true;
       meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-      if(meeting['deletedTime'] != "")
+      if(meeting['deletedTime'] != null)
         meeting['deletedTime'] = meeting['deleteTime'].toDate().toString();
       if (meeting["process"] == 0 || meeting["process"] == 1) // apply 존재 //인창 수정, 성사 후에도 상대방 확인 위해 meeting["process"] == 1 추가
       {
