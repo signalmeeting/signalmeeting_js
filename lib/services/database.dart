@@ -152,6 +152,7 @@ class DatabaseService {
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl": meetingImageUrl,
       "banList": [],
+      "deletedTime" : null,
     };
 
     meetingDoc.set(newMeeting);
@@ -165,7 +166,7 @@ class DatabaseService {
 
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
-        .where("deletedTime", isEqualTo: null)
+        .where("deletedTime", isNull: true)
         .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 31)))
         .orderBy("createdAt", descending: true)
         .snapshots();
@@ -221,7 +222,7 @@ class DatabaseService {
 
   Future<List<QueryDocumentSnapshot>> getMyMeetingList() async {
     QuerySnapshot snapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: null)
+        .where("deletedTime", isNull: true)
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
@@ -725,7 +726,7 @@ class DatabaseService {
     List<String> meetingDocList = [];
     List<String> applyDocList = [];
     QuerySnapshot myMeetingSnapshot = await meetingCollection
-        .where("deletedTime", isEqualTo: null)
+        .where("deletedTime", isNull: true)
         .where("userId", isEqualTo: _user.uid)
         .orderBy("createdAt", descending: true)
         .get();
