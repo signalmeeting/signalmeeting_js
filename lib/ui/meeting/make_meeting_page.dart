@@ -343,6 +343,11 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                         ),
                                       ),
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left : 8.0, top : 3, bottom : 3),
+                                      child: Text("※ 미팅 생성 후 14일간 유지됩니다.",
+                                        style: TextStyle(fontFamily: "AppleSDGothicNeo",color: Colors.grey[600], fontSize: 13),),
+                                    ),
                                   ],
                                 ),
                               ),

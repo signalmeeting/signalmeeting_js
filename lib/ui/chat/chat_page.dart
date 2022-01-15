@@ -44,7 +44,27 @@ class ChatPage extends StatelessWidget {
             },
           ),
           backgroundColor: Colors.white,
-          title: Text(oppositeName, style: TextStyle(color: Colors.black)),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () => Get.to(
+                  () => OppositeProfilePage(oppositeUser, isItFromChat: true),
+                  arguments: Get.arguments,
+                ),
+                child: oppositeUser.pics.length > 0
+                    ? cachedImage(oppositeUser.firstPic,
+                        width: 35, height: 35, radius: 30.0)
+                    : CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.grey[200],
+                      ),
+              ),
+              SizedBox(width: 10,),
+              Text(oppositeName, style: TextStyle(color: Colors.black)),
+            ],
+          ),
           centerTitle: true,
         ),
         body: Container(
@@ -70,21 +90,28 @@ class ChatPage extends StatelessWidget {
         sort: (a, b) => b.key.compareTo(a.key),
         padding: EdgeInsets.all(8.0),
         reverse: true,
-        itemBuilder: (_, DataSnapshot snapshot, Animation<double> animation, int index) {
-          MessageModel message = MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value)));
+        itemBuilder:
+            (_, DataSnapshot snapshot, Animation<double> animation, int index) {
+          MessageModel message =
+              MessageModel.fromJson(jsonDecode(jsonEncode(snapshot.value)));
           bool _isComing = message.sender == oppositeId;
           if (_chatController.messageList.length < index + 1 || index == 0) {
             _chatController.messageList.add(message.obs);
             if (index != 0 &&
                 message.theDay !=
                     _chatController
-                        .messageList[_chatController.messageList.indexWhere((element) => element.value == message) - 1].value.theDay)
+                        .messageList[_chatController.messageList.indexWhere(
+                                (element) => element.value == message) -
+                            1]
+                        .value
+                        .theDay)
               _chatController.messageList[index - 1].update((val) {
                 val.showDate = true;
               });
           }
           return ChatMessage(
-            message: _chatController.messageList.firstWhere((element) => element.value == message),
+            message: _chatController.messageList
+                .firstWhere((element) => element.value == message),
             animation: animation,
             isComing: _isComing,
             oppositeUser: _isComing ? oppositeUser : null,
@@ -192,18 +219,25 @@ class ChatMessage extends StatelessWidget {
                 if (message.value.showDate ?? false)
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max, children: [
-                        Container(
-                            padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12)), color: Colors.grey[400]),
-                            child: Text(message.value.theDay,
-                                style: const TextStyle(
-                                    color: const Color(0xffffffff),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "AppleSDGothicNeo",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 13.0)))
-                      ])),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 4.0, horizontal: 8.0),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12)),
+                                    color: Colors.grey[400]),
+                                child: Text(message.value.theDay,
+                                    style: const TextStyle(
+                                        color: const Color(0xffffffff),
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "AppleSDGothicNeo",
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 13.0)))
+                          ])),
                 buildMessageRow(),
               ],
             ),
@@ -213,7 +247,8 @@ class ChatMessage extends StatelessWidget {
 
   Row buildMessageRow() {
     return Row(
-      mainAxisAlignment: isComing ? MainAxisAlignment.start : MainAxisAlignment.end,
+      mainAxisAlignment:
+          isComing ? MainAxisAlignment.start : MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         if (isComing) buildAvatar(),
@@ -221,31 +256,36 @@ class ChatMessage extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            if(!isComing)
-              _buildTime(),
+            if (!isComing) _buildTime(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal : 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: buildMessageBody(),
             ),
-            if(isComing)
-            _buildTime()
+            if (isComing) _buildTime()
           ],
         )
       ],
     );
   }
 
-  Opacity _buildTime() => Opacity(opacity: 0.5, child: Text(message.value.timeString, style: TextStyle(color: Color(0xff131415), fontSize: 12)));
+  Opacity _buildTime() => Opacity(
+      opacity: 0.5,
+      child: Text(message.value.timeString,
+          style: TextStyle(color: Color(0xff131415), fontSize: 12)));
 
   Widget buildAvatar() {
     return GestureDetector(
-      onTap: () => Get.to(() => OppositeProfilePage(oppositeUser, isItFromChat: true), arguments: Get.arguments,),
-      child: oppositeUser.pics.length > 0
-          ? cachedImage(oppositeUser.firstPic, width: 35, height: 35, radius: 30.0)
-          : CircleAvatar(
-        radius: 15,
-        backgroundColor: Colors.grey[200],
+      onTap: () => Get.to(
+        () => OppositeProfilePage(oppositeUser, isItFromChat: true),
+        arguments: Get.arguments,
       ),
+      child: oppositeUser.pics.length > 0
+          ? cachedImage(oppositeUser.firstPic,
+              width: 35, height: 35, radius: 30.0)
+          : CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.grey[200],
+            ),
     );
   }
 
@@ -253,10 +293,12 @@ class ChatMessage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
-          padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
+          padding:
+              const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
           child: Container(
               constraints: BoxConstraints(maxWidth: Get.width * .58),
-              child: Text(message.value.text, style: TextStyle(color: Colors.black, fontSize: 16))),
+              child: Text(message.value.text,
+                  style: TextStyle(color: Colors.black, fontSize: 16))),
           decoration: new BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.only(

@@ -5,9 +5,10 @@ import 'main_dialog.dart';
 class NotificationDialog extends StatelessWidget {
   final String title;
   final String contents;
+  final String contents2;
   final VoidCallback onPressed;
 
-  NotificationDialog({this.title, this.contents, this.onPressed});
+  NotificationDialog({this.title, this.contents, this.onPressed, this.contents2});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class NotificationDialog extends StatelessWidget {
       title: title ?? "알림",
       contents: Center(child: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
-        child: Text(contents),
+        child: (contents2 == null) ? Text(contents) : Column(children: <Widget>[Text(contents),SizedBox(height: 16,), Text(contents2)],),
       )),
       buttonText: "확인",
       onPressed: onPressed ?? () => Get.back(),

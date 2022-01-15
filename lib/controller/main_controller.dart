@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:byule/services/inAppManager.dart';
+import 'package:byule/services/push_notification_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,6 +30,14 @@ class MainController extends GetxController {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   InAppManager inAppManager;
 
+  @override
+  void onInit() {
+    3.delay(() {
+      inAppManager = InAppManager()..init();
+      PushNotificationsHandler().init();
+    });
+    super.onInit();
+  }
   logOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -46,11 +55,16 @@ class MainController extends GetxController {
   }
 
   updateUser(UserModel user) {
+    print('new user : ${user.toString()}');
     this.user(user);
   }
 
   useCoin(int coin) async {
     user.update((val) => val.coin -= coin);
+  }
+
+  addCoin(int coin) {
+    user.update((val) => val.coin += coin);
   }
 
   updateUserPics(pics) {

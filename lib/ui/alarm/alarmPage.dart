@@ -22,7 +22,7 @@ class AlarmPage extends StatelessWidget {
               child: GlowingOverscrollIndicator(
                 axisDirection: AxisDirection.down,
                 color: Colors.white,
-                child: ListView(
+                child: alarmList.length == 0 ? noAlarm() : ListView(
                     children: alarmList
                         .map(
                           (e) => e.type == 'signalting'
@@ -270,6 +270,19 @@ class AlarmPage extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget noAlarm() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.notifications_off),
+          SizedBox(height: 10,),
+          Text("받은 알림이 없습니다.",style: TextStyle(fontFamily: "AppleSDGothicNeoB")),
         ],
       ),
     );

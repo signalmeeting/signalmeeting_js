@@ -106,8 +106,6 @@ class Splash extends StatelessWidget {
                       if(_mainController.user.value.stop)
                         return InquiryPage(); // 이용문의 페이지
                       else {
-                        PushNotificationsHandler().init();
-                        _mainController.inAppManager = InAppManager()..init();
                         return LobbyPage();
                       }
                     } else {

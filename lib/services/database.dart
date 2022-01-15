@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:byule/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -68,6 +69,9 @@ class DatabaseService {
 
   //Coin receipt/usage Log
   final CollectionReference coinLogCollection = FirebaseFirestore.instance.collection('coinLog');
+
+  //withDrawUser
+  final CollectionReference withDrawCollection = FirebaseFirestore.instance.collection('withDrawUsers');
 
   //today signalting
   //0이면 시그널 x, 1이면 내가 보낸거, 2이면 매칭
@@ -167,7 +171,7 @@ class DatabaseService {
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
         .where("deletedTime", isNull: true)
-        .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 31)))
+        .where("createdAt", isGreaterThan: DateTime.now().subtract(Duration(days: 14)))
         .orderBy("createdAt", descending: true)
         .snapshots();
   }
@@ -409,6 +413,10 @@ class DatabaseService {
   Future<bool> newUser() async {
     bool result;
     List uploadedPics = [];
+    QuerySnapshot snapshot = await DatabaseService.instance.withDrawCollection.where("phone", isEqualTo: _user.phone).get();
+    if(snapshot.docs.length != 0){
+      withDrawCollection.doc(snapshot.docs[0].id).delete();
+    }
     await Future.forEach(_user.pics, (element) async {
       int index = _user.pics.indexOf(element);
       String uploadedUrl = await uploadUserImage(element, index);
@@ -635,7 +643,7 @@ class DatabaseService {
     return coinLogCollection.where('userid', isEqualTo: _user.uid).orderBy('date', descending: true).snapshots();
   }
 
-  Future<Map> purchaseReceipt(PurchasedItem purchasedItem) async {
+  Future<Map<String, dynamic>> purchaseReceipt(PurchasedItem purchasedItem) async {
     Map transactionReceipt;
     String productId = purchasedItem.productId;
     String orderId;
@@ -668,16 +676,16 @@ class DatabaseService {
       "date": DateTime.now(),
     };
 
-    Map<String, dynamic> resultMap;
-    await coinLogCollection.doc().set(receiptInfo).whenComplete(() {
-      userCollection.doc(_user.uid).update({"coin": FieldValue.increment(addCoin)});
-      resultMap = {"result": true, "coin": _user.coin + addCoin};
-    }).onError((error, stackTrace) {
-      print("collection error : $error");
-      return resultMap = {"result": false};
-    }); //TODO 에러 로그 남겨야될듯?
 
-    return Future.value(resultMap);
+    try {
+      await coinLogCollection.doc().set(receiptInfo);
+      await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(addCoin)});
+      return Future.value({"result" : true, "coin" : addCoin});
+    } on FirebaseException catch (e) {
+      return Future.value({"result" : false});
+    } catch (e) {
+      return Future.value({"result" : false});
+    }
   }
 
   checkFree() async {
@@ -706,6 +714,12 @@ class DatabaseService {
 
   Future withDraw() async {
     await FirebaseAuth.instance.currentUser.delete();
+    Map<String, dynamic> withDrawUser = {
+      "withDrawTime" : DateTime.now(),
+      "phone" : _controller.user.value.phone,
+
+    };
+    await DatabaseService.instance.withDrawCollection.add(withDrawUser);
     await DatabaseService.instance.userCollection.doc(_controller.user.value.uid).delete();
 
     //update today match
@@ -755,7 +769,7 @@ class DatabaseService {
 
     myApplySnapshot.docs.forEach((e) {
       myApplyDocList.add(e.id);
-      if (e.data()["apply"] != null) myApplyMeetingDocList.add(e.data()["apply"]["applyId"]);
+      myApplyMeetingDocList.add(e.data()["meeting"]);
     });
 
     for (int i = 0; i < myApplyDocList.length; i++) {
@@ -765,6 +779,8 @@ class DatabaseService {
     for (int i = 0; i < myApplyMeetingDocList.length; i++) {
       await meetingCollection.doc(myApplyMeetingDocList[i]).update({"apply": null, "process": null});
     }
+
+    Get.offAll(() => Splash());
   }
 
   deleteApply(String docId) async {

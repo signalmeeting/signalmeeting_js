@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:byule/services/inAppManager.dart';
+import 'package:byule/services/push_notification_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +26,16 @@ import 'menu/menu_page.dart';
 
 class LobbyController extends GetxController {
   RxInt selectedIndex = 0.obs;
+  MainController _mainController = Get.find();
   @override
   void onInit() {
+    print('lobbycontroller oninit');
     DatabaseService.instance.getTodayMatch();
     DatabaseService.instance.checkFree();
+    //_mainController.inAppManager = InAppManager()..init();
     super.onInit();
   }
+
 }
 
 class LobbyPage extends StatelessWidget {

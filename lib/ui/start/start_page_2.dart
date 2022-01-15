@@ -1,3 +1,5 @@
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +67,21 @@ class _StartPage2State extends State<StartPage2> {
           });
     } catch (e) {
       print("Failed to Verify Phone Number: $e");
+    }
+  }
+
+  checkWithDraw(int phoneNum) async{
+    //01000000001
+    String phone = "+82" + phoneNum.toString();
+    QuerySnapshot snapshot = await DatabaseService.instance.withDrawCollection.where("phone", isEqualTo: phone).get();
+    if(snapshot.docs.length != 0 && DateTime.now().difference(snapshot.docs[0].data()['withDrawTime'].toDate()).inDays < 21){
+      Get.dialog(NotificationDialog(
+        contents: "회원탈퇴 후 21일 이후에 재가입 할 수 있습니다.",
+        contents2: "D-${(21 - DateTime.now().difference(snapshot.docs[0].data()['withDrawTime'].toDate()).inDays).toString()}",
+      ));
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -181,14 +198,16 @@ class _StartPage2State extends State<StartPage2> {
                 ),
               ),
               style: BtStyle.start,
-              onPressed: () async {
-                if (_phoneNumKey.currentState.validate()) {
-                  await smsAuth();
-                  messageSent = true;
-                  setState(() {});
-                  FocusScope.of(context).requestFocus(myFocusNode);
+              onPressed: () async{
+                bool result = await checkWithDraw(int.tryParse(_phoneNumController.text));
+                print('withdraw result : $result');
+                if(!result && _phoneNumKey.currentState.validate()) {
+                      await smsAuth();
+                      messageSent = true;
+                      setState(() {});
+                      FocusScope.of(context).requestFocus(myFocusNode);
+                    }
                 }
-              },
             ),
           ],
         ),
@@ -325,5 +344,6 @@ class _StartPage2State extends State<StartPage2> {
       ),
     );
   }
+
 
 }
