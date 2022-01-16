@@ -27,6 +27,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   @override
   void initState() {
     _controller.refresh();
+    print('MyMeetingPage init@@@@@@');
     super.initState();
   }
 

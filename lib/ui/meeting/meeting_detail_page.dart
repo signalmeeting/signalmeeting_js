@@ -76,53 +76,50 @@ class MeetingDetailPage extends StatelessWidget {
               return false;
             } return true;
           },
-          child: GestureDetector(
-            onHorizontalDragCancel: () => print('???? working??'),
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.white,
-                elevation: 0,
-                leading: IconButton(
-                  highlightColor: Colors.white,
-                  icon: Icon(Icons.arrow_back_ios),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                iconTheme: IconThemeData(
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leading: IconButton(
+                highlightColor: Colors.white,
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () => Navigator.pop(context),
+              ),
+              iconTheme: IconThemeData(
+                color: Colors.black,
+              ),
+              centerTitle: true,
+              title: Text(
+                '미팅 신청',
+                style: TextStyle(
                   color: Colors.black,
-                ),
-                centerTitle: true,
-                title: Text(
-                  '미팅 신청',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: "AppleSDGothicNeoM",
-                  ),
+                  fontFamily: "AppleSDGothicNeoM",
                 ),
               ),
-              body: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.5], colors: [Colors.red[50], Colors.white])),
+            ),
+            body: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.5], colors: [Colors.red[50], Colors.white])),
+                ),
+                Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      mainCard(),
+                      Container(color: Colors.grey[300], height: 1),
+                      //전자는 들어 갔을 때, 수락 거절 버튼이 있어야됨 //후자는 상대방 프로필만
+                      if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1)
+                        seeTheOppositeBt(),
+                      if (!meeting.isMine && meeting.process == null)
+                        buildApplyButton(context)
+                    ],
                   ),
-                  Obx(
-                    () => Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        mainCard(),
-                        Container(color: Colors.grey[300], height: 1),
-                        //전자는 들어 갔을 때, 수락 거절 버튼이 있어야됨 //후자는 상대방 프로필만
-                        if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1)
-                          seeTheOppositeBt(),
-                        if (!meeting.isMine && meeting.process == null)
-                          buildApplyButton(context)
-                      ],
-                    ),
-                  ),
-                  Obx(() => appliedNoti(context))
-                ],
-              ),
+                ),
+                Obx(() => appliedNoti(context))
+              ],
             ),
           ),
         ),

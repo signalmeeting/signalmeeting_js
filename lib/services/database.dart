@@ -230,12 +230,18 @@ class DatabaseService {
   }
 
   Future<QueryDocumentSnapshot> getApplyData(String meetingId) async {
-    QuerySnapshot snapshot =
-        await meetingApplyCollection.where("meeting", isEqualTo: meetingId).orderBy("createdAt", descending: true).get();
-    if (snapshot.docs.length > 0)
+    QuerySnapshot snapshot = await meetingApplyCollection
+        .where("meeting", isEqualTo: meetingId)
+        .orderBy("createdAt", descending: true)
+        .get();
+    if (snapshot.docs.length > 0) {
+      print('aaa ${snapshot.docs[0].data()}');
       return snapshot.docs[0];
-    else
+    } else {
+      print('bbb');
       return null;
+    }
+
   }
 
   Future<bool> acceptApply({String meetingId, String applyId, String meetingTitle, String receiver}) {
@@ -268,7 +274,10 @@ class DatabaseService {
 
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
     QuerySnapshot snapshot =
-        await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
+    await meetingApplyCollection
+        .where("userId", isEqualTo: _user.uid)
+        .orderBy("createdAt", descending: true)
+        .get();
 
     if (snapshot.docs != null) {
       List meetingIdList = [];
@@ -724,7 +733,7 @@ class DatabaseService {
 
     //get my meeting list
     List<String> meetingDocList = [];
-    List<String> applyDocList = [];
+    List<String> applyDocList = []; ///내가 만든 미팅
     QuerySnapshot myMeetingSnapshot = await meetingCollection
         .where("deletedTime", isNull: true)
         .where("userId", isEqualTo: _user.uid)
@@ -732,8 +741,9 @@ class DatabaseService {
         .get();
 
     myMeetingSnapshot.docs.forEach((element) {
-      meetingDocList.add(element.id);
-      if (element.data()["apply"] != null) applyDocList.add(element.data()["apply"]["applyId"]);
+      meetingDocList.add(element.id); ///내가 만든 모든 미팅 담음
+      if (element.data()["apply"] != null)
+        applyDocList.add(element.data()["apply"]["applyId"]); ///어플라이 아이디 따로 담음
     });
 
     //delete my meeting
@@ -748,14 +758,15 @@ class DatabaseService {
 
     //내가 보낸 apply 다 삭제
     List<String> myApplyDocList = [];
-    //네기 보낸 apply 해당하는 meeting 의 apply 삭제
+    //내가 보낸 apply 해당하는 meeting 의 apply 삭제
     List<String> myApplyMeetingDocList = [];
     QuerySnapshot myApplySnapshot =
         await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
 
     myApplySnapshot.docs.forEach((e) {
       myApplyDocList.add(e.id);
-      if (e.data()["apply"] != null) myApplyMeetingDocList.add(e.data()["apply"]["applyId"]);
+      if (e.data()["apply"] != null)
+        myApplyMeetingDocList.add(e.data()["apply"]["applyId"]);
     });
 
     for (int i = 0; i < myApplyDocList.length; i++) {

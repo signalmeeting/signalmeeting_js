@@ -33,7 +33,7 @@ dependencies:
   firebase_storage:
   flutter_signin_button: ^1.1.0
   cached_network_image:
-  get: ^3.24.0
+  get: 4.5.1
   intl: ^0.16.1
   flutter_swiper: ^1.1.6
   another_flushbar:

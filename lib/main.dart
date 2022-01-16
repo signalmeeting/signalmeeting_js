@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
       statusBarBrightness: Brightness.dark, // For iOS (dark icons)
-      statusBarColor: Colors.white, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Colors.transparent, //or set color with: Color(0xFF0000FF)
     ));
     return GetMaterialApp(
       title: 'byule',
