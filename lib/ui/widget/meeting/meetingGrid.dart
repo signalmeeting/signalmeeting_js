@@ -4,8 +4,11 @@ import 'package:byule/model/meetingModel.dart';
 
 import 'meetingGridItem.dart';
 
+
 Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
-  return LiveGrid(
+  final options = LiveOptions(showItemInterval: Duration(milliseconds: 100),showItemDuration: Duration(milliseconds: 500),);
+  return LiveGrid.options(
+    options: options,
     shrinkWrap: true,
     itemCount: meetingList.length,
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

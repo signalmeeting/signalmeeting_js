@@ -464,6 +464,15 @@ class _MyProfilePageState extends State<MyProfilePage> {
       '글래머한',
     ];
 
+    List<String> manBodyTypeList = <String>[
+      '마른',
+      '슬림탄탄한',
+      '보통',
+      '통통한',
+      '근육있는',
+      '볼륨있는',
+    ];
+
     return showMaterialScrollPicker(
       headerColor: AppColor.sub200,
       headerTextColor: Colors.white,
@@ -472,7 +481,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
       cancelText: "취소",
       context: context,
       title: "체형",
-      items: bodyTypeList,
+      items: user.man ? manBodyTypeList :bodyTypeList,
       selectedItem: user.bodyType,
       onChanged: (value) => setState(() => _bodyType = value),
       onConfirmed: () => _controller.changeProfileValue('bodyType', _bodyType,

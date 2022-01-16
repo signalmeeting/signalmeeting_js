@@ -13,6 +13,7 @@ import 'package:byule/ui/widget/meeting/meetingGrid.dart';
 import 'package:byule/util/style/btStyle.dart';
 import 'package:smart_select/smart_select.dart';
 import 'my_meeting_page.dart';
+import 'package:flutter/animation.dart';
 
 class MeetingPage extends StatefulWidget {
   @override

@@ -58,9 +58,9 @@ class InAppManager {
     print('consumePurchase start');
     Map<String, dynamic> resultMap = await DatabaseService.instance.purchaseReceipt(purchasedItem);
     print('consumePurchase done');
-
+    print('abcd $resultMap');
     if (resultMap['result']) {
-      _mainController.updateUser(_mainController.user.value..coin = resultMap['coin']);
+      _mainController.addCoin(resultMap['coin']);
       await FlutterInappPurchase.instance.finishTransaction(purchasedItem, isConsumable: (purchasedItem.productId.startsWith('coin')));
     }
     return resultMap['result'];

@@ -97,7 +97,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
             child: Padding(
               padding: const EdgeInsets.only(left: 5.0, top: 3),
               child: Text(
-                "D-${(31 - DateTime.now().difference(item.createdAt).inDays).toString()}",
+                "D-${(14 - DateTime.now().difference(item.createdAt).inDays).toString()}",
                 style: TextStyle(fontFamily: "AppleSDGothicNeoB", fontSize: 12, color: Colors.white),
               ),
             ),

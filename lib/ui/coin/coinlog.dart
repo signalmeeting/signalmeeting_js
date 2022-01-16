@@ -160,7 +160,7 @@ class _CoinLogState extends State<CoinLog> {
                   child: Text("보유 하트",
                     style: TextStyle(
                       fontSize: 18,
-                      //fontWeight: FontWeight.bold,
+                      //fontFamily: "AppleSDGothicNeoB",
                       color: Colors.white,
                     ),
                   ),
@@ -217,7 +217,7 @@ class _CoinLogState extends State<CoinLog> {
                     children: <Widget>[
                       Text(coinUsage(logList[index]['usage'], logList[index]['coin']),
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontFamily: "AppleSDGothicNeoB",
                             color: (logList[index]['usage'] == "친구 초대" || logList[index]['usage'] == "하트 충전")
                                 ? Colors.red : Colors.blue
                         ),
