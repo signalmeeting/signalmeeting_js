@@ -79,7 +79,7 @@ class _InquiryPageState extends State<InquiryPage> {
                   Get.dialog(
                     ConfirmDialog(
                       title: '회원 탈퇴',
-                      text: '탈퇴하시면 복구가 불가능합니다.\n정말로 탈퇴하시겠습니까?',
+                      text: '21일간 재가입 불가하며,\n탈퇴하시면 복구가 불가능합니다.\n정말로 탈퇴하시겠습니까?',
                       onConfirmed: DatabaseService.instance.withDraw,
                       confirmText: '탈퇴',
                     ),
@@ -109,7 +109,7 @@ class _InquiryPageState extends State<InquiryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SelectableText(
-                'byule@gmail.com',
+                'signalmeeting@gmail.com',
                 style: TextStyle(
                     fontSize: 17, decoration: TextDecoration.underline),
                 onTap: () {

@@ -65,6 +65,8 @@ class MeetingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('??? ${meeting.man}');
+    print('!! ${user.man}');
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -113,7 +115,7 @@ class MeetingDetailPage extends StatelessWidget {
                       //전자는 들어 갔을 때, 수락 거절 버튼이 있어야됨 //후자는 상대방 프로필만
                       if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1)
                         seeTheOppositeBt(),
-                      if (!meeting.isMine && meeting.process == null)
+                      if (user.man != meeting.man && !meeting.isMine && meeting.process == null)
                         buildApplyButton(context)
                     ],
                   ),

@@ -89,7 +89,7 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            '1',
+                            '3',
                             style: TextStyle(
                               fontSize: 18,
                             ),
@@ -104,8 +104,15 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
                         ],
                       )
                           : Text('시그널 보내기'),
-                      onPressed: _buttonClicked ? () => onPressSignalButton() : isFree ? () => onPressSignalButton() : () => setState(() => _buttonClicked = true),
-                    ),
+                      onPressed: _buttonClicked
+                                      ? () {
+                                        onPressSignalButton();
+                                      }
+                                      : isFree
+                                          ? () => onPressSignalButton()
+                                          : () => setState(
+                                              () => _buttonClicked = true),
+                                ),
                     secondChild: Container(),
                     crossFadeState:
                     result == 1 || result == 2 ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -179,13 +186,13 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
   }
 
   void onPressSignalButton() async {
-    if (myuser.coin < 1 && !isFree) {
+    if (myuser.coin < 3 && !isFree) {
       Get.dialog(NoCoinDialog());
     } else {
       //시그널 보내기, 코인 소모
       if(!isFree)
-        await DatabaseService.instance.useCoin(1, 0, oppositeUserid: widget.user.uid);
-      else if(myuser.man){
+        await DatabaseService.instance.useCoin(3, 0, oppositeUserid: widget.user.uid);
+      else if(myuser.man) {
         await DatabaseService.instance.useCoin(-1, 3, oppositeUserid: widget.user.uid);
       }
       else if(!myuser.man) {
@@ -193,7 +200,17 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
       }
       bool result = await DatabaseService.instance.sendSignal(widget.user.uid, widget.docId, widget.user.name);
       if (result) {
-        CustomedFlushBar(context, '시그널을 보냈습니다');
+        if(isFree && myuser.man) {
+          _controller.isFree.value = false;
+          CustomedFlushBar(context, '일일 참여 보상 하트 1개가 지급되었습니다!');
+        } else if (isFree && !myuser.man) {
+          _controller.isFree.value = false;
+          CustomedFlushBar(context, '일일 참여 보상 하트 5개가 지급되었습니다!');
+        } else {
+          CustomedFlushBar(context, '시그널을 보냈습니다');
+        }
+
+
         setState(() {
           _signalSent = true;
         });

@@ -26,6 +26,7 @@ class MainController extends GetxController {
   RxList todayMatchList = [].obs;
   RxBool isLogOut = false.obs;
   RxBool isFree = false.obs;
+  bool needForceUpdate = false;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   InAppManager inAppManager;

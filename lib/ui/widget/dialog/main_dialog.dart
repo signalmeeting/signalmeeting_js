@@ -33,7 +33,7 @@ class MainDialog extends StatelessWidget {
                 height: Get.width*0.11,
                 child: TextButton(
                   onPressed: onPressed,
-                  child: Text(buttonText, style: TextStyle(color: buttonColor, fontFamily: "AppleSDGothicNeoM",),),
+                  child: Text(buttonText, style: TextStyle(color: buttonColor),),
                   style: BtStyle.textDialog,
                 ),
               ),

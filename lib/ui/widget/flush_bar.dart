@@ -8,7 +8,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 ///IOS 에서는 Flushbar error 가 나서 이런식으로 써버림 ㅎ,,
-CustomedFlushBar(BuildContext context, String text) {
+void CustomedFlushBar(BuildContext context, String text) {
   // Get.snackbar('', text);
   Get.rawSnackbar(message: text,
     backgroundColor: Colors.black.withOpacity(0.7),

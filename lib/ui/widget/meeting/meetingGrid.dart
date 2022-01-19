@@ -6,7 +6,8 @@ import 'meetingGridItem.dart';
 
 
 Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
-  final options = LiveOptions(showItemInterval: Duration(milliseconds: 100),showItemDuration: Duration(milliseconds: 500),);
+
+  final options = LiveOptions(showItemInterval: Duration(milliseconds: 200),showItemDuration: Duration(milliseconds: 500),);
   return LiveGrid.options(
     options: options,
     shrinkWrap: true,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:byule/ui/start/start_page_3.dart';
+import 'package:package_info/package_info.dart';
+
 
 import 'model/userModel.dart';
 import 'services/inAppManager.dart';
@@ -89,21 +92,25 @@ class Splash extends StatelessWidget {
           // TODO 처음 실행시 여러번 3번? 불림
           // 회원가입 후 auth 없앴을 때 반영안됨 (앱에서 로그아웃 안해서 auth 남아있는듯)
           builder: (context, AsyncSnapshot<User> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
             if (snapshot.data == null) {
               return StartPage();
             } else {
               String uid = snapshot.data.uid;
               String phone = snapshot.data.phoneNumber;
               print(snapshot.data);
-              return FutureBuilder<bool>(
-                  future: DatabaseService.instance.checkAuth(uid, phone),
-                  builder: (context, AsyncSnapshot<bool> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData)
+              return FutureBuilder<List<bool>>(
+                  future: Future.wait([DatabaseService.instance.checkAuth(uid, phone), checkForceUpdate()]),
+                  builder: (context, AsyncSnapshot<List<bool>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        !snapshot.hasData)
                       return Center(child: CircularProgressIndicator());
-                    else if (snapshot.data) {
+                    else if (snapshot.data[0]) {
                       MainController _mainController = Get.find();
-                      if(_mainController.user.value.stop)
+                      _mainController.needForceUpdate = snapshot.data[1];
+                      print('???? ${_mainController.needForceUpdate}');
+                      if (_mainController.user.value.stop)
                         return InquiryPage(); // 이용문의 페이지
                       else {
                         return LobbyPage();
@@ -117,4 +124,33 @@ class Splash extends StatelessWidget {
           }),
     );
   }
+
+  Future<bool> checkForceUpdate() async {
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(fetchTimeoutMillis: 10000));
+
+    await remoteConfig.fetch(expiration: const Duration(seconds: 10));
+    await remoteConfig.activateFetched();
+
+    String minAppVersion = remoteConfig.getString('min_version');
+    String latestAppVersion = remoteConfig.getString('latest_version'); //업데이트 권유 넣을꺼면 사용
+    print('minAppVersion : $minAppVersion');
+    print('latestAppVersion : $latestAppVersion');
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String currentVersion = packageInfo.version;
+
+    List<String> currentV = currentVersion.split(".");
+    List<String> minAppV = minAppVersion.split(".");
+
+    bool needForceUpdate = false;
+
+    for (var i = 0; i <= 2; i++) {
+      needForceUpdate = int.parse(minAppV[i]) > int.parse(currentV[i]);
+      if (int.parse(minAppV[i]) != int.parse(currentV[i])) break;
+    }
+
+    return needForceUpdate;
+  }
+
 }

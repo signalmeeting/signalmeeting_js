@@ -104,7 +104,6 @@ class DatabaseService {
         .where("todayMatch", isEqualTo: docId)
         .get();
     await userCollection.doc(_user.uid).update({"free": DateTime.now()});
-    _controller.isFree.value = false;
     if (snapshot.docs.length > 0) {
       //상대방이 나한테 보낸 시그널 존재 => 매칭
       print('match success');
@@ -425,6 +424,7 @@ class DatabaseService {
     UserModel uploadUser = _user;
     uploadUser.profileInfo["pics"] = uploadedPics;
     uploadUser.invite = false;
+    uploadUser.coin = 25;
     Map data = uploadUser.toJson();
     data.removeWhere((key, value) => key == "authCode");
     await userCollection.doc(data["uid"]).set(data).whenComplete(() => result = true).catchError((e) {
@@ -560,22 +560,22 @@ class DatabaseService {
       await userCollection.doc(_user.uid).update({"invite": true});
       await coinLogCollection.doc().set({
         "userid": _user.uid,
-        "coin": 50,
+        "coin": 20,
         "usage": "친구 초대",
         "oppositeUserid": snapshot.docs[0].id,
         "date": DateTime.now(),
-        "userCoin" : _user.coin + 50
+        "userCoin" : _user.coin + 20
       });
       await coinLogCollection.doc().set({
         "userid": snapshot.docs[0].id,
-        "coin": 50,
+        "coin": 20,
         "usage": "친구 초대",
         "oppositeUserid": _user.uid,
         "date": DateTime.now(),
-        "userCoin" : snapshot.docs[0]['coin'] + 50
+        "userCoin" : snapshot.docs[0]['coin'] + 20
       });
-      await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(50)});
-      await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(50)});
+      await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(20)});
+      await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(20)});
       Get.back();
       return Future.value(true);
     } else {

@@ -32,55 +32,82 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            highlightColor: Colors.black,
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
           backgroundColor: Colors.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () => Get.to(
-                  () => OppositeProfilePage(oppositeUser, isItFromChat: true),
-                  arguments: Get.arguments,
-                ),
-                child: oppositeUser.pics.length > 0
-                    ? cachedImage(oppositeUser.firstPic,
-                        width: 35, height: 35, radius: 30.0)
-                    : CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.grey[200],
-                      ),
-              ),
-              SizedBox(width: 10,),
-              Text(oppositeName, style: TextStyle(color: Colors.black)),
-            ],
+          appBar: AppBar(
+            elevation: 0,
+            leading: IconButton(
+              highlightColor: Colors.black,
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            backgroundColor: Colors.white,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // avatarBySize(35),
+                // SizedBox(width: 10,),
+                Text(oppositeName, style: TextStyle(color: Colors.black)),
+              ],
+            ),
+            centerTitle: true,
           ),
-          centerTitle: true,
-        ),
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              Flexible(
-                child: buildFirebaseList(),
-              ),
-              Divider(height: 1.0),
+          body: Stack(
+            children: [
               Container(
-                decoration: BoxDecoration(color: Theme.of(context).cardColor),
-                child: _buildTextComposer(),
+                child: Column(
+                  children: <Widget>[
+                    Flexible(
+                      child: buildFirebaseList(),
+                    ),
+                    Divider(height: 1.0),
+                    Container(
+                      decoration: BoxDecoration(color: Theme.of(context).cardColor),
+                      child: _buildTextComposer(),
+                    ),
+                  ],
+                ),
               ),
+              if(_chatController.messageList.isEmpty)
+              Center(child: Padding(
+                padding: EdgeInsets.only(bottom: Get.height*0.1),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    avatarBySize(80),
+                    SizedBox(height: 10,),
+                    Text.rich(TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: oppositeUser.name,
+                        style: TextStyle(
+                          fontFamily: 'AppleSDGothicNeoB',
+                          fontSize: 20,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '님과',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ])),
+                    SizedBox(height: 3,),
+                    Text('대화를 시작해보세요!', style: TextStyle(
+                      // fontFamily: 'AppleSDGothicNeoM',
+                      fontSize: 16,
+                    ),),
+                  ],
+                ),
+              ))
+
             ],
-          ),
-        ));
+          )),
+    );
   }
 
   FirebaseAnimatedList buildFirebaseList() {
@@ -195,6 +222,22 @@ class ChatPage extends StatelessWidget {
   String createImageFileName() {
     int random = Random().nextInt(100000);
     return "image_$random.jpg";
+  }
+
+  Widget avatarBySize(double double) {
+    return GestureDetector(
+      onTap: () => Get.to(
+            () => OppositeProfilePage(oppositeUser, isItFromChat: true),
+        arguments: Get.arguments,
+      ),
+      child: oppositeUser.pics.length > 0
+          ? cachedImage(oppositeUser.firstPic,
+          width: double, height: double, radius: double)
+          : CircleAvatar(
+        radius: double,
+        backgroundColor: Colors.grey[200],
+      ),
+    );
   }
 }
 

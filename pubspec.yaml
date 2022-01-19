@@ -54,6 +54,9 @@ dependencies:
   flutter_switch: 0.3.2
   top_snackbar_flutter: ^1.0.2
   flutter_inapp_purchase:
+  firebase_remote_config: 0.6.0
+  package_info: 2.0.2
+
 
 dev_dependencies:
   flutter_test:

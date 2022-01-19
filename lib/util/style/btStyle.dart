@@ -9,7 +9,7 @@ class BtStyle {
         primary: AppColor.main200,
         side: BorderSide(color: AppColor.main200, width: 1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100.0),
+          borderRadius: BorderRadius.circular(20.0),
         ),
         elevation: 0,
         minimumSize: Size(Get.width * 0.55, 44),

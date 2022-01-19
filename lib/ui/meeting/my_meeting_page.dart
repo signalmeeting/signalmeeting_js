@@ -95,7 +95,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   }
 
   buildList(List itemList, {bool short = false, bool isMine = false}) {
-    final options = LiveOptions(showItemInterval: Duration(milliseconds: 100),showItemDuration: Duration(milliseconds: 500),);
+    final options = LiveOptions(showItemInterval: Duration(milliseconds: 200),showItemDuration: Duration(milliseconds: 500),);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15),
       child: LiveGrid.options(

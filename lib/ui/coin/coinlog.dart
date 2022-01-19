@@ -261,6 +261,13 @@ class _CoinLogState extends State<CoinLog> {
       elevation: 0,
       iconTheme: IconThemeData(color: Colors.black),
       centerTitle: true,
+      leading: IconButton(
+        highlightColor: Colors.white,
+        icon: Icon(Icons.arrow_back_ios),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       title: const Text(
         '내 하트',
         style: TextStyle(color: Colors.black, fontFamily: "AppleSDGothicNeoM"),

@@ -34,64 +34,69 @@ class _MenuPageState extends State<MenuPage> {
       child: GlowingOverscrollIndicator(
         axisDirection: AxisDirection.down,
         color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(22,15,15,15),
-                child: Row(
-                  children: <Widget>[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: cachedImage(
-                        _user.firstPic,
-                        width: 50,
-                        height: 50,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 14,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _user.name,
-                          style: TextStyle(fontSize: 15, color: Colors.black87, fontFamily: "AppleSDGothicNeoB", height: 1),
+        child: ListView(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => Get.to(() => MyProfilePage()),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22,15,15,15),
+                    child: Row(
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: cachedImage(
+                            _user.firstPic,
+                            width: 50,
+                            height: 50,
+                          ),
                         ),
-                        SizedBox(height: 5,),
-                        Text(
-                          '${_user.career}, ${_user.loc1} ${_user.loc2}',
-                          style: TextStyle(fontSize: 13, color: Colors.black45, height: 1),
+                        SizedBox(
+                          width: 14,
                         ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _user.name,
+                              style: TextStyle(fontSize: 15, color: Colors.black87, fontFamily: "AppleSDGothicNeoB", height: 1),
+                            ),
+                            SizedBox(height: 5,),
+                            Text(
+                              '${_user.career}, ${_user.loc1} ${_user.loc2}',
+                              style: TextStyle(fontSize: 13, color: Colors.black45, height: 1),
+                            ),
+                          ],
+                        )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
-              ),
-              divider(8),
-              menuItemWithIcon('프로필', 'profile',() => Get.to(() => MyProfilePage())),
-              divider(0.3),
-              menuItemWithIcon('스토어', 'store', () => Get.to(() => StorePage())),
-              divider(0.3),
-              menuItemWithIcon('공지사항', 'notice', () => Get.to(() => NoticePage())),
-              divider(0.3),
-              menuItemWithIcon('친구 초대', 'inviteFriend', () => Get.to(() => InviteFriendsPage())),
-              divider(0.3),
-              menuItemWithIcon('리뷰 쓰기', 'review', () => inAppReview.openStoreListing()),
-              divider(0.3),
-              toggleItem(),
-              divider(8),
-              menuItem('문의 및 계정', 'store', () => Get.to(() => InquiryPage())),
-              divider(0.3),
-              menuItem('이용 약관', 'store', () => Get.to(() => Terms())),
-              divider(0.3),
-              menuItem('개인정보 처리방침', 'store', () => Get.to(() => PersonalInfo())),
-              divider(0.3),
-            ],
-          ),
+                divider(8),
+                menuItemWithIcon('프로필', 'profile',() => Get.to(() => MyProfilePage())),
+                divider(0.3),
+                menuItemWithIcon('스토어', 'store', () => Get.to(() => StorePage())),
+                divider(0.3),
+                menuItemWithIcon('공지사항', 'notice', () => Get.to(() => NoticePage())),
+                divider(0.3),
+                menuItemWithIcon('친구 초대', 'inviteFriend', () => Get.to(() => InviteFriendsPage())),
+                divider(0.3),
+                menuItemWithIcon('리뷰 쓰기', 'review', () => inAppReview.openStoreListing()),
+                divider(0.3),
+                toggleItem(),
+                divider(8),
+                menuItem('문의 및 계정', 'store', () => Get.to(() => InquiryPage())),
+                divider(0.3),
+                menuItem('이용 약관', 'store', () => Get.to(() => Terms())),
+                divider(0.3),
+                menuItem('개인정보 처리방침', 'store', () => Get.to(() => PersonalInfo())),
+                divider(0.3),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -99,20 +104,19 @@ class _MenuPageState extends State<MenuPage> {
 
   Widget menuItemWithIcon(String title, String image , VoidCallback onPressed) {
     return TextButton.icon(
-      label: Expanded(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left : 10.0),
-              child: Text(title),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 15.0),
-              child: Icon(Icons.chevron_right_rounded, color: Colors.grey),
-            ),
-          ],
-        ),
+      label: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left : 10.0),
+            child: Text(title),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: Icon(Icons.chevron_right_rounded, color: Colors.grey),
+          ),
+        ],
       ),
       style: BtStyle.menu,
       icon: Padding(
@@ -148,35 +152,34 @@ class _MenuPageState extends State<MenuPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextButton.icon(
-          label: Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left : 10.0),
-                  child: Text('데일리 미팅 활성화'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  child: Obx(
-                    () => FlutterSwitch(
-                      width: 50,
-                      height: 30,
-                      activeColor: AppColor.sub,
-                      toggleSize: 24.0,
-                      value: _user.dailyMeetingActivation??true,
-                      // value: toggleList[index],
-                      padding: 3,
-                      onToggle: (bool) async {
-                        _controller.updateUser(_user..dailyMeetingActivation = bool);
-                        DatabaseService.instance.updateDailyMeetingActivation(bool);
-                        setState(() {});
-                      },
-                    ),
+          label: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left : 10.0),
+                child: Text('데일리 미팅 활성화'),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: Obx(
+                  () => FlutterSwitch(
+                    width: 50,
+                    height: 30,
+                    activeColor: AppColor.sub,
+                    toggleSize: 24.0,
+                    value: _user.dailyMeetingActivation??true,
+                    // value: toggleList[index],
+                    padding: 3,
+                    onToggle: (bool) async {
+                      _controller.updateUser(_user..dailyMeetingActivation = bool);
+                      DatabaseService.instance.updateDailyMeetingActivation(bool);
+                      setState(() {});
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           style: BtStyle.menu,
           icon: Padding(

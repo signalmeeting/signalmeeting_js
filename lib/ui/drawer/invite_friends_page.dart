@@ -60,7 +60,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                //"추천시 양측 모두 50하트씩 지급"
+                //"추천시 양측 모두 20하트씩 지급"
                 TextBox1(),
                 //추천인코드 입력
                 TextBox2(),
@@ -195,7 +195,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
               text: '"추천시 양측 모두 ',
             ),
             TextSpan(
-              text: '50 하트씩 ',
+              text: '20 하트씩 ',
               style: TextStyle(
                 color: AppColor.sub,
                 fontWeight: FontWeight.bold,
@@ -227,6 +227,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
             fontSize: 17,
           ),
         ),
+        SizedBox(height: 3,),
         Text(
           '(1회 가능)',
           style: TextStyle(color: Colors.black54),
@@ -248,6 +249,7 @@ class _InviteFriendsPageState extends State<InviteFriendsPage> {
             fontSize: 17,
           ),
         ),
+        SizedBox(height: 3,),
         Text(
           '(무제한 가능)',
           style: TextStyle(color: Colors.black54),

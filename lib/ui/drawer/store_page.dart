@@ -1,3 +1,4 @@
+import 'package:byule/ui/drawer/invite_friends_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:byule/controller/main_controller.dart';
@@ -70,6 +71,7 @@ class StorePage extends StatelessWidget {
                       ItemTile(30, '9,500'),
                       ItemTile(50, '14,500'),
                       ItemTile(110, '29,500'),
+                      inviteFriendTile()
                     ],
                   ),
                 ],
@@ -80,6 +82,7 @@ class StorePage extends StatelessWidget {
       ),
     );
   }
+
   Widget ItemTile(number, price) {
     return GestureDetector(
       onTap: () {
@@ -120,6 +123,56 @@ class StorePage extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 18.0),
                   child: Text(
                     '$price 원',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget inviteFriendTile() {
+    return GestureDetector(
+      onTap: () => Get.to(() => InviteFriendsPage()),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 0, left: 18, right: 18),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Colors.white,
+            ),
+            height: 70,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18.0, right: 10),
+                      child: Icon(Icons.favorite, color: Colors.blue[200],),
+                    ),
+                    Text(
+                      '20',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: Text(
+                    '친구 초대',
                     style: TextStyle(
                       fontSize: 18,
                     ),

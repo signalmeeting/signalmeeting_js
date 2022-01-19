@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:byule/services/inAppManager.dart';
-import 'package:byule/services/push_notification_handler.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:byule/ui/widget/dialog/main_dialog.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,15 +10,12 @@ import 'package:byule/controller/my_meeting_controller.dart';
 import 'package:byule/model/userModel.dart';
 import 'package:byule/services/database.dart';
 import 'package:byule/ui/coin/coinlog.dart';
-import 'package:byule/ui/meeting/meeting_detail_page.dart';
 import 'package:byule/ui/meeting/meeting_page.dart';
 import 'package:byule/ui/menu/menu_page.dart';
-import 'package:byule/ui/test/dailymeetingtest2.dart';
-import 'package:byule/ui/test/dailymeetingtest3.dart';
-import 'package:byule/util/util.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:package_info/package_info.dart';
 
 import 'alarm/alarmPage.dart';
-import 'drawer/custom_drawer.dart';
 import 'home/home_page.dart';
 import 'menu/menu_page.dart';
 
@@ -27,16 +23,18 @@ import 'menu/menu_page.dart';
 class LobbyController extends GetxController {
   RxInt selectedIndex = 0.obs;
   MainController _mainController = Get.find();
+  bool needForceUpdate = false;
+
   @override
-  void onInit() {
+  void onInit() async {
     print('lobbycontroller oninit');
     DatabaseService.instance.getTodayMatch();
     DatabaseService.instance.checkFree();
     //_mainController.inAppManager = InAppManager()..init();
     super.onInit();
   }
-
 }
+
 
 class LobbyPage extends StatelessWidget {
 
@@ -82,6 +80,27 @@ class LobbyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build lobby');
+    // if(_mainController.needForceUpdate) {
+    //
+    // }
+    if(_mainController.needForceUpdate) {
+      0.delay(() => Get.dialog(
+          MainDialog(
+            title: '알림',
+            buttonText: '업데이트',
+            contents: Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Center(child: Text('보다 나은 서비스 이용을 위해\n지금 바로 업데이트 하세요!', textAlign: TextAlign.center, style: TextStyle(height: 1.5),)),
+            ),
+            onPressed: () {
+              final InAppReview inAppReview = InAppReview.instance;
+              return inAppReview.openStoreListing();
+            },
+          ),
+          barrierDismissible: false));
+    }
+
+
     return WillPopScope(
       onWillPop: () => _onWillPop(context),
       child: Container(
@@ -97,7 +116,7 @@ class LobbyPage extends StatelessWidget {
             bottomNavigationBar: SizedBox(
                 height: 60,
                 child: Obx(
-                  () => Row(
+                      () => Row(
                     children: <Widget>[
                       buildTabbar('데일리', 0),
                       buildTabbar('미팅', 1),
@@ -110,6 +129,7 @@ class LobbyPage extends StatelessWidget {
         ),
       ),
     );
+
   }
 
   buildAppBar(BuildContext context) {

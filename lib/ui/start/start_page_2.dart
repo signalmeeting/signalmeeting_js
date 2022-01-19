@@ -316,8 +316,8 @@ class _StartPage2State extends State<StartPage2> {
           Checkbox(
             activeColor: Colors.blue,
               value: isChecked,
-              // shape: RoundedRectangleBorder( // Making around shape
-              //     borderRadius: BorderRadius.circular(4)),
+              shape: RoundedRectangleBorder( // Making around shape
+                  borderRadius: BorderRadius.circular(3)),
               onChanged: (value) {
                 setState(() {
                   isChecked = value;
@@ -332,12 +332,12 @@ class _StartPage2State extends State<StartPage2> {
             children: [
               GestureDetector(
                 onTap: () => Get.to(() => Terms(), transition: Transition.rightToLeftWithFade),
-                  child: Text("이용 약관", style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline, height: 1),)),
-              Text(" 및 ", style: TextStyle(height: 1),),
+                  child: Text("이용 약관", style: TextStyle(fontSize: 13, fontFamily: 'AppleSDGothicNeoB', decoration: TextDecoration.underline, height: 1, color: Colors.black87),)),
+              Text(" 및 ", style: TextStyle(fontSize: 13, height: 1, color: Colors.black54),),
               GestureDetector(
                   onTap: () => Get.to(() => PersonalInfo(), transition: Transition.rightToLeftWithFade),
-                  child: Text("개인정보 처리방침", style: TextStyle(fontWeight: FontWeight.bold,decoration: TextDecoration.underline, height: 1),)),
-              Text("을 확인했습니다", style: TextStyle(height: 1),),
+                  child: Text("개인정보 처리방침", style: TextStyle(fontSize: 13, fontFamily: 'AppleSDGothicNeoB', decoration: TextDecoration.underline, height: 1, color: Colors.black87),)),
+              Text(" 동의", style: TextStyle(fontSize: 13, height: 1, color: Colors.black54),),
             ],
           ),
         ],

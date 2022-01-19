@@ -7,15 +7,17 @@ import 'package:get/get.dart';
 
 import 'database.dart';
 
-final List<String> _productLists = Platform.isAndroid? ['coin10','coin30', 'coin50', 'coin110']
-    : ['coin10','coin30', 'coin50', 'coin110'].map((item) =>'com.signalmeeting.'+item).toList();
+final List<String> _productLists = ['coin10','coin30', 'coin50', 'coin110'];
+
+// final List<String> _productLists = Platform.isAndroid ? ['coin10','coin30', 'coin50', 'coin110']
+//     : ['coin10','coin30', 'coin50', 'coin110'].map((item) =>'com.signalmeeting.'+item).toList();
 
 class InAppManager {
   MainController _mainController = Get.find();
 
   init() async {
     await FlutterInappPurchase.instance.initConnection;
-    dynamic productList=  await FlutterInappPurchase.instance.getProducts(_productLists); //상품 목록 로드 , 아이폰은 구독로드가 따로 없음 (~11.2)
+    dynamic productList = await FlutterInappPurchase.instance.getProducts(_productLists); //상품 목록 로드 , 아이폰은 구독로드가 따로 없음 (~11.2)
     print("productList : $productList");
     FlutterInappPurchase.purchaseUpdated.listen((productItem) {
       print('purchase-updated: $productItem');
@@ -49,9 +51,22 @@ class InAppManager {
     }
   }
 
-  void requestPurchase(String productId) {
+  void requestPurchase(String productId) async{
     print('productId $productId');
-    FlutterInappPurchase.instance.requestPurchase(productId);
+    var purchased = await FlutterInappPurchase.instance.requestPurchase(productId);
+    if(Platform.isIOS) {
+      validateReceipt(purchased);
+    }
+  }
+
+  validateReceipt(purchased) async {
+    var receiptBody = {
+      'receipt-data': purchased.transactionReceipt,
+      // 'password': '******'
+    };
+
+    var result = await FlutterInappPurchase.instance.validateReceiptIos(receiptBody: receiptBody, isTest: true);
+    print('validateReceipt result : $result');
   }
 
   Future<bool> consumePurchase(PurchasedItem purchasedItem) async {
