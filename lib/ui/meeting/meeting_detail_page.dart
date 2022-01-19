@@ -163,6 +163,9 @@ class MeetingDetailPage extends StatelessWidget {
                         : Text('신청하기'),
                     onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
                       FocusScope.of(context).unfocus();
+                      ///최근에 거절당한 미팅 있는지 확인
+                      bool refusedExist = await DatabaseService.instance.checkRefusedBeforeApply(this.meeting.id);
+                      if(refusedExist) return;
                       await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
                       meetingDetailController.meeting.update((meeting) => meeting.process = 0);
                       Map<String, dynamic> applyMeeting = {

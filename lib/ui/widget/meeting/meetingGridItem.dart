@@ -16,8 +16,6 @@ import '../cached_image.dart';
 Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied = false, bool refusedOrDeleted = false, bool myMeeting = false}) {
   return InkWell(
     onTap: () {
-      //print('is it refused ? : $refused');
-      print("ttttt : ${item.id}");
       if(refusedOrDeleted) {
         //Get.defaultDialog(title: '거절된 미팅\n미팅이 거절되었습니다');
         Get.dialog(NotificationDialog(contents: item.process == 3 ? "미팅이 삭제되었습니다" : "미팅이 거절되었습니다",));
