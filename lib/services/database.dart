@@ -359,6 +359,32 @@ class DatabaseService {
       return Future.value(false);
     }
   }
+  Future<bool> checkRefusedBeforeApply(String meetingId) async{
+    QuerySnapshot snapshot = await meetingApplyCollection
+        .where("userId", isEqualTo: _user.uid)
+        .where("meeting", isEqualTo: meetingId)
+        .where("process", isEqualTo: 2)
+        .get();
+
+    print('snapshot1 : $snapshot');
+    print('snapshot2 : ${snapshot.isBlank}');
+    print('snapshot3 : ${snapshot.docs.isEmpty}');
+    if(snapshot.docs.isEmpty) {
+      print('aaa');
+      return false;
+    } else {
+      print('bbb');
+      Get.dialog(NotificationDialog(contents: "최근 거절된 미팅입니다"));
+      QueryDocumentSnapshot doc = snapshot.docs[0];
+      DocumentReference docRef = doc.reference;
+      await docRef.update({"process": null});
+      return true;
+    }
+    QueryDocumentSnapshot doc = snapshot.docs[0];
+    DocumentReference docRef = doc.reference;
+    await docRef.update({"process": null});
+    return true;
+  }
 
   checkRefused(String meetingId, bool isRefused) async {
     QuerySnapshot snapshot = await meetingApplyCollection

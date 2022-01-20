@@ -34,7 +34,7 @@ class MeetingModel {
   String introduce;
   String phone;
   bool isMine = false; // 내가 만들었으면 true
-  int process; // null: 신청 가능 0: 신청중, 1: 연결, 2: 거절 (null 이거나 2 이면 신청 가능)
+  int process; // null: 신청 가능 0: 신청중, 1: 연결, 2: 거절 (null 이거나 2 이면 신청 가능), 3: 삭제
   ApplyModel apply; //msg, user(id), createdAt, +phone
   UserModel applyUser;
   DateTime createdAt;
