@@ -13,6 +13,8 @@ class ChatController extends GetxController {
   final UserModel oppositeUser;
   final String type;
 
+  RxBool isItEmptyChat = true.obs;
+
   ChatController(this.roomId, this.oppositeUser, this.type);
 
   final MainController _mainController = Get.find();

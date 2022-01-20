@@ -31,20 +31,19 @@ void main() async {
 
   try {
     app = await Firebase.initializeApp(
-      name: 'byule',
+      name: 'signalmeeting',
       options: FirebaseOptions(
         appId: (Platform.isIOS || Platform.isMacOS) ? '1:387245324127:ios:488a89f7e82800aca3a8ea' : '1:387245324127:android:f336e996594ce3e0a3a8ea',
         apiKey: 'AIzaSyDnw8E0LXbk8cwCNbI8ujSWyMzLZ7iivMA',
         messagingSenderId: '387245324127',
-        projectId: 'byule-8ee89',
-        databaseURL: 'https://byule-8ee89-default-rtdb.asia-southeast1.firebasedatabase.app/',
+        projectId: 'signalmeeting-8ee89',
+        databaseURL: 'https://signalmeeting-8ee89-default-rtdb.asia-southeast1.firebasedatabase.app/',
       ),
     );
 
-
   } on FirebaseException catch (e) {
     if (e.code == 'duplicate-app') {
-      app = Firebase.app('byule');
+      app = Firebase.app('signalmeeting');
     } else {
       throw e;
     }
@@ -52,7 +51,7 @@ void main() async {
     rethrow;
   }
 
-  FirebaseFunctions.instance.useFunctionsEmulator(origin: 'https://asia-northeast3-byule-8ee89.cloudfunctions.net');
+  FirebaseFunctions.instance.useFunctionsEmulator(origin: 'https://asia-northeast3-signalmeeting-8ee89.cloudfunctions.net');
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(app));
 }

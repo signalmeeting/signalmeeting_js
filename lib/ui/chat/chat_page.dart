@@ -32,81 +32,84 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            elevation: 0,
-            leading: IconButton(
-              highlightColor: Colors.black,
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
             backgroundColor: Colors.white,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                // avatarBySize(35),
-                // SizedBox(width: 10,),
-                Text(oppositeName, style: TextStyle(color: Colors.black)),
-              ],
-            ),
-            centerTitle: true,
-          ),
-          body: Stack(
-            children: [
-              Container(
-                child: Column(
-                  children: <Widget>[
-                    Flexible(
-                      child: buildFirebaseList(),
-                    ),
-                    Divider(height: 1.0),
-                    Container(
-                      decoration: BoxDecoration(color: Theme.of(context).cardColor),
-                      child: _buildTextComposer(),
-                    ),
-                  ],
-                ),
+            appBar: AppBar(
+              elevation: 0,
+              leading: IconButton(
+                highlightColor: Colors.black,
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              if(_chatController.messageList.isEmpty)
-              Center(child: Padding(
-                padding: EdgeInsets.only(bottom: Get.height*0.1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    avatarBySize(80),
-                    SizedBox(height: 10,),
-                    Text.rich(TextSpan(children: <TextSpan>[
-                      TextSpan(
-                        text: oppositeUser.name,
-                        style: TextStyle(
-                          fontFamily: 'AppleSDGothicNeoB',
-                          fontSize: 20,
-                        ),
+              backgroundColor: Colors.white,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  // avatarBySize(35),
+                  // SizedBox(width: 10,),
+                  Text(oppositeName, style: TextStyle(color: Colors.black)),
+                ],
+              ),
+              centerTitle: true,
+            ),
+            body: Stack(
+              children: [
+                Container(
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        child: buildFirebaseList(),
                       ),
-                      TextSpan(
-                        text: '님과',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
+                      Divider(height: 1.0),
+                      Container(
+                        decoration: BoxDecoration(color: Theme.of(context).cardColor),
+                        child: _buildTextComposer(),
                       ),
-                    ])),
-                    SizedBox(height: 3,),
-                    Text('대화를 시작해보세요!', style: TextStyle(
-                      // fontFamily: 'AppleSDGothicNeoM',
-                      fontSize: 16,
-                    ),),
-                  ],
+                    ],
+                  ),
                 ),
-              ))
-
-            ],
-          )),
+                Obx(
+                  () => _chatController.isItEmptyChat.value ? Center(child: Padding(
+                    padding: EdgeInsets.only(bottom: Get.height*0.1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        avatarBySize(80),
+                        SizedBox(height: 10,),
+                        Text.rich(TextSpan(children: <TextSpan>[
+                          TextSpan(
+                            text: oppositeUser.name,
+                            style: TextStyle(
+                              fontFamily: 'AppleSDGothicNeoB',
+                              fontSize: 20,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '님과',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ])),
+                        SizedBox(height: 3,),
+                        Text('대화를 시작해보세요!', style: TextStyle(
+                          // fontFamily: 'AppleSDGothicNeoM',
+                          fontSize: 16,
+                        ),),
+                      ],
+                    ),
+                  )) : Container(),
+                )
+              ],
+            )),
+      ),
     );
   }
 
@@ -135,6 +138,7 @@ class ChatPage extends StatelessWidget {
               _chatController.messageList[index - 1].update((val) {
                 val.showDate = true;
               });
+            0.delay(() => _chatController.isItEmptyChat.value = false);
           }
           return ChatMessage(
             message: _chatController.messageList
