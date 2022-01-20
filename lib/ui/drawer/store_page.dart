@@ -68,9 +68,9 @@ class StorePage extends StatelessWidget {
                   Column(
                     children: <Widget>[
                       ItemTile(10, '3,900'),
-                      ItemTile(30, '9,500'),
-                      ItemTile(50, '14,500'),
-                      ItemTile(110, '29,500'),
+                      ItemTile(30, '9,900'),
+                      ItemTile(50, '14,000'),
+                      ItemTile(110, '29,000'),
                       inviteFriendTile()
                     ],
                   ),

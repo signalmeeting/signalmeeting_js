@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:byule/controller/main_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,10 +31,15 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
         CustomedFlushBar(Get.context, '신청이 진행중인 미팅입니다');
       } else if(item.process == 1 && !item.isMine && !didIApplied) {
         CustomedFlushBar(Get.context, '이미 성사된 미팅입니다');
+      } else if(item.process == 4 && !item.isMine){
+        CustomedFlushBar(Get.context, '이미 성사된 미팅입니다');
+      } else if(item.process == 4 && item.isMine){
+        Get.dialog(NotificationDialog(contents: "상대방이 미팅을 삭제했습니다",));
       }
 
     },
     onLongPress: () {
+      MainController _controller = Get.find();
       if(item.isMine && (item.apply == null || item.process == 1)) {
         Get.dialog(
             MainDialog(
@@ -57,12 +63,45 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
           contents: "미팅을 거절후 삭제해주세요",
         ));
       }
+      if(item.apply.userId == _controller.user.value.uid){
+        Get.dialog(
+            MainDialog(
+              title: "알림",
+              contents: Padding(
+                padding: const EdgeInsets.only(left: 18, bottom : 18.0),
+                child: Text("미팅을 삭제하시겠습니까?", textAlign: TextAlign.center,),
+              ),
+              buttonText: "삭제",
+              onPressed: () async {
+                await DatabaseService.instance.deleteApplyMeeting(item.id, item.apply.applyId);
+                MyMeetingController controller = Get.find();
+                controller.myMeetingApplyList.remove(item);
+                Get.back();
+                CustomedFlushBar(Get.context, "삭제가 완료되었습니다!");
+              },));
+      }
+      if(item.process == 4 && item.isMine){
+        Get.dialog(MainDialog(
+          title: "알림",
+          contents: Padding(
+            padding: const EdgeInsets.only(left: 18, bottom : 18.0),
+            child: Text("미팅을 삭제하시겠습니까?", textAlign: TextAlign.center,),
+          ),
+          buttonText: "삭제",
+          onPressed: () async {
+            await DatabaseService.instance.deleteMyMeeting(item.id);
+            MyMeetingController controller = Get.find();
+            controller.myMeetingList.remove(item);
+            Get.back();
+            CustomedFlushBar(Get.context, "삭제가 완료되었습니다!");
+          },));
+      }
     },
     child: Stack(
       children: <Widget>[
         OpenContainer(
           useRootNavigator: true,
-          tappable: ((didIApplied || item.isMine || item.process == null) && !refusedOrDeleted) ? true : false,
+          tappable: ((didIApplied || item.isMine || item.process == null) && !refusedOrDeleted && item.process != 4) ? true : false,
           transitionDuration: Duration(milliseconds: 500),
           openShape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5.2),
@@ -140,7 +179,7 @@ Widget closedItem(MeetingModel item) {
                     }
 
                     return Text(
-                      item.process == 0 || item.process == 1 ? '${item.number} / ${item.number}' : '0 / ${item.number}',
+                      item.process == 0 || item.process == 1 || item.process == 4 ? '${item.number} / ${item.number}' : '0 / ${item.number}',
                       style: TextStyle(fontSize: 12, color: textColor, fontFamily: 'AppleSDGothicNeoM'),
                     );
                   }),

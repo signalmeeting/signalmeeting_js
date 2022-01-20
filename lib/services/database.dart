@@ -167,6 +167,15 @@ class DatabaseService {
     await meetingCollection.doc(docId).update({"deletedTime": DateTime.now(), "process" : process,});
   }
 
+  deleteMyMeeting(String docId) async{
+    await meetingCollection.doc(docId).update({"deletedTime" : DateTime.now()});
+  }
+
+  deleteApplyMeeting(String meetingDocId, String applyDocId) async{
+    await meetingCollection.doc(meetingDocId).update({"process" : 4});
+    await meetingApplyCollection.doc(applyDocId).update({"process" : 4});
+  }
+
   Stream<QuerySnapshot> getTotalMeetingList() {
     return meetingCollection
         .where("deletedTime", isNull: true)
@@ -272,11 +281,11 @@ class DatabaseService {
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
     QuerySnapshot snapshot =
         await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
-
+    print('myapply : ${snapshot.size}');
     if (snapshot.docs != null) {
       List meetingIdList = [];
       for (int i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].data()['process'] != null) {
+        if (snapshot.docs[i].data()['process'] != null && snapshot.docs[i].data()['process'] != 4) {
           meetingIdList.add(snapshot.docs[i].data()['meeting']);
         } else
           print('process is null');
