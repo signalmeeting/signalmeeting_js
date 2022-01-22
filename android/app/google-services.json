@@ -46,6 +46,13 @@
             {
               "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "387245324127-ns67io01dus1s68q60p8c2loptfk07qn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.signalting.byule"
+              }
             }
           ]
         }
@@ -68,6 +75,14 @@
           }
         },
         {
+          "client_id": "387245324127-fu3todhb12nfjcd8cni6ovl9ejvm6ris.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.signalting.byule",
+            "certificate_hash": "98a5018366fc5eeefe4fc10feea71dbd8a0b079a"
+          }
+        },
+        {
           "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -83,6 +98,13 @@
             {
               "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "387245324127-ns67io01dus1s68q60p8c2loptfk07qn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.signalting.byule"
+              }
             }
           ]
         }
