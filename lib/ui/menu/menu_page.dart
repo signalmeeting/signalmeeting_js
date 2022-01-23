@@ -103,14 +103,21 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Widget menuItemWithIcon(String title, String image , VoidCallback onPressed) {
-    return TextButton.icon(
-      label: Row(
-        mainAxisSize: MainAxisSize.max,
+    return TextButton(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left : 10.0),
-            child: Text(title),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Image.asset('assets/menu_$image.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left : 20.0),
+                child: Text(title),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
@@ -119,10 +126,6 @@ class _MenuPageState extends State<MenuPage> {
         ],
       ),
       style: BtStyle.menu,
-      icon: Padding(
-        padding: const EdgeInsets.only(left: 15.0),
-        child: Image.asset('assets/menu_$image.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
-      ),
       onPressed: onPressed,
     );
   }
@@ -151,14 +154,21 @@ class _MenuPageState extends State<MenuPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextButton.icon(
-          label: Row(
-            mainAxisSize: MainAxisSize.max,
+        TextButton(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left : 10.0),
-                child: Text('데일리 미팅 활성화'),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: Image.asset('assets/tab_daily.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left : 20.0),
+                    child: Text('데일리 미팅 활성화'),
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),
@@ -182,10 +192,6 @@ class _MenuPageState extends State<MenuPage> {
             ],
           ),
           style: BtStyle.menu,
-          icon: Padding(
-            padding: const EdgeInsets.only(left: 15.0),
-            child: Image.asset('assets/tab_daily.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
-          ),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 22.0, right: 22, bottom: 10),

@@ -155,7 +155,7 @@ class DatabaseService {
       "man": this._user.profileInfo['man'], //인창, 추가
       "meetingImageUrl": meetingImageUrl,
       "banList": [],
-      "deletedTime" : null,
+      "deletedTime": null,
     };
 
     meetingDoc.set(newMeeting);
@@ -164,16 +164,19 @@ class DatabaseService {
   }
 
   deleteMeeting(String docId, {int process}) async {
-    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now(), "process" : process,});
+    await meetingCollection.doc(docId).update({
+      "deletedTime": DateTime.now(),
+      "process": process,
+    });
   }
 
-  deleteMyMeeting(String docId) async{
-    await meetingCollection.doc(docId).update({"deletedTime" : DateTime.now()});
+  deleteMyMeeting(String docId) async {
+    await meetingCollection.doc(docId).update({"deletedTime": DateTime.now()});
   }
 
-  deleteApplyMeeting(String meetingDocId, String applyDocId) async{
-    await meetingCollection.doc(meetingDocId).update({"process" : 4});
-    await meetingApplyCollection.doc(applyDocId).update({"process" : 4});
+  deleteApplyMeeting(String meetingDocId, String applyDocId) async {
+    await meetingCollection.doc(meetingDocId).update({"process": 4});
+    await meetingApplyCollection.doc(applyDocId).update({"process": 4});
   }
 
   Stream<QuerySnapshot> getTotalMeetingList() {
@@ -243,7 +246,7 @@ class DatabaseService {
 
   Future<QueryDocumentSnapshot> getApplyData(String meetingId) async {
     QuerySnapshot snapshot =
-        await meetingApplyCollection.where("meeting", isEqualTo: meetingId).orderBy("createdAt", descending: true).get();
+    await meetingApplyCollection.where("meeting", isEqualTo: meetingId).orderBy("createdAt", descending: true).get();
     if (snapshot.docs.length > 0)
       return snapshot.docs[0];
     else
@@ -280,7 +283,7 @@ class DatabaseService {
 
   Future<List<MeetingModel>> getMyApplyMeetingList() async {
     QuerySnapshot snapshot =
-        await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
+    await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
     print('myapply : ${snapshot.size}');
     if (snapshot.docs != null) {
       List meetingIdList = [];
@@ -299,8 +302,7 @@ class DatabaseService {
         meeting["_id"] = meetingIdList[i];
         meeting["isMine"] = false;
         meeting['createdAt'] = meeting['createdAt'].toDate().toString();
-        if(meeting["deletedTime"] != null)
-          meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
+        if (meeting["deletedTime"] != null) meeting["deletedTime"] = meeting["deletedTime"].toDate().toString();
         meetingList.add(MeetingModel.fromJson(meeting));
       }
       return meetingList;
@@ -308,58 +310,90 @@ class DatabaseService {
       return [];
   }
 
-  applyMeeting(String meetingId, String msg, String title, String receiver) async {
-    try {
-      Get.dialog(Center(child: CircularProgressIndicator()));
-      // process 0 : 신청 중, 1 : 연결, 2 : 거절
-      DocumentSnapshot snapshot = await meetingCollection.doc(meetingId).get();
-      QuerySnapshot applySnapshot =
-          await meetingApplyCollection.where("userId", isEqualTo: _user.uid).where("meeting", isEqualTo: meetingId).get();
-      if (snapshot.data()["process"] == 0 || snapshot.data()["process"] == 1) {
-        Get.back();
-        print("타인 신청중");
-        //Get.defaultDialog(title: "알림", middleText: "이미 신청중인 미팅입니다.");
-        CustomedFlushBar(Get.context, "이미 신청중인 미팅입니다.");
-        return Future.value(false);
-      }
-      // else if (applySnapshot.docs.length > 0) {
-      //   Get.back();
-      //   print("내가 신청중");
-      //   Get.defaultDialog(title: "알림", middleText: "신청한 미팅입니다.");
-      // }
-      else {
-        DocumentReference apply = await meetingApplyCollection.add({
-          "user": userCollection.doc(_user.uid),
-          "userId": _user.uid,
-          "meeting": meetingId,
-          "msg": msg,
-          "createdAt": DateTime.now(),
-          "process": 0
-        }); // process 0 : 신청중 , 1 : 연결, 2: 거절
+  Future<bool> applyMeeting(String meetingId, String msg, String title, String receiver) async {
+    Get.dialog(Center(child: CircularProgressIndicator()));
+    // process 0 : 신청 중, 1 : 연결, 2 : 거절
 
-        alarmCollection.doc().set({"body": title, "receiver": receiver, "time": DateTime.now(), "type": "apply"});
+    DocumentSnapshot snapshot = await meetingCollection.doc(meetingId).get();
 
-        await meetingCollection.doc(meetingId).update({
-          "process": 0,
-          "apply": {
-            "applyId": apply.id,
-            "user": userCollection.doc(_user.uid),
-            "userId": _user.uid,
-            "msg": msg,
-            "createdAt": DateTime.now(),
-            "phone": _user.phoneNumber
-          }
-        });
-
-        Get.back();
-//        Get.defaultDialog(title: "신청 완료", middleText: "성공적으로 신청되었습니다!");
-        return Future.value(true);
-      }
-    } catch (e) {
+    if (snapshot.data()["process"] == 0 || snapshot.data()["process"] == 1) {
+      Get.back();
+      print("타인 신청중");
+      CustomedFlushBar(Get.context, "이미 신청중인 미팅입니다.");
       return Future.value(false);
     }
+
+    String applyId;
+    String alarmId;
+
+    bool writeResult = await FirebaseFirestore.instance.runTransaction((transaction) async {
+      await meetingCollection.doc(meetingId).update({
+        "process": 0,
+      });
+
+      DocumentReference newMeetingApply = meetingApplyCollection.doc();
+      DocumentReference newAlarm = alarmCollection.doc();
+
+      applyId = newMeetingApply.id;
+      alarmId = newAlarm.id;
+
+      transaction.set(newMeetingApply, {
+        "user": userCollection.doc(_user.uid),
+        "userId": _user.uid,
+        "meeting": meetingId,
+        "msg": msg,
+        "createdAt": DateTime.now(),
+        "process": 0
+      });
+
+      transaction.set(newAlarm, {"body": title, "receiver": receiver, "time": DateTime.now(), "type": "apply"});
+      transaction.update(meetingCollection.doc(meetingId), {
+        "process": 0,
+        "apply": {
+          "applyId": newMeetingApply.id,
+          "user": userCollection.doc(_user.uid),
+          "userId": _user.uid,
+          "msg": msg,
+          "createdAt": DateTime.now(),
+          "phone": _user.phoneNumber
+        }
+      });
+    }).then((value) {
+      print("meeting apply success!!");
+      Get.back();
+      return Future.value(true);
+    }).catchError((error) {
+      print("meeting apply failed : $error");
+      Get.back();
+      return Future.value(false);
+    });
+
+    print("writeResult : $writeResult");
+
+    if (writeResult)
+      return await 0.3.delay(() async {
+        DocumentSnapshot meetingDoc = await meetingCollection.doc(meetingId).get();
+
+        if (meetingDoc.data()["apply"]["applyId"] != applyId) {
+          //delete function started
+          return FirebaseFirestore.instance.runTransaction((transaction) async {
+            {
+              transaction.delete(meetingApplyCollection.doc(applyId));
+              transaction.delete(meetingApplyCollection.doc(alarmId));
+            }
+          }).then((value) {
+            print("meeting delete success!!");
+            return Future<bool>.value(false);
+          }).catchError((error) {
+            print("meeting delete failed : $error");
+            return Future<bool>.value(false);
+          });
+        } else
+          return Future<bool>.value(true);
+      }); else return Future<bool>.value(false);
   }
-  Future<bool> checkRefusedBeforeApply(String meetingId) async{
+
+  Future<bool> checkRefusedBeforeApply(String meetingId) async {
     QuerySnapshot snapshot = await meetingApplyCollection
         .where("userId", isEqualTo: _user.uid)
         .where("meeting", isEqualTo: meetingId)
@@ -369,7 +403,7 @@ class DatabaseService {
     print('snapshot1 : $snapshot');
     print('snapshot2 : ${snapshot.isBlank}');
     print('snapshot3 : ${snapshot.docs.isEmpty}');
-    if(snapshot.docs.isEmpty) {
+    if (snapshot.docs.isEmpty) {
       print('aaa');
       return false;
     } else {
@@ -448,7 +482,7 @@ class DatabaseService {
     bool result;
     List uploadedPics = [];
     QuerySnapshot snapshot = await DatabaseService.instance.withDrawCollection.where("phone", isEqualTo: _user.phone).get();
-    if(snapshot.docs.length != 0){
+    if (snapshot.docs.length != 0) {
       withDrawCollection.doc(snapshot.docs[0].id).delete();
     }
     await Future.forEach(_user.pics, (element) async {
@@ -471,8 +505,8 @@ class DatabaseService {
   Future<bool> changeProfileValue(String key, var value) async {
     bool result;
     await userCollection.doc(_user.uid).update({key: value}).whenComplete(() => result = true).catchError((e) {
-          result = false;
-        });
+      result = false;
+    });
     return result;
   }
 
@@ -500,8 +534,8 @@ class DatabaseService {
   Future<bool> uploadUserPic(List<dynamic> pics) async {
     bool result;
     await userCollection.doc(_user.uid).update({"profileInfo.pics": pics}).whenComplete(() => result = true).catchError((e) {
-          result = false;
-        });
+      result = false;
+    });
     return result;
   }
 
@@ -547,7 +581,7 @@ class DatabaseService {
   Future<bool> getTodayMatch() async {
     String today = Util.todayMatchDateFormat(DateTime.now());
     QuerySnapshot snapshot =
-        await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
+    await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
     // DocumentSnapshot userSnapshot = await userCollection.doc(_user.uid).collection("todayMatch").doc(today).get();
     // var matchIdList = userSnapshot.data()["documentId"];
     List<TodayMatch> todayMatchList = [];
@@ -599,7 +633,7 @@ class DatabaseService {
         "usage": "친구 초대",
         "oppositeUserid": snapshot.docs[0].id,
         "date": DateTime.now(),
-        "userCoin" : _user.coin + 20
+        "userCoin": _user.coin + 20
       });
       await coinLogCollection.doc().set({
         "userid": snapshot.docs[0].id,
@@ -607,7 +641,7 @@ class DatabaseService {
         "usage": "친구 초대",
         "oppositeUserid": _user.uid,
         "date": DateTime.now(),
-        "userCoin" : snapshot.docs[0]['coin'] + 20
+        "userCoin": snapshot.docs[0]['coin'] + 20
       });
       await userCollection.doc(snapshot.docs[0].id).update({"coin": FieldValue.increment(20)});
       await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(20)});
@@ -660,6 +694,7 @@ class DatabaseService {
           break;
       }
     }
+
     Map<String, dynamic> newCoinLog = {
       "userid": _user.uid,
       "coin": coin,
@@ -667,7 +702,7 @@ class DatabaseService {
       "oppositeUserid": oppositeUserid ?? "",
       "meeting": newMeeting ?? {},
       "date": DateTime.now(),
-      "userCoin" : _user.coin - coin,
+      "userCoin": _user.coin - coin,
     };
     await coinLogDoc.set(newCoinLog);
     _controller.useCoin(coin);
@@ -698,7 +733,7 @@ class DatabaseService {
 
     Map<String, dynamic> receiptInfo = {
       "userid": _user.uid,
-      "usage" : "하트 충전",
+      "usage": "하트 충전",
       "coin": addCoin,
       "userCoin": _user.coin + addCoin,
       "data": {
@@ -711,15 +746,14 @@ class DatabaseService {
       "date": DateTime.now(),
     };
 
-
     try {
       await coinLogCollection.doc().set(receiptInfo);
       await userCollection.doc(_user.uid).update({"coin": FieldValue.increment(addCoin)});
-      return Future.value({"result" : true, "coin" : addCoin});
+      return Future.value({"result": true, "coin": addCoin});
     } on FirebaseException catch (e) {
-      return Future.value({"result" : false});
+      return Future.value({"result": false});
     } catch (e) {
-      return Future.value({"result" : false});
+      return Future.value({"result": false});
     }
   }
 
@@ -750,16 +784,15 @@ class DatabaseService {
   Future withDraw() async {
     await FirebaseAuth.instance.currentUser.delete();
     Map<String, dynamic> withDrawUser = {
-      "withDrawTime" : DateTime.now(),
-      "phone" : _controller.user.value.phone,
-
+      "withDrawTime": DateTime.now(),
+      "phone": _controller.user.value.phone,
     };
     await DatabaseService.instance.withDrawCollection.add(withDrawUser);
     await DatabaseService.instance.userCollection.doc(_controller.user.value.uid).delete();
 
     //update today match
     QuerySnapshot snapshot =
-        await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
+    await todayMatchCollection.doc(today).collection("matches").where(_user.man ? "men" : "women", arrayContains: _user.uid).get();
     snapshot.docs.forEach((element) async {
       List<dynamic> uidList = _user.man ? element.data()["men"] : element.data()["women"];
       int index = uidList.indexWhere((element) => element == _user.uid);
@@ -800,7 +833,7 @@ class DatabaseService {
     //네기 보낸 apply 해당하는 meeting 의 apply 삭제
     List<String> myApplyMeetingDocList = [];
     QuerySnapshot myApplySnapshot =
-        await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
+    await meetingApplyCollection.where("userId", isEqualTo: _user.uid).orderBy("createdAt", descending: true).get();
 
     myApplySnapshot.docs.forEach((e) {
       myApplyDocList.add(e.id);
@@ -822,11 +855,11 @@ class DatabaseService {
     await meetingApplyCollection.doc(docId).delete();
   }
 
-  deleteDaily(String docId) async{
-    await todayConnectionCollection.doc(docId).update({"deletedTime" : DateTime.now(), "deleteUser" : _user.uid});
+  deleteDaily(String docId) async {
+    await todayConnectionCollection.doc(docId).update({"deletedTime": DateTime.now(), "deleteUser": _user.uid});
   }
 
-  deleteMeetingApply(String docId) async{
-    await meetingApplyCollection.doc(docId).update({"process" : 3});
+  deleteMeetingApply(String docId) async {
+    await meetingApplyCollection.doc(docId).update({"process": 3});
   }
 }

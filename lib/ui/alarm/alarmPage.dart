@@ -280,9 +280,9 @@ class AlarmPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.notifications_off),
-          SizedBox(height: 10,),
-          Text("받은 알림이 없습니다.",style: TextStyle(fontFamily: "AppleSDGothicNeoB")),
+          Image.asset('assets/tab_alarm.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
+          SizedBox(height: 15,),
+          Text("받은 알림이 없습니다",style: TextStyle(fontFamily: "AppleSDGothicNeoB")),
         ],
       ),
     );

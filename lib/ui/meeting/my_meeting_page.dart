@@ -13,7 +13,6 @@ import 'package:byule/ui/widget/cached_image.dart';
 import 'package:byule/ui/widget/deletedUser.dart';
 import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
 import 'package:byule/ui/widget/meeting/meetingGridItem.dart';
-
 import 'meeting_detail_page.dart';
 
 class MyMeetingPage extends StatefulWidget {
@@ -97,11 +96,12 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   buildList(List itemList, {bool short = false, bool isMine = false}) {
     final options = LiveOptions(showItemInterval: Duration(milliseconds: 200),showItemDuration: Duration(milliseconds: 500),);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15),
+      padding: EdgeInsets.symmetric(horizontal: Get.width*0.01, vertical: 10),
       child: LiveGrid.options(
         options: options,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
+          childAspectRatio: 0.777,
         ),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -276,20 +276,20 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
-                      child: Container(
-                        child: ProfileImageForm2(user, docId),
-                      ),
-                    ),
                     Container(
-                      constraints: BoxConstraints(
-                        maxWidth: (Get.width - 54) / 3 - 10,
-                      ),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(3),
-                      child: Text(
-                        user.name,
-                        overflow: TextOverflow.ellipsis,
+                      child: ProfileImageForm2(user, docId),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('${user.age}, ${user.loc2}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.grey[600], fontSize: 14),),
+                          Text(
+                            user.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 15, color: Colors.black87, fontFamily: 'AppleSDGothicNeoB'),
+                          ),
+                        ],
                       ),
                     )
                   ],
@@ -324,7 +324,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
       },
       child: Hero(
         tag: 'today_signal' + user.uid,
-        child: cachedImage(user.firstPic, radius: 7.0),
+        child: cachedImage(user.firstPic, radius: 7.0, height: Get.width*0.48 - 6),
       ),
     );
   }

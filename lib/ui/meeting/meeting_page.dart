@@ -50,7 +50,7 @@ class _MeetingPageState extends State<MeetingPage> {
               buildFilter(),
               Expanded(
                 child: Container(
-                  width: Get.width * 0.96,
+                  width: Get.width * 0.98,
                   // child: isFiltered ? buildMeetingListFilter() : buildMeetingListTotal(),
                   child: buildMeetingListTotal(),
                 ),

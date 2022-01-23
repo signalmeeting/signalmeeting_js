@@ -8,57 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:387245324127:android:f336e996594ce3e0a3a8ea",
-        "android_client_info": {
-          "package_name": "com.signal.signalmeeting"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "387245324127-edda1sgk5kpl9vihqr2vs56thcc4chlp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.signal.signalmeeting",
-            "certificate_hash": "98a5018366fc5eeefe4fc10feea71dbd8a0b079a"
-          }
-        },
-        {
-          "client_id": "387245324127-nu7svbeh99isho0suj60mq82f0t24omq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.signal.signalmeeting",
-            "certificate_hash": "6943625bd3dfd6188660e453e06f1a449f5cdc41"
-          }
-        },
-        {
-          "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDnw8E0LXbk8cwCNbI8ujSWyMzLZ7iivMA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:387245324127:android:dcc21df6978295eba3a8ea",
         "android_client_info": {
           "package_name": "com.signalting.byule"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "387245324127-5pmg14k18lntk41ses5p81ms29f8fog0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.signalting.byule",
+            "certificate_hash": "344d722aa1b6ebf41eea9398f245f883a8a93c22"
+          }
+        },
         {
           "client_id": "387245324127-5scv5c1k1b8t8n0lg97ms8q6oa57fmr3.apps.googleusercontent.com",
           "client_type": 1,
@@ -68,6 +31,22 @@
           }
         },
         {
+          "client_id": "387245324127-f4gllodm900ojs9k5h9l4qp3ij7jvob3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.signalting.byule",
+            "certificate_hash": "8777a70f25a20f9b581efeeba3b09a399e44690e"
+          }
+        },
+        {
+          "client_id": "387245324127-fu3todhb12nfjcd8cni6ovl9ejvm6ris.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.signalting.byule",
+            "certificate_hash": "98a5018366fc5eeefe4fc10feea71dbd8a0b079a"
+          }
+        },
+        {
           "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -83,6 +62,13 @@
             {
               "client_id": "387245324127-aakeg64t9ifm7falonek98raucov97qd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "387245324127-ns67io01dus1s68q60p8c2loptfk07qn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.signalting.byule"
+              }
             }
           ]
         }

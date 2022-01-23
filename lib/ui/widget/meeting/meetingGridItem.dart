@@ -61,7 +61,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
           contents: "미팅을 거절후 삭제해주세요",
         ));
       }
-      if(item.apply.userId == _controller.user.value.uid){
+      if(item.apply.userId == _controller.user.value.uid && item.process == 1){
         Get.dialog(
             MainDialog(
               title: "알림",
@@ -135,7 +135,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
               padding: const EdgeInsets.only(left: 5.0, top: 3),
               child: Text(
                 "D-${(14 - DateTime.now().difference(item.createdAt).inDays).toString()}",
-                style: TextStyle(fontFamily: "AppleSDGothicNeoB", fontSize: 12, color: Colors.white),
+                style: TextStyle(fontFamily: "AppleSDGothicNeoB", fontSize: 14, color: Colors.white),
               ),
             ),
           ),
@@ -147,6 +147,7 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
 }
 
 Widget closedItem(MeetingModel item) {
+  double imageSize = Get.width*0.48 - 6;
   return Card(
     elevation: 1.5,
     shape: RoundedRectangleBorder(
@@ -155,48 +156,52 @@ Widget closedItem(MeetingModel item) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(child: Padding(
+        Padding(
           padding: const EdgeInsets.all(3.0),
           //임시 이미지
-          child: cachedImage(item.meetingImageUrl??'', width: 30, height: 30, radius: 7.0),
-        )),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: [
-                  Builder(builder: (context) {
-                    Color textColor;
+          child: cachedImage(item.meetingImageUrl??'', width: 30, height: imageSize, radius: 7.0),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Builder(builder: (context) {
+                      Color textColor;
 
-                    if (item.process == 1) {
-                      textColor = Colors.blue[600];
-                    } else {
-                      textColor = Colors.black87;
-                    }
+                      if (item.process == 0) {
+                        textColor = Colors.red[600];
+                      } else if(item.process == 1) {
+                        textColor = Colors.blue[600];
+                      } else {
+                        textColor = Colors.black87;
+                      }
 
-                    return Text(
-                      item.process == 0 || item.process == 1 || item.process == 4 ? '${item.number} / ${item.number}' : '0 / ${item.number}',
-                      style: TextStyle(fontSize: 12, color: textColor, fontFamily: 'AppleSDGothicNeoM'),
-                    );
-                  }),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Text(
-                      '${item.man ? '남' : '여'}ㅣ${item.loc1} ${item.loc2} ${(item.loc3 != "")? "- " + item.loc3 : ""}',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                ],
-              ),
-              Text(
-                item.title,
-                style: TextStyle(fontSize: 15),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+                      return Text(
+                        item.process == 0 || item.process == 1 || item.process == 4 ? '${item.number} / ${item.number}' : '0 / ${item.number}',
+                        style: TextStyle(fontSize: 14, color: textColor, fontFamily: 'AppleSDGothicNeoB'),
+                      );
+                    }),
+                    SizedBox(width: 10,),
+                    Expanded(
+                      child: Text(
+                        '${item.man ? '남' : '여'}ㅣ${item.loc1} ${item.loc2} ${(item.loc3 != "")? "- " + item.loc3 : ""}',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  ],
+                ),
+                Text(
+                  item.title,
+                  style: TextStyle(fontSize: 15, color: Colors.black87, fontFamily: 'AppleSDGothicNeoB'),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         )
       ],
