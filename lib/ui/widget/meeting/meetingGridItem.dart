@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:byule/controller/main_controller.dart';
+import 'package:byule/ui/widget/meeting/meetingGrid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -140,16 +141,16 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
             ),
           ),
           top: 7, right: 7.7, left: 7.7,
-        ) : Container(),
+        ) : Container(width: 10, height: 10, color: Colors.transparent,),
       ]
     ),
   );
 }
 
 Widget closedItem(MeetingModel item) {
-  double imageSize = Get.width*0.48 - 6;
   return Card(
     elevation: 1.5,
+    margin: const EdgeInsets.all(4),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),

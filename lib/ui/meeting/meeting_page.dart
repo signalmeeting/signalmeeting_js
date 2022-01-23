@@ -37,7 +37,6 @@ class _MeetingPageState extends State<MeetingPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Obx(
       () => Stack(
         children: [
@@ -50,7 +49,7 @@ class _MeetingPageState extends State<MeetingPage> {
               buildFilter(),
               Expanded(
                 child: Container(
-                  width: Get.width * 0.98,
+                  width: Get.width * 0.96 + cardPadding * 2,
                   // child: isFiltered ? buildMeetingListFilter() : buildMeetingListTotal(),
                   child: buildMeetingListTotal(),
                 ),

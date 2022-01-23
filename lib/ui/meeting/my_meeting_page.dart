@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/meeting/meetingGrid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -101,7 +102,8 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
         options: options,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.77,
+          mainAxisExtent: imageSize + innerPadding*2 + 60,
+          crossAxisSpacing: crossAxisSpacing,
         ),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

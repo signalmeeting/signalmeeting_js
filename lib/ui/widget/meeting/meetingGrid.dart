@@ -1,9 +1,14 @@
 import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:byule/model/meetingModel.dart';
+import 'package:get/get.dart';
 
 import 'meetingGridItem.dart';
 
+double innerPadding = 3;
+double crossAxisSpacing = 0;
+double cardPadding = 4;
+double imageSize = (Get.width*0.96 - innerPadding*4 - crossAxisSpacing -cardPadding*2)/2;
 
 Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
 
@@ -14,7 +19,8 @@ Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
     itemCount: meetingList.length,
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
-      childAspectRatio: 0.77
+      mainAxisExtent: imageSize + innerPadding*2 + 60,
+      crossAxisSpacing: crossAxisSpacing,
     ),
     itemBuilder: (context, index, animation) {
       bool _didIApplied;
