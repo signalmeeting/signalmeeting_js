@@ -14,7 +14,7 @@ Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
     itemCount: meetingList.length,
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
-      childAspectRatio: 0.777
+      childAspectRatio: 0.77
     ),
     itemBuilder: (context, index, animation) {
       bool _didIApplied;

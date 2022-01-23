@@ -101,7 +101,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
         options: options,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.777,
+          childAspectRatio: 0.77,
         ),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
