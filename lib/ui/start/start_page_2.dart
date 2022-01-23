@@ -51,19 +51,19 @@ class _StartPage2State extends State<StartPage2> {
           phoneNumber: UiData().serverPhone(_phoneNumController.text),
           timeout: const Duration(seconds: 5),
           verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
-            await _auth.signInWithCredential(phoneAuthCredential);
-            CustomedFlushBar(context, "Phone number automatically verified and user signed in: ${FirebaseAuth.instance.currentUser.uid}");
+            // await _auth.signInWithCredential(phoneAuthCredential);
+            // CustomedFlushBar(context, "Phone number automatically verified and user signed in: ${FirebaseAuth.instance.currentUser.uid}");
           },
           verificationFailed: (FirebaseAuthException authException) {
-            CustomedFlushBar(context, 'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');
+            CustomedFlushBar(context, '인증에 실패했습니다. 코드: ${authException.code}. 오류 메세지: ${authException.message}');
           },
           codeSent: (String verificationId, [int forceResendingToken]) async {
-            CustomedFlushBar(context, 'Please check your phone for the verification code.');
+            CustomedFlushBar(context, '인증번호를 보내드렸습니다!');
             _verificationId = verificationId;
           },
           codeAutoRetrievalTimeout: (String verificationId) {
-            CustomedFlushBar(context, "verification code: " + verificationId);
-            _verificationId = verificationId;
+            // CustomedFlushBar(context, "verification code: " + verificationId);
+            // _verificationId = verificationId;
           });
     } catch (e) {
       print("Failed to Verify Phone Number: $e");
