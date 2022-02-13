@@ -4,8 +4,10 @@ part 'memberModel.g.dart';
 
 @JsonSerializable(nullable: true)
 class MemberModel {
-  int age;
-  int tall;
+  int index;
+  String url;
+  String age;
+  String tall;
   String career;
   String loc1;
   String loc2;
@@ -17,6 +19,8 @@ class MemberModel {
 
 
   MemberModel({
+    this.index,
+    this.url,
     this.age,
     this.tall,
     this.career,

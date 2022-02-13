@@ -8,8 +8,10 @@ part of 'memberModel.dart';
 
 MemberModel _$MemberModelFromJson(Map<String, dynamic> json) {
   return MemberModel(
-    age: json['age'] as int,
-    tall: json['tall'] as int,
+    index: json['index'] as int,
+    url: json['url'] as String,
+    age: json['age'] as String,
+    tall: json['tall'] as String,
     career: json['career'] as String,
     loc1: json['loc1'] as String,
     loc2: json['loc2'] as String,
@@ -23,6 +25,8 @@ MemberModel _$MemberModelFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$MemberModelToJson(MemberModel instance) =>
     <String, dynamic>{
+      'index': instance.index,
+      'url': instance.url,
       'age': instance.age,
       'tall': instance.tall,
       'career': instance.career,

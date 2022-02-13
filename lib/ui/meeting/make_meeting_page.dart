@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:byule/ui/widget/memberList.dart';
+import 'package:byule/ui/widget/member/memberList.dart';
 import 'package:byule/util/style/appColor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

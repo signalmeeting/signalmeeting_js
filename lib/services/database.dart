@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:byule/main.dart';
+import 'package:byule/model/memberModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -455,6 +456,11 @@ class DatabaseService {
         Map<dynamic, dynamic> data = snapshot.data();
         data["uid"] = snapshot.id;
         data["phone"] = data["phone"].toString();
+        print("member list before mapped : ${data["memberList"]}");
+        if(data["memberList"] !=null) {
+          Map<String, dynamic> memberMap =  data["memberList"];
+          data["memberList"] = memberMap.values.map((e) => e).toList();
+        }
         UserModel user = UserModel.fromJson(data);
         _controller.updateUser(user);
         await Jiffy.locale('ko');
@@ -861,5 +867,9 @@ class DatabaseService {
 
   deleteMeetingApply(String docId) async {
     await meetingApplyCollection.doc(docId).update({"process": 3});
+  }
+
+  addMember(MemberModel newMember) async {
+    await userCollection.doc(_user.uid).update({"memberList.${_user.memberList?.length ??0}" : newMember.toJson()});
   }
 }

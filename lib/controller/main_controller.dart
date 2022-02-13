@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:byule/model/memberModel.dart';
 import 'package:byule/services/inAppManager.dart';
 import 'package:byule/services/push_notification_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,6 +40,7 @@ class MainController extends GetxController {
     });
     super.onInit();
   }
+
   logOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -148,5 +150,10 @@ class MainController extends GetxController {
       arguments: roomId,
       preventDuplicates: false,
     );
+  }
+
+  addMember(MemberModel newMember) async {
+    await DatabaseService.instance.addMember(newMember);
+    user.update((val) => val.memberList == null ? val.memberList = [newMember] :  val.memberList.add(newMember));
   }
 }

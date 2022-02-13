@@ -2,6 +2,8 @@ import 'package:animations/animations.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/ui/widget/meeting/meetingGrid.dart';
+import 'package:byule/ui/widget/member/memberList.dart';
+import 'package:byule/ui/widget/member/my_member_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +25,8 @@ class MyMeetingPage extends StatefulWidget {
 
 class _MyMeetingPageState extends State<MyMeetingPage> {
   final MyMeetingController _controller = Get.find();
+
+  final double _memberItemSize = 120;
 
   @override
   void initState() {
@@ -48,19 +52,15 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                 child: Obx(
                   () => Column(
                     children: [
+                      buildMemberList(),
                       categoryText('데일리 미팅'),
                       _controller.todayConnectionList.length != 0
-                          ? buildList(_controller.todayConnectionList,
-                              short: true)
+                          ? buildList(_controller.todayConnectionList, short: true)
                           : noMeeting('성사된 데일리 미팅이 없습니다'),
                       categoryText('만든 미팅'),
-                      _controller.myMeetingList.length != 0
-                          ? buildList(_controller.myMeetingList, isMine: true)
-                          : noMeeting('만든 미팅이 없습니다'),
+                      _controller.myMeetingList.length != 0 ? buildList(_controller.myMeetingList, isMine: true) : noMeeting('만든 미팅이 없습니다'),
                       categoryText('신청한 미팅'),
-                      _controller.myMeetingApplyList.length != 0
-                          ? buildList(_controller.myMeetingApplyList)
-                          : noMeeting('신청한 미팅이 없습니다'),
+                      _controller.myMeetingApplyList.length != 0 ? buildList(_controller.myMeetingApplyList) : noMeeting('신청한 미팅이 없습니다'),
                     ],
                   ),
                 ),
@@ -72,15 +72,26 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
     );
   }
 
+  Widget buildMemberList() {
+    return Row(
+      children: [
+        MyMemberList(),
+      ],
+    );
+  }
+
   buildList(List itemList, {bool short = false, bool isMine = false}) {
-    final options = LiveOptions(showItemInterval: Duration(milliseconds: 200),showItemDuration: Duration(milliseconds: 500),);
+    final options = LiveOptions(
+      showItemInterval: Duration(milliseconds: 200),
+      showItemDuration: Duration(milliseconds: 500),
+    );
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Get.width*0.01, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01, vertical: 10),
       child: LiveGrid.options(
         options: options,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisExtent: imageSize + innerPadding*2 + 60,
+          mainAxisExtent: imageSize + innerPadding * 2 + 60,
           crossAxisSpacing: crossAxisSpacing,
         ),
         shrinkWrap: true,
@@ -102,15 +113,13 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                   if (short) {
                     return shortTileRow(itemList[index]);
                   } else if (isMine) {
-                    return meetingGridItem(itemList[index],
-                        isMine: true, myMeeting: true);
+                    return meetingGridItem(itemList[index], isMine: true, myMeeting: true);
                   } else {
                     bool refusedOrDeleted = false;
                     if (itemList[index].process == null || itemList[index].process == 3) {
                       refusedOrDeleted = true;
                     }
-                    return meetingGridItem(itemList[index],
-                        didIApplied: true, refusedOrDeleted: refusedOrDeleted, myMeeting: true);
+                    return meetingGridItem(itemList[index], didIApplied: true, refusedOrDeleted: refusedOrDeleted, myMeeting: true);
                   }
                 },
               ),
@@ -233,10 +242,9 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
       // } : null,
       onLongPress: () => Get.dialog(NotificationDialog(
           contents: "삭제하시겠습니까?",
-          onPressed: () async{
+          onPressed: () async {
             DatabaseService.instance.deleteDaily(docId);
-            _controller.todayConnectionList.removeWhere(
-                    (element) => element.keys.toList()[0] == docId);
+            _controller.todayConnectionList.removeWhere((element) => element.keys.toList()[0] == docId);
             Get.back();
           })),
       child: Card(
@@ -249,8 +257,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
           child: user.deleted == true
               ? deletedUser(onPressed: () async {
                   await DatabaseService.instance.deleteTodayConnection(docId);
-                  _controller.todayConnectionList.removeWhere(
-                      (element) => element.keys.toList()[0] == docId);
+                  _controller.todayConnectionList.removeWhere((element) => element.keys.toList()[0] == docId);
                   Get.back();
                 })
               : Column(
@@ -263,7 +270,11 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('${user.age}, ${user.loc2}', overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.grey[600], fontSize: 14),),
+                          Text(
+                            '${user.age}, ${user.loc2}',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                          ),
                           Text(
                             user.name,
                             overflow: TextOverflow.ellipsis,
@@ -290,21 +301,25 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
             onCancel: (){});
       },
        */
-      onTap: _controller.deletedDaily.contains(docId) ? () {
-        Get.dialog(NotificationDialog(contents: "삭제된 데일리 미팅입니다", onPressed: () async{
-          await DatabaseService.instance.deleteTodayConnection(docId);
-          _controller.todayConnectionList.removeWhere(
-                  (element) => element.keys.toList()[0] == docId);
-          _controller.deletedDaily.remove(docId);
-          Get.back();
-        },));
-      } : (){
-        Get.to(() => OppositeProfilePage(user));
-        print('this is opposite : ${'today_signal' + user.uid}');
-      },
+      onTap: _controller.deletedDaily.contains(docId)
+          ? () {
+              Get.dialog(NotificationDialog(
+                contents: "삭제된 데일리 미팅입니다",
+                onPressed: () async {
+                  await DatabaseService.instance.deleteTodayConnection(docId);
+                  _controller.todayConnectionList.removeWhere((element) => element.keys.toList()[0] == docId);
+                  _controller.deletedDaily.remove(docId);
+                  Get.back();
+                },
+              ));
+            }
+          : () {
+              Get.to(() => OppositeProfilePage(user));
+              print('this is opposite : ${'today_signal' + user.uid}');
+            },
       child: Hero(
         tag: 'today_signal' + user.uid,
-        child: cachedImage(user.firstPic, radius: 7.0, height: Get.width*0.48 - 6),
+        child: cachedImage(user.firstPic, radius: 7.0, height: Get.width * 0.48 - 6),
       ),
     );
   }
@@ -323,8 +338,7 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
         )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text(text,
-              style: TextStyle(fontSize: 15, fontFamily: 'AppleSDGothicNeoB')),
+          child: Text(text, style: TextStyle(fontSize: 15, fontFamily: 'AppleSDGothicNeoB')),
         ),
         Expanded(
             child: Container(

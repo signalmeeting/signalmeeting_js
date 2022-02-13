@@ -1,3 +1,4 @@
+import 'package:byule/model/memberModel.dart';
 import 'package:byule/ui/drawer/my_profile_page.dart';
 import 'package:byule/ui/member/member_edit_page.dart';
 import 'package:byule/ui/widget/cached_image.dart';
@@ -115,7 +116,7 @@ class _MemberListState extends State<MemberList> {
 
   Widget memberAddAvatar() {
     return GestureDetector(
-      onTap: () => Get.to(() => MemberEditPage()),
+      onTap: () => Get.to(() => MemberEditPage(MemberModel())),
       child: Container(
         width: _avatarRadius * 2,
         height: _avatarRadius * 2,

@@ -1,3 +1,4 @@
+import 'package:byule/model/memberModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
@@ -11,15 +12,30 @@ import 'package:byule/util/city_list_Info.dart';
 import 'package:byule/util/style/appColor.dart';
 
 class MemberEditPage extends StatefulWidget {
+  final MemberModel member;
+
+  MemberEditPage(this.member);
+
   @override
   State<MemberEditPage> createState() => _MemberEditPageState();
 }
 
 class _MemberEditPageState extends State<MemberEditPage> {
-  final MainController _controller = Get.find();
+  MainController _mainController = Get.find();
 
-  UserModel get user => _controller.user.value;
+  UserModel get _user => _mainController.user.value;
+
   double _width = Get.width * 0.9;
+
+  MemberModel _newMember = MemberModel();
+
+  @override
+  void initState() {
+    setState(() {
+      _newMember = widget.member;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +66,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
                                   height: _width,
                                   color: Colors.grey[200],
                                   child: cachedImage(
-                                    '',//Todo user.memberList[0]['image']
+                                    '', //Todo user.memberList[0]['image']
                                     width: _width,
                                     height: _width,
                                   ),
@@ -62,7 +78,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
                                   child: Container(
                                     width: 30,
                                     height: 30,
-                                    child: Icon(Icons.arrow_back_ios, color: Colors.white,),
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 top: 10,
@@ -71,25 +90,22 @@ class _MemberEditPageState extends State<MemberEditPage> {
                             ],
                           ),
                         ),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Container(height: 10, color: Colors.grey[100])),
-                        _profileItem('나이', user.age, () => agePick()),
-                        _profileItem('키', user.tall, () => tallPick()),
-                        _profileItem('직업', user.career, () => careerPick()),
-                        _profileItem('지역', user.loc1, () => locationPick()),
-                        _profileItem('세부 지역', user.loc2, () => locationPick2()),
-                        Container(
-                            height: 10,
-                            width: double.infinity,
-                            color: Colors.grey[100]),
-                        _profileItem('체형', user.bodyType, () => bodyTypePick()),
-                        _profileItem('흡연', user.smoke, () => smokePick()),
-                        _profileItem('음주', user.drink, () => drinkPick()),
-                        _profileItem('종교', user.religion, () => religionPick()),
-                        _profileItem('MBTI', user.mbti, () => mbtiPick()),
-                        Obx(() => _profileItem(
-                            '간단소개', user.introduce, () => introducePick())),
+                        Padding(padding: const EdgeInsets.only(top: 10.0), child: Container(height: 10, color: Colors.grey[100])),
+                        _profileItem('나이', _newMember.age, () => agePick()),
+                        _profileItem('키', _newMember.tall, () => tallPick()),
+                        _profileItem('직업', _newMember.career, () => careerPick()),
+                        _profileItem('지역', _newMember.loc1, () => locationPick()),
+                        _profileItem('세부 지역', _newMember.loc2, () => locationPick2()),
+                        Container(height: 10, width: double.infinity, color: Colors.grey[100]),
+                        _profileItem('체형', _newMember.bodyType, () => bodyTypePick()),
+                        _profileItem('흡연', _newMember.smoke, () => smokePick()),
+                        _profileItem('음주', _newMember.drink, () => drinkPick()),
+                        _profileItem('MBTI', _newMember.mbti, () => mbtiPick()),
+                        _profileItem('간단소개', _newMember.introduce, () => introducePick()),
+                        TextButton(onPressed: () {
+                          _mainController.addMember(_newMember);
+                        }, child: Text("등록/수정하기")),
+                        SizedBox(height: 100)
                       ],
                     ),
                   ),
@@ -113,9 +129,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
         GestureDetector(
           onTap: onTap,
           child: Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: Get.width * 0.05,
-                vertical: title == '간단소개' ? 20 : 0),
+            padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05, vertical: title == '간단소개' ? 20 : 0),
             constraints: BoxConstraints(minHeight: 55),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -139,23 +153,23 @@ class _MemberEditPageState extends State<MemberEditPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: text != null
                         ? <Widget>[
-                      Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ]
+                            Text(
+                              text,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ]
                         : <Widget>[
-                      Text(
-                        '입력해주세요',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
+                            Text(
+                              '입력해주세요',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          ],
                   ),
                 ),
               ],
@@ -180,7 +194,6 @@ class _MemberEditPageState extends State<MemberEditPage> {
   String _bodyType;
   String _smoke;
   String _drink;
-  String _religion;
   String _mbti;
 
   void agePick() {
@@ -193,10 +206,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
       minNumber: 19,
       confirmText: "확인",
       cancelText: "취소",
-      selectedNumber: int.parse(user.age),
+      selectedNumber: int.parse(_newMember.age ?? _user.age),
       maxLongSide: 400,
       onChanged: (value) => setState(() => _age = value),
-      onConfirmed: () => _controller.changeProfileValue('age', _age),
+      onConfirmed: () => setState(() => _newMember.age = _age.toString()),
     );
   }
 
@@ -210,10 +223,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
       minNumber: 130,
       confirmText: "확인",
       cancelText: "취소",
-      selectedNumber: int.parse(user.tall),
+      selectedNumber: int.parse(_newMember.tall ?? _user.tall),
       maxLongSide: 400,
       onChanged: (value) => setState(() => _tall = value),
-      onConfirmed: () => _controller.changeProfileValue('tall', _tall),
+      onConfirmed: () => setState(() => _newMember.tall = _tall.toString()),
     );
   }
 
@@ -240,9 +253,9 @@ class _MemberEditPageState extends State<MemberEditPage> {
       context: context,
       title: "직업",
       items: careerList,
-      selectedItem: user.career,
+      selectedItem: _newMember.career,
       onChanged: (value) => setState(() => _career = value),
-      onConfirmed: () => _controller.changeProfileValue('career', _career),
+      onConfirmed: () => setState(() => _newMember.career = _career.toString()),
     );
   }
 
@@ -276,15 +289,16 @@ class _MemberEditPageState extends State<MemberEditPage> {
       context: context,
       title: "지역",
       items: location1List,
-      selectedItem: user.loc1,
+      selectedItem: _newMember.loc1,
       onChanged: (value) => setState(() => _location = value),
       onConfirmed: () {
         //지역 바꾸면 세부 지역 초기화
-        _controller.changeProfileValue('loc2', '전체');
+        setState(() {
+          _newMember.loc2 = '전체';
+          _newMember.loc1 = _location;
+        });
 
-        //인창 지역1 바꾸면 지역2 설정
-        _controller.changeProfileValue('loc1', _location,
-            callback: () => locationPick2());
+        locationPick2();
       },
     );
   }
@@ -293,7 +307,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     var selected = "";
     List<String> cityList;
 
-    switch (user.loc1) {
+    switch (_newMember.loc1) {
       case '지역':
         {
           cityList = CityListInfo().options0;
@@ -420,7 +434,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
       items: cityList,
       selectedItem: selected,
       onChanged: (value) => setState(() => _location2 = value),
-      onConfirmed: () => _controller.changeProfileValue('loc2', _location2),
+      onConfirmed: () => setState(() => _newMember.loc2 = _location2),
     );
   }
 
@@ -452,11 +466,13 @@ class _MemberEditPageState extends State<MemberEditPage> {
       cancelText: "취소",
       context: context,
       title: "체형",
-      items: user.man ? manBodyTypeList :bodyTypeList,
-      selectedItem: user.bodyType,
+      items: _user.man ? manBodyTypeList : bodyTypeList,
+      selectedItem: _newMember.bodyType,
       onChanged: (value) => setState(() => _bodyType = value),
-      onConfirmed: () => _controller.changeProfileValue('bodyType', _bodyType,
-          callback: user.smoke == null ? () => smokePick() : null),
+      onConfirmed: () {
+        setState(() => _newMember.bodyType = _bodyType);
+        if (_newMember.smoke == null) smokePick();
+      },
     );
   }
 
@@ -475,10 +491,12 @@ class _MemberEditPageState extends State<MemberEditPage> {
       context: context,
       title: "흡연",
       items: smokeList,
-      selectedItem: user.smoke,
+      selectedItem: _newMember.smoke,
       onChanged: (value) => setState(() => _smoke = value),
-      onConfirmed: () => _controller.changeProfileValue('smoke', _smoke,
-          callback: user.drink == null ? () => drinkPick() : null),
+      onConfirmed: () {
+        setState(() => _newMember.smoke = _smoke);
+        if (_newMember.drink == null) drinkPick();
+      },
     );
   }
 
@@ -498,35 +516,12 @@ class _MemberEditPageState extends State<MemberEditPage> {
       context: context,
       title: "음주",
       items: drinkList,
-      selectedItem: user.drink,
+      selectedItem: _newMember.drink,
       onChanged: (value) => setState(() => _drink = value),
-      onConfirmed: () => _controller.changeProfileValue('drink', _drink,
-          callback: user.religion == null ? () => religionPick() : null),
-    );
-  }
-
-  void religionPick() {
-    List<String> religionList = <String>[
-      '무교',
-      '기독교',
-      '불교',
-      '천주교',
-      '기타',
-    ];
-
-    return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
-      headerTextColor: Colors.white,
-      maxLongSide: 400,
-      confirmText: "확인",
-      cancelText: "취소",
-      context: context,
-      title: "종교",
-      items: religionList,
-      selectedItem: user.religion,
-      onChanged: (value) => setState(() => _religion = value),
-      onConfirmed: () => _controller.changeProfileValue('religion', _religion,
-          callback: user.mbti == null ? () => mbtiPick() : null),
+      onConfirmed: () {
+        setState(() => _newMember.drink = _drink);
+        if (_newMember.mbti == null) mbtiPick();
+      },
     );
   }
 
@@ -559,12 +554,15 @@ class _MemberEditPageState extends State<MemberEditPage> {
       context: context,
       title: "MBTI",
       items: mbtiList,
-      selectedItem: user.mbti,
+      selectedItem: _newMember.mbti,
       onChanged: (value) => setState(() => _mbti = value),
-      onConfirmed: () => _controller.changeProfileValue('mbti', _mbti),
+      onConfirmed: () {
+        setState(() => _newMember.mbti = _mbti);
+      },
     );
   }
 
+  //TODO 수정 필요
   void introducePick() {
     Get.to(() => MyProfileIntroduceEditPage(), transition: Transition.fadeIn);
   }

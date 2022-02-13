@@ -21,7 +21,10 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
     free: json['free'],
     dailyMeetingActivation: json['dailyMeetingActivation'] as bool,
     deleted: json['deleted'],
-    memberList: json['memberList'] as List,
+    memberList: (json['memberList'] as List)
+        ?.map((e) =>
+            e == null ? null : MemberModel.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   )..pushInfo = json['pushInfo'] as Map<String, dynamic>;
 }
 
