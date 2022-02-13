@@ -1,3 +1,4 @@
+import 'package:byule/ui/alarm/alarmPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
@@ -76,7 +77,9 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                 ),
                 divider(8),
-                menuItemWithIcon('프로필', 'profile',() => Get.to(() => MyProfilePage())),
+                menuItemWithIcon('프로필', 'profile', () => Get.to(() => MyProfilePage())),
+                divider(0.3),
+                menuItemWithIcon('알림', 'alarm', () => Get.to(() => AlarmPage())),
                 divider(0.3),
                 menuItemWithIcon('스토어', 'store', () => Get.to(() => StorePage())),
                 divider(0.3),
@@ -84,7 +87,7 @@ class _MenuPageState extends State<MenuPage> {
                 divider(0.3),
                 menuItemWithIcon('친구 초대', 'inviteFriend', () => Get.to(() => InviteFriendsPage())),
                 divider(0.3),
-                menuItemWithIcon('리뷰 쓰기', 'review', () => inAppReview.openStoreListing()),
+                menuItemWithIcon('리뷰 쓰기', 'review', () => inAppReview.openStoreListing(appStoreId: '1605322676')),
                 divider(0.3),
                 toggleItem(),
                 divider(8),

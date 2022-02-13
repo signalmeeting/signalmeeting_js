@@ -245,7 +245,6 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
         Container(
           color: Colors.transparent,
           width: Get.width * 0.65,
-          height: 55,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -411,6 +410,18 @@ class _OppositeProfilePageState extends State<OppositeProfilePage> {
             ),
             top: 10,
             right: 10,
+          ),
+          Positioned(
+            child: InkWell(
+              onTap: () => Get.back(),
+              child: Container(
+                width: 30,
+                height: 30,
+                child: Icon(Icons.arrow_back_ios, color: Colors.white,),
+              ),
+            ),
+            top: 10,
+            left: 10,
           ),
         ],
       ),

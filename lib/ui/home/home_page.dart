@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:byule/services/database.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:byule/controller/main_controller.dart';
@@ -42,7 +44,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuild');
     return Obx(() => buildTodayMatch());
   }
 
@@ -96,28 +97,66 @@ class _HomePageState extends State<HomePage> {
             child: GlowingOverscrollIndicator(
               axisDirection: AxisDirection.right,
               color: Colors.white,
-              child: Column(
+              child: Stack(
                 children: [
-                  indicator(),
-                  Expanded(
-                    child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: todayMatchList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final double scale = max(SCALE_FRACTION, FULL_SCALE - (index - currentIndex).abs());
-                          return Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              height: Get.height * scale,
-                              width: Get.width * scale,
-                              child: Row(children: [
-                                Expanded(child: buildTodayMatchColumn(todayMatchList[index].sameGenders, todayMatchList[index].documentId)),
-                                Expanded(child: buildTodayMatchColumn(todayMatchList[index].oppositeGenders, todayMatchList[index].documentId))
-                              ]),
-                            ),
-                          );
-                        }),
+                  Column(
+                    children: [
+                      indicator(),
+                      Expanded(
+                        child: PageView.builder(
+                            controller: _pageController,
+                            itemCount: todayMatchList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final double scale = max(SCALE_FRACTION, FULL_SCALE - (index - currentIndex).abs());
+                              return Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                  height: Get.height * scale,
+                                  width: Get.width * scale,
+                                  child: Row(children: [
+                                    Expanded(child: buildTodayMatchColumn(todayMatchList[index].sameGenders, todayMatchList[index].documentId)),
+                                    Expanded(child: buildTodayMatchColumn(todayMatchList[index].oppositeGenders, todayMatchList[index].documentId))
+                                  ]),
+                                ),
+                              );
+                            }),
+                      ),
+                    ],
                   ),
+                  // Row(
+                  //   children: [
+                  //     ElevatedButton(onPressed: () async {
+                  //       for(int i = 60; i < 90; i++) {
+                  //         await DatabaseService.instance.userCollection.doc('dummy$i').set({
+                  //               'banList': [],
+                  //               'coin': 1000,
+                  //               'invite': false,
+                  //               'phone': '+821000000000',
+                  //               'profileInfo': {
+                  //                 'age': '하루에 한번 시그널 보내면',
+                  //                 'career': '테스터',
+                  //                 'loc1' : '무료 하트 증정중이에요!',
+                  //                 'loc2' : '',
+                  //                 'man' : i % 2 == 0 ? false : true,
+                  //                 'name' : '테스터에용_$i/90',
+                  //                 'pics' : ['https://firebasestorage.googleapis.com/v0/b/signalmeeting-8ee89.appspot.com/o/user%2F5jdAKihWAVhEcNjLTD909wI8EHy12?alt=media&token=c33d32d7-287c-430a-9dcd-96c88909e94b'],
+                  //                 'tall' : 170,
+                  //               },
+                  //               'pushInfo' : '',
+                  //               'stop' : false,
+                  //               'uid' : 'dummyUID$i'
+                  //             });
+                  //           }
+                  //
+                  //     }, child: Text('create dummy')),
+                  //     // SizedBox(width: 30,),
+                  //     // ElevatedButton(onPressed: () async {
+                  //     //   for(int i = 0; i < ) {
+                  //     //     await DatabaseService.instance.userCollection.doc().delete();
+                  //     //   }
+                  //     // }, child: Text('delete dummy'))
+                  //   ],
+                  // ),
                 ],
               ),
             ),

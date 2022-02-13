@@ -16,5 +16,19 @@ Widget cachedImage(String url, {double width = 90.0, double height = 90.0, doubl
                   fit: BoxFit.cover,
                 )),
           ),
-      errorWidget: (context, url, error) => CircleAvatar(radius: width / 2));
+      errorWidget: (context, url, error) => Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(radius),
+            ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Image.asset(
+            'assets/empty_person.png',
+            fit: BoxFit.fitWidth,
+            color: Colors.white,
+          ),
+        ),
+      ));
 }

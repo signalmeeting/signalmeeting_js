@@ -1,6 +1,8 @@
 import 'package:auto_animated/auto_animated.dart';
+import 'package:byule/ui/lobby.dart';
 import 'package:flutter/material.dart';
 import 'package:byule/model/meetingModel.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
 import 'meetingGridItem.dart';
@@ -13,7 +15,20 @@ double imageSize = (Get.width*0.96 - innerPadding*4 - crossAxisSpacing -cardPadd
 Widget meetingGrid (List<MeetingModel> meetingList, String uid) {
 
   final options = LiveOptions(showItemInterval: Duration(milliseconds: 200),showItemDuration: Duration(milliseconds: 500),);
+  final LobbyController _lobbyController = Get.find();
+  ScrollController controller;
+
+  controller = ScrollController();
+  controller.addListener(() {
+    if(controller.position.userScrollDirection == ScrollDirection.forward) {
+      _lobbyController.isFabVisible.value = true;
+    } else if(controller.position.userScrollDirection == ScrollDirection.reverse) {
+      _lobbyController.isFabVisible.value = false;
+    }
+  });
+
   return LiveGrid.options(
+    controller: controller,
     options: options,
     shrinkWrap: true,
     itemCount: meetingList.length,

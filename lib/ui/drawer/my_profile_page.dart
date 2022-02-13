@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -11,7 +10,6 @@ import 'package:byule/ui/widget/cached_image.dart';
 import 'package:byule/util/city_list_Info.dart';
 import 'package:byule/util/style/appColor.dart';
 import 'package:byule/util/style/btStyle.dart';
-
 import 'my_profile_pic_edit_page.dart';
 
 class MyProfilePage extends StatefulWidget {
@@ -45,32 +43,48 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              width: _width,
-                              height: _width,
-                              color: Colors.transparent,
-                              child: Obx(
-                                () => Swiper(
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return cachedImage(
-                                      user.pics[index],
-                                      width: _width,
-                                      height: _width,
-                                      radius: 0,
-                                    );
-                                  },
-                                  loop: false,
-                                  itemCount: user.pics.length,
-                                  pagination: new SwiperPagination(
-                                    builder: new DotSwiperPaginationBuilder(
-                                        color: Colors.white30,
-                                        activeColor: Colors.white70),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  width: _width,
+                                  height: _width,
+                                  color: Colors.transparent,
+                                  child: Obx(
+                                    () => Swiper(
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return cachedImage(
+                                          user.pics[index],
+                                          width: _width,
+                                          height: _width,
+                                          radius: 0,
+                                        );
+                                      },
+                                      loop: false,
+                                      itemCount: user.pics.length,
+                                      pagination: new SwiperPagination(
+                                        builder: new DotSwiperPaginationBuilder(
+                                            color: Colors.white30,
+                                            activeColor: Colors.white70),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              Positioned(
+                                child: InkWell(
+                                  onTap: () => Get.back(),
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Icon(Icons.arrow_back_ios, color: Colors.white,),
+                                  ),
+                                ),
+                                top: 10,
+                                left: 10,
+                              ),
+                            ],
                           ),
                         ),
                         _editProfileImageButton(context),

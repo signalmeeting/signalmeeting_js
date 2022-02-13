@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:byule/ui/meeting/make_meeting_page.dart';
+import 'package:byule/ui/meeting/my_meeting_page.dart';
 import 'package:byule/ui/widget/dialog/main_dialog.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:byule/ui/widget/dialog/noCoinDialog.dart';
+import 'package:byule/util/style/appColor.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,9 +16,6 @@ import 'package:byule/ui/coin/coinlog.dart';
 import 'package:byule/ui/meeting/meeting_page.dart';
 import 'package:byule/ui/menu/menu_page.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:package_info/package_info.dart';
-
-import 'alarm/alarmPage.dart';
 import 'home/home_page.dart';
 import 'menu/menu_page.dart';
 
@@ -24,6 +24,7 @@ class LobbyController extends GetxController {
   RxInt selectedIndex = 0.obs;
   MainController _mainController = Get.find();
   bool needForceUpdate = false;
+  RxBool isFabVisible = true.obs;
 
   @override
   void onInit() async {
@@ -52,7 +53,7 @@ class LobbyPage extends StatelessWidget {
   final List<String> iconImages = [
     'tab_daily',
     'tab_meeting',
-    'tab_alarm',
+    'tab_member',
     'tab_menu',
   ];
 
@@ -61,7 +62,7 @@ class LobbyPage extends StatelessWidget {
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     MeetingPage(),
-    AlarmPage(),
+    MyMeetingPage(),
     MenuPage(),
   ];
 
@@ -107,24 +108,37 @@ class LobbyPage extends StatelessWidget {
         color: Colors.white,
         child: SafeArea(
           top: false,
-          child: Scaffold(
-            key: _key,
-            backgroundColor: Colors.white,
-            resizeToAvoidBottomInset: false,
-            appBar: buildAppBar(context),
-            body: Obx(() => _widgetOptions.elementAt(_selectedIndex)),
-            bottomNavigationBar: SizedBox(
-                height: 60,
-                child: Obx(
-                      () => Row(
-                    children: <Widget>[
-                      buildTabbar('데일리', 0),
-                      buildTabbar('미팅', 1),
-                      buildTabbar('알림', 2),
-                      buildTabbar('설정', 3),
-                    ],
-                  ),
-                )),
+          child: Obx(
+            () => Scaffold(
+              floatingActionButton: _lobbyController.selectedIndex.value == 1 && _lobbyController.isFabVisible.value
+                  ? FloatingActionButton(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Image.asset('assets/fab.png', color: Colors.white, height: 33, width: 33),
+                      ),
+                      backgroundColor: AppColor.main200,
+                      onPressed: () => (_user.coin < 20)
+                          ? Get.dialog(NoCoinDialog())
+                          : Get.to(() => MakeMeetingPage()))
+                  : null,
+              key: _key,
+              backgroundColor: Colors.white,
+              resizeToAvoidBottomInset: false,
+              appBar: buildAppBar(context),
+              body: Obx(() => _widgetOptions.elementAt(_selectedIndex)),
+              bottomNavigationBar: SizedBox(
+                  height: 60,
+                  child: Obx(
+                        () => Row(
+                      children: <Widget>[
+                        buildTabbar('데일리', 0),
+                        buildTabbar('미팅', 1),
+                        buildTabbar('내 미팅', 2),
+                        buildTabbar('설정', 3),
+                      ],
+                    ),
+                  )),
+            ),
           ),
         ),
       ),
@@ -144,7 +158,7 @@ class LobbyPage extends StatelessWidget {
         ),
         actions: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
+            padding: EdgeInsets.only(right: Get.height * 0.02),
             child: GestureDetector(
               onTap: () => Get.to(() => CoinLog()),
               child: Row(

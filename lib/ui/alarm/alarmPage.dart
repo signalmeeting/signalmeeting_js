@@ -1,3 +1,4 @@
+import 'package:byule/ui/drawer/custom_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,37 +10,45 @@ class AlarmPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Object>(
-        future: DatabaseService.instance.getAlarms(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator());
-          else if (!snapshot.hasData) return Container();
-          else {
-            List<AlarmModel> alarmList = snapshot.data;
-            return ScrollConfiguration(
-              behavior: ScrollBehavior(),
-              child: GlowingOverscrollIndicator(
-                axisDirection: AxisDirection.down,
-                color: Colors.white,
-                child: alarmList.length == 0 ? noAlarm() : ListView(
-                    children: alarmList
-                        .map(
-                          (e) => e.type == 'signalting'
-                              ? SignalAlarm('데일리 미팅 ${e.body}', e.date)
-                              : e.type == 'match'
-                                  ? MatchingAlarm(e.body, e.date)
-                                  : e.type == 'accept'
-                                      ? AcceptedAlarm(e.body, e.date)
-                                      : e.type == 'reject'
-                                          ? RejectedAlarm(e.body, e.date)
-                                          : e.type == 'apply' ? ApplyAlarm(e.body, e.date) : Container(),
-                        )
-                        .toList()),
-              ),
-            );
-          }
-        });
+    return Scaffold(
+      appBar: drawerAppBar(context, '알림'),
+      body: Stack(
+        children: [
+          Container(color: Colors.white,),
+          FutureBuilder<Object>(
+              future: DatabaseService.instance.getAlarms(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator());
+                else if (!snapshot.hasData) return Container();
+                else {
+                  List<AlarmModel> alarmList = snapshot.data;
+                  return ScrollConfiguration(
+                    behavior: ScrollBehavior(),
+                    child: GlowingOverscrollIndicator(
+                      axisDirection: AxisDirection.down,
+                      color: Colors.white,
+                      child: alarmList.length == 0 ? noAlarm() : ListView(
+                          children: alarmList
+                              .map(
+                                (e) => e.type == 'signalting'
+                                    ? SignalAlarm('데일리 미팅 ${e.body}', e.date)
+                                    : e.type == 'match'
+                                        ? MatchingAlarm(e.body, e.date)
+                                        : e.type == 'accept'
+                                            ? AcceptedAlarm(e.body, e.date)
+                                            : e.type == 'reject'
+                                                ? RejectedAlarm(e.body, e.date)
+                                                : e.type == 'apply' ? ApplyAlarm(e.body, e.date) : Container(),
+                              )
+                              .toList()),
+                    ),
+                  );
+                }
+              }),
+        ],
+      ),
+    );
   }
 
   Widget SignalAlarm(from, when) {
@@ -280,7 +289,7 @@ class AlarmPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset('assets/tab_alarm.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
+          Image.asset('assets/menu_alarm.png', color: Colors.black87, height: Get.height * 0.03, width: Get.height * 0.03,),
           SizedBox(height: 15,),
           Text("받은 알림이 없습니다",style: TextStyle(fontFamily: "AppleSDGothicNeoB")),
         ],

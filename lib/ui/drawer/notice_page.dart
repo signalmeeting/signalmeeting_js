@@ -55,7 +55,7 @@ class NoticePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 18.0, top: 10, right: 18),
+            padding: const EdgeInsets.only(left: 15.0, top: 10, right: 15),
             child: Container(
                 alignment: Alignment.bottomLeft,
                 child: Text(
@@ -64,7 +64,7 @@ class NoticePage extends StatelessWidget {
                 )),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 18.0, top: 5, bottom: 10),
+            padding: const EdgeInsets.only(left: 15.0, top: 5, bottom: 10, right: 15),
             child: Container(
               alignment: Alignment.topLeft,
               child: Text(
@@ -77,7 +77,7 @@ class NoticePage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 18.0, top: 5, bottom: 10),
+            padding: const EdgeInsets.only(left: 15.0, top: 5, bottom: 10, right: 15),
             child: Container(
               alignment: Alignment.topLeft,
               child: Text(

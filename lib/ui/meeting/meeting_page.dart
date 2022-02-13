@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:byule/controller/meeting_controller.dart';
@@ -52,19 +53,6 @@ class _MeetingPageState extends State<MeetingPage> {
                   width: Get.width * 0.96 + cardPadding * 2,
                   // child: isFiltered ? buildMeetingListFilter() : buildMeetingListTotal(),
                   child: buildMeetingListTotal(),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: Get.width * 0.02),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    makeMeetingButton(),
-                    SizedBox(
-                      width: Get.width * 0.02,
-                    ),
-                    myMeetingButton(),
-                  ],
                 ),
               ),
             ],
@@ -339,7 +327,7 @@ class _MeetingPageState extends State<MeetingPage> {
   Widget makeMeetingButton() {
     return Container(
       height: 46,
-      width: Get.width * 0.47,
+      width: Get.width * 0.96,
       child: TextButton(
         child: Text(
           '미팅 등록',

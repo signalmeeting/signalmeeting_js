@@ -20,6 +20,7 @@ class UserModel {
   var free;
   bool dailyMeetingActivation;
   var deleted;
+  List memberList;
 
   UserModel(
       {this.uid,
@@ -33,6 +34,7 @@ class UserModel {
       this.free,
       this.dailyMeetingActivation,
       this.deleted,
+      this.memberList,
       });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
@@ -48,7 +50,9 @@ class UserModel {
         invite: false,
         banList: [],
         free: null,
-        dailyMeetingActivation: true);
+        dailyMeetingActivation: true,
+        memberList: [],
+    );
   }
 
   @override
