@@ -872,4 +872,8 @@ class DatabaseService {
   addMember(MemberModel newMember) async {
     await userCollection.doc(_user.uid).update({"memberList.${_user.memberList?.length ??0}" : newMember.toJson()});
   }
+
+  editMember(MemberModel newMember) async {
+    await userCollection.doc(_user.uid).update({"memberList.${newMember.index}" : newMember.toJson()});
+  }
 }

@@ -116,7 +116,7 @@ class _MemberListState extends State<MemberList> {
 
   Widget memberAddAvatar() {
     return GestureDetector(
-      onTap: () => Get.to(() => MemberEditPage(MemberModel())),
+      onTap: () => Get.to(() => MemberEditPage(MemberModel(), false)),
       child: Container(
         width: _avatarRadius * 2,
         height: _avatarRadius * 2,

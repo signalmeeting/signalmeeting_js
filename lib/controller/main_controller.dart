@@ -156,4 +156,9 @@ class MainController extends GetxController {
     await DatabaseService.instance.addMember(newMember);
     user.update((val) => val.memberList == null ? val.memberList = [newMember] :  val.memberList.add(newMember));
   }
+
+  editMember(MemberModel newMember) async {
+    await DatabaseService.instance.editMember(newMember);
+    user.update((val) => val.memberList[newMember.index] = newMember);
+  }
 }

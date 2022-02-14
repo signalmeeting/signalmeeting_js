@@ -13,8 +13,9 @@ import 'package:byule/util/style/appColor.dart';
 
 class MemberEditPage extends StatefulWidget {
   final MemberModel member;
+  final bool isEdit; // true => 수정, false => 추가
 
-  MemberEditPage(this.member);
+  MemberEditPage(this.member, this.isEdit);
 
   @override
   State<MemberEditPage> createState() => _MemberEditPageState();
@@ -103,8 +104,9 @@ class _MemberEditPageState extends State<MemberEditPage> {
                         _profileItem('MBTI', _newMember.mbti, () => mbtiPick()),
                         _profileItem('간단소개', _newMember.introduce, () => introducePick()),
                         TextButton(onPressed: () {
-                          _mainController.addMember(_newMember);
-                        }, child: Text("등록/수정하기")),
+                          widget.isEdit ? _mainController.editMember(_newMember) : _mainController.addMember(_newMember);
+                          Get.back();
+                        }, child: Text(widget.isEdit ? "수정하기" : "등록하기")),
                         SizedBox(height: 100)
                       ],
                     ),

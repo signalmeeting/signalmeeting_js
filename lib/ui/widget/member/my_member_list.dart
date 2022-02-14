@@ -44,7 +44,6 @@ class _MyMemberListState extends State<MyMemberList> {
 
   @override
   Widget build(BuildContext context) {
-
     var wrap = ReorderableWrap(
         spacing: _spaceSize,
         runSpacing: _spaceSize,
@@ -74,7 +73,7 @@ class _MyMemberListState extends State<MyMemberList> {
 
   Widget memberAvatar(int index) {
     return GestureDetector(
-      onTap: () => Get.to(() => MemberEditPage(_memberList[index])),
+      onTap: () => Get.to(() => MemberEditPage(_memberList[index], true)),
       child: cachedImage(
         _memberList[index].url ?? '',
         width: _avatarRadius * 2,
@@ -86,7 +85,7 @@ class _MyMemberListState extends State<MyMemberList> {
 
   Widget memberAddAvatar() {
     return GestureDetector(
-      onTap: () => Get.to(() => MemberEditPage(MemberModel(index: _memberList.length ))),
+      onTap: () => Get.to(() => MemberEditPage(MemberModel(index: _memberList.length), false)),
       child: Container(
         width: _avatarRadius * 2,
         height: _avatarRadius * 2,

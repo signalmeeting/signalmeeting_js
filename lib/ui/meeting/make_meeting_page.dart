@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:byule/ui/widget/member/memberList.dart';
+import 'package:byule/ui/widget/member/my_member_list.dart';
 import 'package:byule/util/style/appColor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -337,8 +338,8 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                       child: Container(
                                                         width: Get.width*0.3 + 1,
                                                         // height: Get.width*0.3,
-                                                        child: MemberList(int.parse(number == null ? '0' : number[0]),
-                                                        ),
+                                                        child: MyMemberList()
+                                                        // MemberList(int.parse(number == null ? '0' : number[0]),),
                                                       ),),
                                                   ],
                                                 ),
