@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:byule/ui/widget/member/memberList.dart';
 import 'package:byule/ui/widget/member/my_member_list.dart';
 import 'package:byule/util/style/appColor.dart';
 import 'package:flutter/material.dart';
@@ -38,10 +37,15 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('??????!!!!!!');
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.75], colors: [AppColor.main100, Colors.white])),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.5],
+              colors: [AppColor.main100, Colors.white])
+      ),
       child: SafeArea(
         top: false,
         child: Scaffold(
@@ -71,7 +75,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
               Container(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
-                        begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.75], colors: [AppColor.main100, Colors.white])),
+                        begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.90], colors: [AppColor.main100, Colors.white])),
               ),
               Column(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -85,7 +89,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                         color: Colors.white,
                         child: SingleChildScrollView(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                             child: Column(
                               children: [
                                 Card(

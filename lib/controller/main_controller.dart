@@ -152,12 +152,17 @@ class MainController extends GetxController {
     );
   }
 
+  ///Todo 사진 업로드하고 그 유알엘을 멤버 모델에 담아서 보내기
   addMember(MemberModel newMember) async {
+    String uploadedUrl = await DatabaseService.instance.uploadMemberImage(newMember.url, newMember.index);
+    newMember.url = uploadedUrl;
     await DatabaseService.instance.addMember(newMember);
     user.update((val) => val.memberList == null ? val.memberList = [newMember] :  val.memberList.add(newMember));
   }
-
+  ///Todo 사진 업로드하고 그 유알엘을 멤버 모델에 담아서 보내기
   editMember(MemberModel newMember) async {
+    String uploadedUrl = await DatabaseService.instance.uploadMemberImage(newMember.url, newMember.index);
+    newMember.url = uploadedUrl;
     await DatabaseService.instance.editMember(newMember);
     user.update((val) => val.memberList[newMember.index] = newMember);
   }

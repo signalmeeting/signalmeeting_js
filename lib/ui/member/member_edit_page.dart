@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:byule/model/memberModel.dart';
+import 'package:byule/util/style/btStyle.dart';
+import 'package:byule/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
@@ -29,6 +33,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
   double _width = Get.width * 0.9;
 
   MemberModel _newMember = MemberModel();
+  File imageFile;
 
   @override
   void initState() {
@@ -66,10 +71,11 @@ class _MemberEditPageState extends State<MemberEditPage> {
                                   width: _width,
                                   height: _width,
                                   color: Colors.grey[200],
-                                  child: cachedImage(
-                                    '', //Todo user.memberList[0]['image']
-                                    width: _width,
-                                    height: _width,
+                                  child: imageFile == null ? cachedImage(
+                                    _newMember.url??'',
+                                  ) : Image(
+                                      image: FileImage(imageFile),
+                                      fit: BoxFit.cover
                                   ),
                                 ),
                               ),
@@ -91,6 +97,30 @@ class _MemberEditPageState extends State<MemberEditPage> {
                             ],
                           ),
                         ),
+                        TextButton(
+                          child: Text('프로필 사진 수정'),
+                          style: BtStyle.textSub200,
+                          onPressed: () async {
+                            imageFile = await Util.getImage();
+                            if (imageFile != null) {
+                              // List pics = user.profileInfo['pics'];
+                              // String uploadedUrl = await DatabaseService.instance.uploadUserImage(image.path, index);
+                              // var pic = Util.getListElement(pics, index);
+                              // if (pic != null)
+                              //   Util.replaceListElement(pics, index, uploadedUrl);
+                              // else
+                              //   pics.add(uploadedUrl);
+                              // bool result = await DatabaseService.instance.uploadUserPic(pics);
+                              // _controller.updateUserPics(pics);
+                              ///상태관리 해주고 디비에 업데이트(스토리지랑, url)
+                              // imageFile = await Util.getImage();
+                              print('?????? $imageFile');
+                              setState(() {});
+                              _newMember.url = imageFile.path;
+
+                            }
+                          },
+                        ),
                         Padding(padding: const EdgeInsets.only(top: 10.0), child: Container(height: 10, color: Colors.grey[100])),
                         _profileItem('나이', _newMember.age, () => agePick()),
                         _profileItem('키', _newMember.tall, () => tallPick()),
@@ -104,6 +134,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
                         _profileItem('MBTI', _newMember.mbti, () => mbtiPick()),
                         _profileItem('간단소개', _newMember.introduce, () => introducePick()),
                         TextButton(onPressed: () {
+                          ///Todo 그러면 여기서 이미지를 담아 보내야겠넹
                           widget.isEdit ? _mainController.editMember(_newMember) : _mainController.addMember(_newMember);
                           Get.back();
                         }, child: Text(widget.isEdit ? "수정하기" : "등록하기")),

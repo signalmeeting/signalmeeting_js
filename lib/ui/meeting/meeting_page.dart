@@ -324,20 +324,6 @@ class _MeetingPageState extends State<MeetingPage> {
       return Container();
   }
 
-  Widget makeMeetingButton() {
-    return Container(
-      height: 46,
-      width: Get.width * 0.96,
-      child: TextButton(
-        child: Text(
-          '미팅 등록',
-        ),
-        style: BtStyle.textMain200,
-        onPressed: () => (user.coin < 20) ? Get.dialog(NoCoinDialog()) : Get.to(() => MakeMeetingPage()),
-      ),
-    );
-  }
-
   Widget myMeetingButton() {
     return Container(
       height: 46,

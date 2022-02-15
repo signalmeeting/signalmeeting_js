@@ -20,6 +20,7 @@ Widget cachedImage(String url, {double width = 90.0, double height = 90.0, doubl
         width: width,
         height: height,
         decoration: BoxDecoration(
+            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(radius),
             ),
         child: Padding(

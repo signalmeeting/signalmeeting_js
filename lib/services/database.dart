@@ -558,6 +558,19 @@ class DatabaseService {
     return returnURL;
   }
 
+  Future<String> uploadMemberImage(String filePath, int memberIndex) async {
+    Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + memberIndex.toString()}');
+    UploadTask uploadTask = storageReference.putFile(File(filePath));
+    String returnURL;
+    await uploadTask.whenComplete(() async {
+      print('File Uploaded');
+      await storageReference.getDownloadURL().then((fileURL) {
+        returnURL = fileURL;
+      });
+    });
+    return returnURL;
+  }
+
   Future<String> uploadMeetingImage(File imageFile, String meetingId) async {
     print('check 0 : $imageFile');
     Reference storageReference = FirebaseStorage.instance.ref().child('meeting/$meetingId');
