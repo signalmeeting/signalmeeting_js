@@ -8,6 +8,7 @@ class AppColor {
   static Color main100 = Colors.red[100];
 
   static const Color sub = Colors.blue;
+  static Color sub300 = Colors.blue[300];
   static Color sub200 = Colors.blue[200];
   static Color sub100 = Colors.blue[100];
 

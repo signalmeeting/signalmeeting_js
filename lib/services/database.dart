@@ -456,11 +456,16 @@ class DatabaseService {
         Map<dynamic, dynamic> data = snapshot.data();
         data["uid"] = snapshot.id;
         data["phone"] = data["phone"].toString();
+
+        ///Todo 매핑 왜하쥐?? 로그인 에러뜸
+        ///리스트가 디비에 맵일 때는 ㄱㅊ
+        ///근데 리스트에 왜 맵이 되는경우가 있음??
         print("member list before mapped : ${data["memberList"]}");
         if(data["memberList"] !=null) {
-          Map<String, dynamic> memberMap =  data["memberList"];
+          Map<String, dynamic> memberMap = data["memberList"];
           data["memberList"] = memberMap.values.map((e) => e).toList();
         }
+
         UserModel user = UserModel.fromJson(data);
         _controller.updateUser(user);
         await Jiffy.locale('ko');
@@ -470,9 +475,11 @@ class DatabaseService {
         user.uid = uid;
         user.phone = phone;
         _controller.updateUser(user);
+        print('123123');
         return Future.value(false);
       }
     } else
+      print('321321');
       return Future.value(false);
   }
 
@@ -888,5 +895,13 @@ class DatabaseService {
 
   editMember(MemberModel newMember) async {
     await userCollection.doc(_user.uid).update({"memberList.${newMember.index}" : newMember.toJson()});
+  }
+
+  deleteMember(MemberModel newMember) async {
+    if(newMember.url != null && !newMember.url.contains('https://firebasestorage.googleapis.com')) {
+      Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + newMember.index.toString()}');
+      storageReference.delete();
+    }
+    await userCollection.doc(_user.uid).update({"memberList": FieldValue.arrayRemove([newMember.toJson()])});
   }
 }

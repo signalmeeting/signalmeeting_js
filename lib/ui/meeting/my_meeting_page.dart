@@ -2,8 +2,8 @@ import 'package:animations/animations.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/ui/widget/meeting/meetingGrid.dart';
-import 'package:byule/ui/widget/member/memberList.dart';
-import 'package:byule/ui/widget/member/my_member_list.dart';
+import 'package:byule/ui/widget/member/member_myMeeting_list';
+import 'package:byule/ui/widget/member/member_pick_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -75,7 +75,8 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
   Widget buildMemberList() {
     return Row(
       children: [
-        MyMemberList(),
+        ///Todo 이거는 미팅 생성 및 신청용
+        MemberPickList(),
       ],
     );
   }

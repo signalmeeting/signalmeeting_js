@@ -102,6 +102,7 @@ class Splash extends StatelessWidget {
               return FutureBuilder<List<bool>>(
                   future: Future.wait([DatabaseService.instance.checkAuth(uid, phone), checkForceUpdate()]),
                   builder: (context, AsyncSnapshot<List<bool>> snapshot) {
+                    print('no snapshot?? ${snapshot.data}');
                     if (snapshot.connectionState == ConnectionState.waiting ||
                         !snapshot.hasData)
                       return Center(child: CircularProgressIndicator());

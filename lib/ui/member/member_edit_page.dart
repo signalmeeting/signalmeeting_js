@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:byule/model/memberModel.dart';
+import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/util/style/btStyle.dart';
 import 'package:byule/util/util.dart';
 import 'package:flutter/material.dart';
@@ -45,113 +47,142 @@ class _MemberEditPageState extends State<MemberEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: SafeArea(
-          bottom: false,
-          child: ScrollConfiguration(
-            behavior: ScrollBehavior(),
-            child: GlowingOverscrollIndicator(
-              axisDirection: AxisDirection.down,
-              color: Colors.white,
-              child: Stack(
-                children: [
-                  Container(color: Colors.white),
-                  SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: _width,
-                                  height: _width,
-                                  color: Colors.grey[200],
-                                  child: imageFile == null ? cachedImage(
-                                    _newMember.url??'',
-                                  ) : Image(
-                                      image: FileImage(imageFile),
-                                      fit: BoxFit.cover
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                child: InkWell(
-                                  onTap: () => Get.back(),
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    child: Icon(
-                                      Icons.arrow_back_ios,
-                                      color: Colors.white,
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.5],
+              colors: [Colors.white, Colors.grey[100]])
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          body: Column(
+            children: [
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: ScrollBehavior(),
+                  child: GlowingOverscrollIndicator(
+                    axisDirection: AxisDirection.down,
+                    color: Colors.white,
+                    child: Stack(
+                      children: [
+                        Container(color: Colors.white),
+                        SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        width: _width,
+                                        height: _width,
+                                        color: Colors.grey[200],
+                                        child: imageFile == null ? GestureDetector(
+                                          onTap: () async {
+                                            imageFile = await Util.getImage();
+                                            if (imageFile != null) {
+                                              setState(() {});
+                                              _newMember.url = imageFile.path;
+                                            }
+                                          },
+                                          child: cachedImage(
+                                            _newMember.url??'',
+                                          ),
+                                        ) : Image(
+                                            image: FileImage(imageFile),
+                                            fit: BoxFit.cover
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    Positioned(
+                                      child: InkWell(
+                                        onTap: () => Get.back(),
+                                        child: Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Icon(
+                                            Icons.arrow_back_ios,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      top: 10,
+                                      left: 10,
+                                    ),
+                                  ],
                                 ),
-                                top: 10,
-                                left: 10,
                               ),
+                              Padding(padding: const EdgeInsets.only(top: 10.0), child: Container(height: 10, color: Colors.grey[100])),
+                              _profileItem('나이', _newMember.age, () => agePick(), mustNeed: true),
+                              _profileItem('키', _newMember.tall, () => tallPick(), mustNeed: true),
+                              _profileItem('직업', _newMember.career, () => careerPick(), mustNeed: true),
+                              _profileItem('지역', _newMember.loc1, () => locationPick(), mustNeed: true),
+                              _profileItem('세부 지역', _newMember.loc2, () => locationPick2(), mustNeed: true),
+                              Container(height: 10, width: double.infinity, color: Colors.grey[100]),
+                              _profileItem('체형', _newMember.bodyType, () => bodyTypePick()),
+                              _profileItem('흡연', _newMember.smoke, () => smokePick()),
+                              _profileItem('음주', _newMember.drink, () => drinkPick()),
+                              _profileItem('MBTI', _newMember.mbti, () => mbtiPick()),
+                              // _profileItem('간단소개', _newMember.introduce, () => introducePick()),
                             ],
                           ),
                         ),
-                        TextButton(
-                          child: Text('프로필 사진 수정'),
-                          style: BtStyle.textSub200,
-                          onPressed: () async {
-                            imageFile = await Util.getImage();
-                            if (imageFile != null) {
-                              // List pics = user.profileInfo['pics'];
-                              // String uploadedUrl = await DatabaseService.instance.uploadUserImage(image.path, index);
-                              // var pic = Util.getListElement(pics, index);
-                              // if (pic != null)
-                              //   Util.replaceListElement(pics, index, uploadedUrl);
-                              // else
-                              //   pics.add(uploadedUrl);
-                              // bool result = await DatabaseService.instance.uploadUserPic(pics);
-                              // _controller.updateUserPics(pics);
-                              ///상태관리 해주고 디비에 업데이트(스토리지랑, url)
-                              // imageFile = await Util.getImage();
-                              print('?????? $imageFile');
-                              setState(() {});
-                              _newMember.url = imageFile.path;
-
-                            }
-                          },
-                        ),
-                        Padding(padding: const EdgeInsets.only(top: 10.0), child: Container(height: 10, color: Colors.grey[100])),
-                        _profileItem('나이', _newMember.age, () => agePick()),
-                        _profileItem('키', _newMember.tall, () => tallPick()),
-                        _profileItem('직업', _newMember.career, () => careerPick()),
-                        _profileItem('지역', _newMember.loc1, () => locationPick()),
-                        _profileItem('세부 지역', _newMember.loc2, () => locationPick2()),
-                        Container(height: 10, width: double.infinity, color: Colors.grey[100]),
-                        _profileItem('체형', _newMember.bodyType, () => bodyTypePick()),
-                        _profileItem('흡연', _newMember.smoke, () => smokePick()),
-                        _profileItem('음주', _newMember.drink, () => drinkPick()),
-                        _profileItem('MBTI', _newMember.mbti, () => mbtiPick()),
-                        _profileItem('간단소개', _newMember.introduce, () => introducePick()),
-                        TextButton(onPressed: () {
-                          ///Todo 그러면 여기서 이미지를 담아 보내야겠넹
-                          widget.isEdit ? _mainController.editMember(_newMember) : _mainController.addMember(_newMember);
-                          Get.back();
-                        }, child: Text(widget.isEdit ? "수정하기" : "등록하기")),
-                        SizedBox(height: 100)
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+              Container(
+                color: Colors.grey[100],
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: Get.width*0.05),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: widget.isEdit ? Get.width*0.7 : Get.width*0.9,
+                        child: TextButton(onPressed: _newMember.age != null &&
+                            _newMember.tall != null && _newMember.career != null &&
+                            _newMember.loc1 != null && _newMember.loc2 != null
+                            ? () {
+                              widget.isEdit
+                                  ? _mainController.editMember(_newMember)
+                                  : _mainController.addMember(_newMember);
+                              Get.back();
+                            } : null,
+                            style: BtStyle.textSub200,
+                            child: Text(widget.isEdit ? "수정하기" : "등록하기")),
+                      ),
+                      if(widget.isEdit)
+                        Container(
+                          width: Get.width*0.15,
+                          child: TextButton(onPressed: () {
+                            Get.dialog(NotificationDialog(
+                              title: "멤버 삭제",
+                              contents: "정말 삭제하시겠습니까?",
+                              buttonText: '삭제',
+                              onPressed: () => _mainController.deleteMember(_newMember),
+                            ));
+                          },
+                              style: BtStyle.textMain100,
+                              child: Icon(Icons.cancel_outlined, size: Get.width*0.08,)),
+                        )
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Column _profileItem(String title, String text, VoidCallback onTap) {
+  Column _profileItem(String title, String text, VoidCallback onTap, {bool mustNeed = false}) {
     return Column(
       children: <Widget>[
         if (title != '체형')
@@ -180,7 +211,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
                 ),
                 Container(
                   color: Colors.transparent,
-                  width: Get.width * 0.65,
+                  width: Get.width * 0.55,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -205,6 +236,16 @@ class _MemberEditPageState extends State<MemberEditPage> {
                           ],
                   ),
                 ),
+                mustNeed ? Container(
+                  width: Get.width * 0.1,
+                  height: 50,
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.check_circle_outline,
+                    color: text != null ? AppColor.sub300 : Colors.grey[400],
+                    // color: AppColor.sub300,
+                  ),
+                ) : Container(width: Get.width * 0.1,)
               ],
             ),
           ),
@@ -242,7 +283,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
       selectedNumber: int.parse(_newMember.age ?? _user.age),
       maxLongSide: 400,
       onChanged: (value) => setState(() => _age = value),
-      onConfirmed: () => setState(() => _newMember.age = _age.toString()),
+      onConfirmed: () {
+        setState(() => _newMember.age = _age.toString());
+        if (_newMember.tall == null) tallPick();
+      },
     );
   }
 
@@ -259,7 +303,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
       selectedNumber: int.parse(_newMember.tall ?? _user.tall),
       maxLongSide: 400,
       onChanged: (value) => setState(() => _tall = value),
-      onConfirmed: () => setState(() => _newMember.tall = _tall.toString()),
+      onConfirmed: () {
+        setState(() => _newMember.tall = _tall.toString());
+        if (_newMember.career == null) careerPick();
+      },
     );
   }
 
@@ -288,7 +335,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
       items: careerList,
       selectedItem: _newMember.career,
       onChanged: (value) => setState(() => _career = value),
-      onConfirmed: () => setState(() => _newMember.career = _career.toString()),
+      onConfirmed: () {
+        setState(() => _newMember.career = _career.toString());
+        if (_newMember.loc1 == null) locationPick();
+      },
     );
   }
 
@@ -467,7 +517,10 @@ class _MemberEditPageState extends State<MemberEditPage> {
       items: cityList,
       selectedItem: selected,
       onChanged: (value) => setState(() => _location2 = value),
-      onConfirmed: () => setState(() => _newMember.loc2 = _location2),
+      onConfirmed: () {
+        setState(() => _newMember.loc2 = _location2);
+        if (_newMember.bodyType == null) bodyTypePick();
+      },
     );
   }
 

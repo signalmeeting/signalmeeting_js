@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reorderables/reorderables.dart';
 
-class MemberList extends StatefulWidget {
+class MemberMyMeetingList extends StatefulWidget {
   final int number;
-  MemberList(this.number);
+  MemberMyMeetingList(this.number);
 
   @override
-  _MemberListState createState() => _MemberListState();
+  _MemberMyMeetingListState createState() => _MemberMyMeetingListState();
 }
 
-class _MemberListState extends State<MemberList> {
+class _MemberMyMeetingListState extends State<MemberMyMeetingList> {
   final double _avatarRadius = Get.width*0.13 / 2;
   final double _spaceSize = Get.width*0.04;
   List<Widget> _tiles;

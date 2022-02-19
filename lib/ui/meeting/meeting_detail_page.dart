@@ -461,7 +461,7 @@ class MeetingDetailPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 18),
                 child: Card(
                   margin: EdgeInsets.all(8),
-                  elevation: 1.5,
+                  elevation: 3,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),

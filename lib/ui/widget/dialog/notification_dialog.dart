@@ -7,8 +7,9 @@ class NotificationDialog extends StatelessWidget {
   final String contents;
   final String contents2;
   final VoidCallback onPressed;
+  final String buttonText;
 
-  NotificationDialog({this.title, this.contents, this.onPressed, this.contents2});
+  NotificationDialog({this.title, this.contents, this.onPressed, this.contents2, this.buttonText});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class NotificationDialog extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 20.0),
         child: (contents2 == null) ? Text(contents) : Column(children: <Widget>[Text(contents),SizedBox(height: 16,), Text(contents2)],),
       )),
-      buttonText: "확인",
+      buttonText: buttonText??'확인',
       onPressed: onPressed ?? () => Get.back(),
     );
   }

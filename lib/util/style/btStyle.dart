@@ -54,6 +54,14 @@ class BtStyle {
         }),
       );
 
+  static ButtonStyle get delete => standard.copyWith(
+    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) return Colors.grey;
+          return Colors.grey;
+        }),
+  );
+
   static ButtonStyle get textMain100 => standard.copyWith(
         backgroundColor: MaterialStateProperty.all(AppColor.main100),
       );

@@ -42,7 +42,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     child: Column(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Stack(
                             children: [
                               ClipRRect(

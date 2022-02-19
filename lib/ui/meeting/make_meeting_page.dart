@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:byule/ui/widget/member/my_member_list.dart';
+import 'package:byule/ui/widget/member/member_pick_list.dart';
 import 'package:byule/util/style/appColor.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +13,11 @@ import 'package:byule/util/style/btStyle.dart';
 import 'package:byule/util/util.dart';
 import 'package:smart_select/smart_select.dart';
 
+class MakeMeetingController extends GetxController {
+  RxList<int> pickedMemberIndexList = <int>[].obs;
+  RxInt needMemberNum = 0.obs;
+}
+
 class MakeMeetingPage extends StatefulWidget {
   @override
   _MakeMeetingPageState createState() => _MakeMeetingPageState();
@@ -21,6 +26,7 @@ class MakeMeetingPage extends StatefulWidget {
 class _MakeMeetingPageState extends State<MakeMeetingPage> {
   MainController _mainController = Get.find();
   UserModel get user => _mainController.user.value;
+  final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
 
   final GlobalKey<FormState> _formKeyTitle = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
@@ -37,7 +43,6 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('??????!!!!!!');
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -89,12 +94,12 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                         color: Colors.white,
                         child: SingleChildScrollView(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                            padding: EdgeInsets.symmetric(horizontal: Get.width*0.05, vertical: 10),
                             child: Column(
                               children: [
                                 Card(
-                                  margin: EdgeInsets.all(8),
-                                  elevation: 1.5,
+                                  margin: EdgeInsets.all(0),
+                                  elevation: 3,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -155,7 +160,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                         children: <Widget>[
                                                           Icon(
                                                             Icons.check_circle_outline,
-                                                            color: confirmTitle ? Colors.red[400] : Colors.grey[400],
+                                                            color: confirmTitle ? AppColor.sub300 : Colors.grey[400],
                                                           ),
                                                         ],
                                                       ),
@@ -266,7 +271,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                         //                   /*
                                         //                   Icon(
                                         //                     Icons.check_circle_outline,
-                                        //                     color: confirmLocation ? Colors.red[400] : Colors.grey[400],
+                                        //                     color: confirmLocation ? AppColor.sub300 : Colors.grey[400],
                                         //                   ),
                                         //
                                         //                    */
@@ -312,7 +317,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                     Padding(
                                                       padding: const EdgeInsets.only(top: 15.0),
                                                       child: Text(
-                                                        '소개',
+                                                        '이미지',
                                                         style: TextStyle(
                                                           fontSize: 18,
                                                           fontFamily: "AppleSDGothicNeoB",
@@ -329,12 +334,22 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                   children: [
                                                     Padding(
                                                       padding: const EdgeInsets.only(top: 15.0),
-                                                      child: Text(
-                                                        '멤버',
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontFamily: "AppleSDGothicNeoB",
-                                                        ),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                        children: [
+                                                          Text(
+                                                            '멤버',
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontFamily: "AppleSDGothicNeoB",
+                                                            ),
+                                                          ),
+                                                          SizedBox(width:5),
+                                                          Obx(() => Text(
+                                                                '(${_makeMeetingController.pickedMemberIndexList.length}/${_makeMeetingController.needMemberNum})',
+                                                                style: TextStyle(color: _makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value && _makeMeetingController.needMemberNum.value != 0 ?  AppColor.sub300 : Colors.grey),
+                                                              ))
+                                                        ],
                                                       ),
                                                     ),
                                                     Padding(
@@ -342,20 +357,25 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                       child: Container(
                                                         width: Get.width*0.3 + 1,
                                                         // height: Get.width*0.3,
-                                                        child: MyMemberList()
+                                                        child: MemberPickList()
                                                         // MemberList(int.parse(number == null ? '0' : number[0]),),
                                                       ),),
                                                   ],
                                                 ),
                                               ],
                                             ),
-                                            Icon(
-                                              Icons.check_circle_outline,
-                                              color: imageFile != null ? Colors.red[400] : Colors.grey[400],
+                                            Obx(
+                                              () {
+                                                print('for obx : ${_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value}');
+                                                return Icon(
+                                                Icons.check_circle_outline,
+                                                color: imageFile != null && _makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value ? AppColor.sub300 : Colors.grey[400],
+                                              );
+                                              },
                                             ),
                                           ],
                                         ),
-                                        //미팅 소개
+                                        // // 미팅 소개
                                         // Padding(
                                         //   padding: const EdgeInsets.only(top: 15.0, bottom: 8),
                                         //   child: Form(
@@ -411,69 +431,118 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                     color: Colors.grey[300],
                     height: 1,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: Container(
-                      height: 45,
-                      width: Get.width - 16,
-                      child: TextButton(
-                        child: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
-                            ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              '20',
-                              style: TextStyle(
-                                color: Colors.red[200],
-                                fontSize: 18,
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                        child: Container(
+                          height: 45,
+                          child: Obx(
+                            () {
+                              print('for obx : ${_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value}');
+                              return TextButton(
+                              child: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value)
+                                  ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    '20',
+                                    style: TextStyle(
+                                      color: Colors.red[200],
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.favorite,
+                                    color: Colors.red[200],
+                                    size: 20,
+                                  ),
+                                ],
+                              )
+                                  : Text(
+                                '미팅 만들기',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "AppleSDGothicNeoB",
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Icon(
-                              Icons.favorite,
-                              color: Colors.red[200],
-                              size: 20,
-                            ),
-                          ],
-                        )
-                            : Text(
-                          '미팅 만들기',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "AppleSDGothicNeoB",
-                            fontSize: 16,
+                              style: BtStyle.sideLine,
+                              onPressed: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value)
+                                  ? () async {
+                                await DatabaseService.instance.makeMeeting(
+                                  title: this._titleController.text,
+                                  number: int.parse(this.number.split(':')[0]),
+                                  loc1: this.city1,
+                                  loc2: this.city2,
+                                  loc3: this._locationController.text,
+                                  introduce: this._introduceController.text,
+                                  imageFile: imageFile,
+                                );
+                                Map<String, dynamic> meeting = {
+                                  "title": this._titleController.text,
+                                  "number": int.parse(this.number.split(':')[0]),
+                                  "loc1": this.city1,
+                                  "loc2": this.city2,
+                                  "loc3": this._locationController.text,
+                                  "introduce": this._introduceController.text,
+                                };
+                                await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
+                                FocusScope.of(context).unfocus();
+                                Navigator.pop(context);
+                                CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
+                              } : null,
+                            );
+                            },
                           ),
                         ),
-                        style: BtStyle.sideLine,
-                        onPressed: confirmTitle  && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null)
-                            ? () async {
-                          await DatabaseService.instance.makeMeeting(
-                            title: this._titleController.text,
-                            number: int.parse(this.number.split(':')[0]),
-                            loc1: this.city1,
-                            loc2: this.city2,
-                            loc3: this._locationController.text,
-                            introduce: this._introduceController.text,
-                            imageFile: imageFile,
-                          );
-                          Map<String, dynamic> meeting = {
-                            "title": this._titleController.text,
-                            "number": int.parse(this.number.split(':')[0]),
-                            "loc1": this.city1,
-                            "loc2": this.city2,
-                            "loc3": this._locationController.text,
-                            "introduce": this._introduceController.text,
-                          };
-                          await DatabaseService.instance.useCoin(20, 1, newMeeting: meeting);
-                          FocusScope.of(context).unfocus();
-                          Navigator.pop(context);
-                          CustomedFlushBar(Get.context, "등록이 완료되었습니다!");
-                        } : null,
                       ),
-                    ),
+                      Obx(
+                        () {
+                          print('for obx : ${_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value}');
+                          return AnimatedCrossFade(
+                          firstChild: Padding(
+                            padding: EdgeInsets.only(left: Get.width*0.05, right: Get.width*0.05, bottom: 8),
+                            child: TextField(
+                              cursorColor: Colors.red[200],
+                              controller: _introduceController,
+                              maxLength: 500,
+                              minLines: 5,
+                              style: TextStyle(
+                                fontFamily: "AppleSDGothicNeoM",
+                              ),
+                              maxLines: 10,
+                              decoration: InputDecoration(
+                                counterText: '',
+                                hintText: '상대에게 보낼 메세지를 작성해주세요.',
+                                hintStyle: TextStyle(
+                                  fontFamily: "AppleSDGothicNeoM",
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.grey[300]),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.grey[300]),
+                                ),
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          secondChild: Container(),
+                          crossFadeState: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          duration: const Duration(milliseconds: 100),
+                        );
+                        },
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -501,7 +570,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 children: <Widget>[
                   Icon(
                     Icons.check_circle_outline,
-                    color: city1 != null ? Colors.red[400] : Colors.grey[400],
+                    color: city1 != null ? AppColor.sub300 : Colors.grey[400],
                   ),
                 ],
               ),
@@ -657,7 +726,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 children: <Widget>[
                   Icon(
                     Icons.check_circle_outline,
-                    color: city2 != null ? Colors.red[400] : Colors.grey[400],
+                    color: city2 != null ? AppColor.sub300 : Colors.grey[400],
                   ),
                 ],
               ),
@@ -695,6 +764,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
     ];
 
     List<S2Choice<String>> optionsForIOS = [
+      S2Choice<String>(value: '1:1 (소개팅)', title: '1:1 (소개팅)'),
       S2Choice<String>(value: '2:2', title: '2:2'),
       S2Choice<String>(value: '3:3', title: '3:3'),
       S2Choice<String>(value: '4:4', title: '4:4'),
@@ -715,7 +785,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 children: <Widget>[
                   Icon(
                     Icons.check_circle_outline,
-                    color: number != null ? Colors.red[400] : Colors.grey[400],
+                    color: number != null ? AppColor.sub300 : Colors.grey[400],
                   ),
                 ],
               ),
@@ -737,6 +807,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
       choiceItems: Platform.isAndroid ? optionsForAndroid : optionsForIOS,
       onChange: (state) => setState(() {
         number = state.value;
+        _makeMeetingController.needMemberNum.value = int.parse(state.value[0]) - 1;
       }),
     );
   }
@@ -759,7 +830,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: Colors.grey)),
+                    border: Border.all(color: imageFile == null ? Colors.grey : AppColor.main100)),
                 width: Get.width*0.3,
                 height: Get.width*0.3,
                 child: imageFile == null ? Column(
