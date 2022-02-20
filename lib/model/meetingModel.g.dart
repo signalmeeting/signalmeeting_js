@@ -34,6 +34,9 @@ MeetingModel _$MeetingModelFromJson(Map<String, dynamic> json) {
     ..meetingImageUrl = json['meetingImageUrl'] as String
     ..banList = (json['banList'] as List)
         ?.map((e) => e as Map<String, dynamic>)
+        ?.toList()
+    ..memberList = (json['memberList'] as List)
+        ?.map((e) => e as Map<String, dynamic>)
         ?.toList();
 }
 
@@ -57,4 +60,5 @@ Map<String, dynamic> _$MeetingModelToJson(MeetingModel instance) =>
       'createdAt': instance.createdAt?.toIso8601String(),
       'meetingImageUrl': instance.meetingImageUrl,
       'banList': instance.banList,
+      'memberList': instance.memberList,
     };

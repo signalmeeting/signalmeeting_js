@@ -58,7 +58,7 @@ class MainController extends GetxController {
   }
 
   updateUser(UserModel user) {
-    print('new user : ${user.toString()}');
+    // print('new user : ${user.toString()}');
     this.user(user);
   }
 

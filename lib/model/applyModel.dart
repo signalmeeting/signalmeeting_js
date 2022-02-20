@@ -13,6 +13,7 @@ class ApplyModel {
   @JsonKey(fromJson: firestoreDocRefFromJson, toJson: firestoreDocRefToJson)
   DocumentReference user;
   String userId;
+  List<Map<String, dynamic>> memberList;
 
   ApplyModel({this.applyId, this.msg, this.phone, this.user, this.userId});
 

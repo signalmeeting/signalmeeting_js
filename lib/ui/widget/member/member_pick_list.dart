@@ -25,46 +25,56 @@ class _MemberPickListState extends State<MemberPickList> {
   final double _spaceSize = Get.width * 0.04;
 
   List<MemberModel> get _memberList => _user.memberList ?? [];
-  RxList<Widget> _tiles = <Widget>[].obs;
+  // RxList<Widget> _tiles = <Widget>[].obs;
+
 
   @override
   void initState() {
     super.initState();
-    _tiles.value = <Widget>[
-      if (_memberList.isNotEmpty)
-        for (int i = 0; i < _memberList.length; i++) memberAvatar(i),
-      memberAddAvatar(),
-    ];
+    // _tiles.value = <Widget>[
+    //   if (_memberList.isNotEmpty)
+    //     for (int i = 0; i < _memberList.length; i++) memberAvatar(i),
+    // ];
   }
 
   void _onReorder(int oldIndex, int newIndex) {
-    setState(() {
-      Widget row = _tiles.removeAt(oldIndex);
-      _tiles.insert(newIndex, row);
-    });
+    // setState(() {
+    //   Widget row = _tiles.removeAt(oldIndex);
+    //   _tiles.insert(newIndex, row);
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    var wrap = ReorderableWrap(
-        spacing: _spaceSize,
-        runSpacing: _spaceSize,
-        // padding: const EdgeInsets.all(8),
-        children: _tiles,
-        onReorder: _onReorder,
-        onNoReorder: (int index) {
-          //this callback is optional
-          debugPrint('${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
-        },
-        onReorderStarted: (int index) {
-          //this callback is optional
-          debugPrint('${DateTime.now().toString().substring(5, 22)} reorder started: index:$index');
-        });
 
     var column = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        wrap,
+        Obx(
+          () {
+            if (_memberList.isNotEmpty) {
+
+            }
+            return ReorderableWrap(
+              footer: memberAddAvatar(),
+              spacing: _spaceSize,
+              runSpacing: _spaceSize,
+              // padding: const EdgeInsets.all(8),
+              children: [
+                if (_memberList.isNotEmpty)
+                  for (int i = 0; i < _memberList.length; i++) memberAvatar(i),
+              ],
+              onReorder: _onReorder,
+              onNoReorder: (int index) {
+                //this callback is optional
+                debugPrint('${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
+              },
+              onReorderStarted: (int index) {
+                //this callback is optional
+                debugPrint('${DateTime.now().toString().substring(5, 22)} reorder started: index:$index');
+              });
+          },
+        ),
       ],
     );
 
@@ -84,8 +94,10 @@ class _MemberPickListState extends State<MemberPickList> {
             } else {
               pickedMemberIndexList.add(index);
             }
-            _tiles.removeAt(index);
-            _tiles.insert(index, memberAvatar(index));
+
+            // _tiles.removeAt(index);
+            // _tiles.insert(index, memberAvatar(index));
+
             setState(() {});
           },
           child: Container(

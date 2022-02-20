@@ -52,7 +52,11 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                 child: Obx(
                   () => Column(
                     children: [
-                      buildMemberList(),
+                      categoryText('내 멤버'),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01, vertical: 10),
+                        child: MemberPickList(),
+                      ),
                       categoryText('데일리 미팅'),
                       _controller.todayConnectionList.length != 0
                           ? buildList(_controller.todayConnectionList, short: true)

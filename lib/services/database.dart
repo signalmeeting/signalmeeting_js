@@ -138,7 +138,7 @@ class DatabaseService {
     }
   }
 
-  makeMeeting({String title, int number, String loc1, String loc2, String loc3, String introduce, File imageFile}) async {
+  makeMeeting({String title, int number, String loc1, String loc2, String loc3, String introduce, File imageFile, List memberList}) async {
     Get.dialog(Center(child: CircularProgressIndicator()));
 
     DocumentReference meetingDoc = meetingCollection.doc();
@@ -157,8 +157,10 @@ class DatabaseService {
       "meetingImageUrl": meetingImageUrl,
       "banList": [],
       "deletedTime": null,
+      "memberList": memberList,
     };
 
+    print('memberList : $memberList');
     meetingDoc.set(newMeeting);
 
     Get.back();
@@ -475,11 +477,9 @@ class DatabaseService {
         user.uid = uid;
         user.phone = phone;
         _controller.updateUser(user);
-        print('123123');
         return Future.value(false);
       }
     } else
-      print('321321');
       return Future.value(false);
   }
 
@@ -898,10 +898,10 @@ class DatabaseService {
   }
 
   deleteMember(MemberModel newMember) async {
-    if(newMember.url != null && !newMember.url.contains('https://firebasestorage.googleapis.com')) {
+    if(newMember.url != null && newMember.url.contains('https://firebasestorage.googleapis.com')) {
       Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + newMember.index.toString()}');
       storageReference.delete();
     }
-    await userCollection.doc(_user.uid).update({"memberList": FieldValue.arrayRemove([newMember.toJson()])});
+    await userCollection.doc(_user.uid).update({"memberList.${newMember.index}" : FieldValue.delete()});
   }
 }

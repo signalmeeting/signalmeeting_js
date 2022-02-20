@@ -13,7 +13,9 @@ ApplyModel _$ApplyModelFromJson(Map<String, dynamic> json) {
     phone: json['phone'] as String,
     user: firestoreDocRefFromJson(json['user']),
     userId: json['userId'] as String,
-  );
+  )..memberList = (json['memberList'] as List)
+      ?.map((e) => e as Map<String, dynamic>)
+      ?.toList();
 }
 
 Map<String, dynamic> _$ApplyModelToJson(ApplyModel instance) =>
@@ -23,4 +25,5 @@ Map<String, dynamic> _$ApplyModelToJson(ApplyModel instance) =>
       'phone': instance.phone,
       'user': firestoreDocRefToJson(instance.user),
       'userId': instance.userId,
+      'memberList': instance.memberList,
     };

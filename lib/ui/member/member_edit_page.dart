@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:byule/model/memberModel.dart';
+import 'package:byule/ui/meeting/make_meeting_page.dart';
 import 'package:byule/ui/widget/dialog/confirm_dialog.dart';
+import 'package:byule/ui/widget/dialog/member_introduce_dialog.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/util/style/btStyle.dart';
 import 'package:byule/util/util.dart';
@@ -34,13 +36,28 @@ class _MemberEditPageState extends State<MemberEditPage> {
 
   double _width = Get.width * 0.9;
 
-  MemberModel _newMember = MemberModel();
+  MemberModel _newMember = new MemberModel();
   File imageFile;
 
   @override
   void initState() {
     setState(() {
-      _newMember = widget.member;
+      ///_newMember = widget.member;
+      ///이닛 부분에 저렇게 해서 그런가? 수정 안하고 나가도 상태관리가 돼버림
+      _newMember = MemberModel(
+        index: widget.member.index,
+        url: widget.member.url,
+        age: widget.member.age,
+        tall: widget.member.tall,
+        career: widget.member.career,
+        loc1: widget.member.loc1,
+        loc2: widget.member.loc2,
+        bodyType: widget.member.bodyType,
+        smoke: widget.member.smoke,
+        drink: widget.member.drink,
+        mbti: widget.member.mbti,
+        introduce: widget.member.introduce,
+      );
     });
     super.initState();
   }
@@ -52,7 +69,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              stops: [0.0, 0.5],
+              stops: [0.0, 1],
               colors: [Colors.white, Colors.grey[100]])
       ),
       child: SafeArea(
@@ -102,16 +119,19 @@ class _MemberEditPageState extends State<MemberEditPage> {
                                       child: InkWell(
                                         onTap: () => Get.back(),
                                         child: Container(
-                                          width: 30,
-                                          height: 30,
-                                          child: Icon(
-                                            Icons.arrow_back_ios,
-                                            color: Colors.white,
+                                          // color: Colors.red,
+                                          width: 50,
+                                          height: 50,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
+                                            child: Icon(
+                                              Icons.arrow_back_ios,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                      top: 10,
-                                      left: 10,
                                     ),
                                   ],
                                 ),
@@ -127,7 +147,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
                               _profileItem('흡연', _newMember.smoke, () => smokePick()),
                               _profileItem('음주', _newMember.drink, () => drinkPick()),
                               _profileItem('MBTI', _newMember.mbti, () => mbtiPick()),
-                              // _profileItem('간단소개', _newMember.introduce, () => introducePick()),
+                              _profileItem('간단소개', _newMember.introduce, () => introducePick()),
                             ],
                           ),
                         ),
@@ -165,7 +185,13 @@ class _MemberEditPageState extends State<MemberEditPage> {
                               title: "멤버 삭제",
                               contents: "정말 삭제하시겠습니까?",
                               buttonText: '삭제',
-                              onPressed: () => _mainController.deleteMember(_newMember),
+                              onPressed: () {
+                                final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
+                                if(_makeMeetingController.pickedMemberIndexList.contains(_newMember.index)) {
+                                  _makeMeetingController.pickedMemberIndexList.remove(_newMember.index);
+                                }
+                                return _mainController.deleteMember(_newMember);
+                              },
                             ));
                           },
                               style: BtStyle.textMain100,
@@ -250,11 +276,6 @@ class _MemberEditPageState extends State<MemberEditPage> {
             ),
           ),
         ),
-        if (title == '간단소개')
-          Container(
-            height: 50,
-            color: Colors.grey[100],
-          ),
       ],
     );
   }
@@ -648,8 +669,9 @@ class _MemberEditPageState extends State<MemberEditPage> {
     );
   }
 
-  //TODO 수정 필요
-  void introducePick() {
-    Get.to(() => MyProfileIntroduceEditPage(), transition: Transition.fadeIn);
+  void introducePick() async {
+    String introduce = await Get.dialog(MemberIntroduceDialog(_newMember.introduce??''));
+    _newMember.introduce = introduce;
+    setState(() {});
   }
 }

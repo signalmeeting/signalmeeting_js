@@ -1,10 +1,15 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:byule/model/memberModel.dart';
+import 'package:byule/ui/meeting/make_meeting_page.dart';
+import 'package:byule/ui/widget/dialog/meeting_letter_dialog.dart';
+import 'package:byule/ui/widget/member/member_pick_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:byule/controller/chat_controller.dart';
 import 'package:byule/controller/main_controller.dart';
@@ -31,6 +36,7 @@ class MeetingDetailController extends GetxController {
   UserModel meetingOwner = UserModel();
   Rx<MeetingModel> meeting = MeetingModel().obs;
   UserModel oppositeUser;
+  List<Map<String, dynamic>> memberListToShow = [];
 
   final MeetingModel initialMeeting;
   MeetingDetailController(this.initialMeeting);
@@ -43,8 +49,37 @@ class MeetingDetailController extends GetxController {
     Map<String, dynamic> data = snapshot.data();
     if(data == null)
       data = {"deleted" : true};
+
+    if(data["memberList"] !=null) {
+      Map<String, dynamic> memberMap = data["memberList"];
+      data["memberList"] = memberMap.values.map((e) => e).toList();
+    }
     meetingOwner = UserModel.fromJson(data);
     userLoaded.value = true;
+
+    Map<String, dynamic> userByMember = MemberModel(
+      index: null,
+      url: meetingOwner.profileInfo['pics'][0],
+      age: meetingOwner.profileInfo['age'].toString(),
+      tall: meetingOwner.profileInfo['tall'].toString(),
+      career: meetingOwner.profileInfo['career'],
+      loc1: meetingOwner.profileInfo['loc1'],
+      loc2: meetingOwner.profileInfo['loc2'],
+      bodyType: meetingOwner.profileInfo['bodyType'],
+      smoke: meetingOwner.profileInfo['smole'],
+      drink: meetingOwner.profileInfo['drink'],
+      mbti: meetingOwner.profileInfo['mbti'],
+      introduce: meetingOwner.profileInfo['introduce'],
+    ).toJson();
+
+    memberListToShow.add(userByMember);
+    if(meeting.value.memberList != null) {
+      meeting.value.memberList.forEach((member) => memberListToShow.add(member));
+    }
+
+
+    0.5.delay(() => Get.dialog(MeetingLetterDialog(meeting.value.introduce)));
+
     super.onInit();
   }
 }
@@ -52,6 +87,7 @@ class MeetingDetailController extends GetxController {
 class MeetingDetailPage extends StatelessWidget {
   // final MeetingModel meeting;
   final MeetingDetailController meetingDetailController;
+  final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
 
   MeetingDetailPage(this.meetingDetailController);
 
@@ -67,9 +103,15 @@ class MeetingDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0, 0.5, 0.6, 1],
+              colors: [AppColor.main100, AppColor.main100, Colors.white, Colors.white])
+      ),
       child: SafeArea(
-        top: false,
+        // bottom: false,
         child: WillPopScope(
           onWillPop: () async {
             if(buttonClicked) {
@@ -78,44 +120,37 @@ class MeetingDetailPage extends StatelessWidget {
             } return true;
           },
           child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: IconButton(
-                highlightColor: Colors.white,
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.pop(context),
-              ),
-              iconTheme: IconThemeData(
-                color: Colors.black,
-              ),
-              centerTitle: true,
-              title: Text(
-                '미팅 신청',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: "AppleSDGothicNeoM",
-                ),
-              ),
-            ),
             body: Stack(
               children: [
                 Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
-                          begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.5], colors: [Colors.red[50], Colors.white])),
+                          begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.0, 0.75], colors: [AppColor.main100, Colors.white])),
                 ),
                 Obx(
                   () => Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      mainCard(),
-                      Container(color: Colors.grey[300], height: 1),
+                      titleCard(),
+                      cardSwiper(),
+                      // introduceCard(),
+
                       //전자는 들어 갔을 때, 수락 거절 버튼이 있어야됨 //후자는 상대방 프로필만
                       if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1)
-                        seeTheOppositeBt(),
+                        Column(
+                          children: [
+                            Container(color: Colors.grey[300], height: 1),
+                            seeTheOppositeBt(),
+                          ],
+                        ),
                       if (user.man != meeting.man && !meeting.isMine && meeting.process == null)
-                        buildApplyButton(context)
+                        Column(
+                          children: [
+                            Container(color: Colors.grey[300], height: 1),
+                            buildApplyButton(context),
+                          ],
+                        )
                     ],
                   ),
                 ),
@@ -141,47 +176,67 @@ class MeetingDetailPage extends StatelessWidget {
                     style: BtStyle.changeState(buttonClicked),
                     child: buttonClicked
                         ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '5',
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Icon(
-                          Icons.favorite,
-                          size: 20,
-                        ),
-                      ],
-                    )
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                '5',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(
+                                Icons.favorite,
+                                size: 20,
+                              ),
+                            ],
+                          )
                         : Text('신청하기'),
                     onPressed: buttonClicked ? (user.coin < 5) ? () => Get.dialog(NoCoinDialog()) : () async {
-                      FocusScope.of(context).unfocus();
+                                ///멤버를 인원에 맞게 설정해주세요
+                                if(_makeMeetingController.pickedMemberIndexList.length + 1 != meeting.number) {
+                                  Get.dialog(NotificationDialog(
+                                    title: "잠깐!",
+                                    contents: "미팅 인원에 맞도록 멤버를 선택해주세요",
+                                    contents2: "( ${_makeMeetingController.pickedMemberIndexList.length} / ${meeting.number - 1} )",
+                                  ));
+                                  return;
+                                }
 
-                      ///최근에 거절당한 미팅 있는지 확인
-                      bool refusedExist = await DatabaseService.instance.checkRefusedBeforeApply(this.meeting.id);
-                      if (refusedExist) return;
+                                FocusScope.of(context).unfocus();
 
-                      bool result = await DatabaseService.instance.applyMeeting(
-                          this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                      if (result) {
-                        meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                        Map<String, dynamic> applyMeeting = {
-                          "title": meeting.title,
-                          "loc1": meeting.loc1,
-                          "loc2": meeting.loc2,
-                          "loc3": meeting.loc3,
-                          "number": meeting.number,
-                          "introduce": meeting.introduce,
-                        };
-                        await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting, oppositeUserid: meeting.userId);
-                      }
-                    } : () => meetingDetailController.buttonClicked.value = true,
+                                ///최근에 거절당한 미팅 있는지 확인
+                                bool refusedExist = await DatabaseService
+                                    .instance
+                                    .checkRefusedBeforeApply(this.meeting.id);
+                                if (refusedExist) return;
+
+                                bool result = await DatabaseService.instance
+                                    .applyMeeting(
+                                        this.meeting.id,
+                                        _selfIntroductionController.text,
+                                        this.meeting.title,
+                                        this.meeting.user.id);
+                                if (result) {
+                                  meetingDetailController.meeting
+                                      .update((meeting) => meeting.process = 0);
+                                  Map<String, dynamic> applyMeeting = {
+                                    "title": meeting.title,
+                                    "loc1": meeting.loc1,
+                                    "loc2": meeting.loc2,
+                                    "loc3": meeting.loc3,
+                                    "number": meeting.number,
+                                    "introduce": meeting.introduce,
+                                  };
+                                  await DatabaseService.instance.useCoin(5, 2,
+                                      newMeeting: applyMeeting,
+                                      oppositeUserid: meeting.userId);
+                                }
+                              }
+                        : () => meetingDetailController.buttonClicked.value = true,
                   ),
                 ),),
               secondChild: SizedBox(),
@@ -192,33 +247,39 @@ class MeetingDetailPage extends StatelessWidget {
             secondChild: AnimatedCrossFade(
               firstChild: Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                child: TextField(
-                  cursorColor: Colors.red[200],
-                  controller: _selfIntroductionController,
-                  maxLength: 500,
-                  minLines: 5,
-                  style: TextStyle(
-                    fontFamily: "AppleSDGothicNeoM",
-                  ),
-                  maxLines: 10,
-                  decoration: InputDecoration(
-                    counterText: '',
-                    hintText: '상대에게 보낼 메세지를 작성해주세요.',
-                    hintStyle: TextStyle(
-                      fontFamily: "AppleSDGothicNeoM",
+                child: Column(
+                  children: [
+                    MemberPickList(),
+                    SizedBox(height: 8),
+                    TextField(
+                      cursorColor: Colors.red[200],
+                      controller: _selfIntroductionController,
+                      maxLength: 500,
+                      minLines: 5,
+                      style: TextStyle(
+                        fontFamily: "AppleSDGothicNeoM",
+                      ),
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                        counterText: '',
+                        hintText: '상대에게 보낼 메세지를 작성해주세요.',
+                        hintStyle: TextStyle(
+                          fontFamily: "AppleSDGothicNeoM",
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.1),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(color: Colors.grey[300]),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(color: Colors.grey[300]),
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide: BorderSide(color: Colors.grey[300]),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      borderSide: BorderSide(color: Colors.grey[300]),
-                    ),
-                    border: OutlineInputBorder(),
-                  ),
+                  ],
                 ),
               ),
               secondChild: Container(),
@@ -305,24 +366,24 @@ class MeetingDetailPage extends StatelessWidget {
         duration: const Duration(milliseconds: 100));
   }
 
-  Widget buildOppositeProfile() {
+  Widget buildOppositeProfile(Map<String, dynamic> member) {
     if(meetingDetailController.userLoaded.value)
     return meetingOwner.deleted != null  ? deletedUser(onPressed : () {}) : Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 15.0, bottom: 10),
-          child: meetingOwner.pics.length > 0 ? BluredImage(meetingOwner.pics[0], meetingDetailController.meeting.value.id) : Container(),
+          child: meetingOwner.pics.length > 0 ? BluredImage(member['url'], meetingDetailController.meeting.value.id) : Container(),
         ),
         Wrap(
           children: [
-            MyChip(meetingOwner.age + '살'),
-            MyChip(meetingOwner.tall + 'cm'),
+            MyChip(member['age'] + '살'),
+            MyChip(member['tall'] + 'cm'),
             MyChip(null),
-            MyChip(meetingOwner.bodyType),
-            MyChip(meetingOwner.career),
-            MyChip('${meetingOwner.loc1} ${meetingOwner.loc2}'),
-            MyChip(meetingOwner.mbti),
+            MyChip(member['bodyType']),
+            MyChip(member['career']),
+            MyChip('${member['loc1']} ${member['loc2']}'),
+            MyChip(member['mbti']),
           ],
         ),
       ],
@@ -442,93 +503,206 @@ class MeetingDetailPage extends StatelessWidget {
         )
       : Container(width: 0);
 
-  Widget mainCard() {
-    return Expanded(
-      flex: 9,
-      child: ScrollConfiguration(
-        behavior: ScrollBehavior(),
-        child: GlowingOverscrollIndicator(
-          axisDirection: AxisDirection.down,
-          color: Colors.red[50],
-          child: SingleChildScrollView(
-            child: GestureDetector(
-              onHorizontalDragUpdate: (details) {
-                if(!Platform.isAndroid && details.delta.dx > 30) {
-                  Get.back();
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 18),
-                child: Card(
-                  margin: EdgeInsets.all(8),
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding: EdgeInsets.fromLTRB(30, 15, 30, 30),
+  Widget titleCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+      child: Card(
+        margin: EdgeInsets.all(8),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              //제목 및 인원
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 3.0),
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.black54,
+                          size: 18,
+                        ),
+                      )),
+                  Flexible(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        //제목 및 인원
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15.0, bottom: 5),
-                          child: Text(
-                            meeting.title,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: "AppleSDGothicNeoB",
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0),
-                          child: Text(
-                            '${meeting.loc1} ${meeting.loc2} - ${meeting.loc3}, ${meeting.number} : ${meeting.number}',
-                            style: TextStyle(
+                      children: [
+                        Text(
+                          '${meeting.loc1} ${meeting.loc2} - ${meeting.loc3}, ${meeting.number} : ${meeting.number}',
+                          style: TextStyle(
                               color: Colors.black45,
-                              fontSize: 16,
+                              fontSize: 17,
                               fontFamily: "AppleSDGothicNeoM",
-                            ),
-                          ),
-                        ),
-
-                        //주선자 정보
-                        Obx(() => buildOppositeProfile()),
-
-                        //소개
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15.0, bottom: 10),
-                          child: Text(
-                            '미팅 소개',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: "AppleSDGothicNeoB",
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              meeting.introduce,
-                              style: TextStyle(
-                                fontFamily: "AppleSDGothicNeoM",
-                              ),
-                            ),
+                              height: 1
                           ),
                         ),
                       ],
                     ),
                   ),
+                  GestureDetector(
+                    onTap: () => Get.dialog(MeetingLetterDialog(meeting.introduce)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Image.asset('assets/love_letter.png', height: 20, width: 20),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5, bottom: 0),
+                    child: Text(
+                      meeting.title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: "AppleSDGothicNeoB",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget introduceCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+      child: Card(
+        margin: EdgeInsets.all(8),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 0.0, bottom: 10),
+                child: Text(
+                  '미팅 소개',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: "AppleSDGothicNeoB",
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    meeting.introduce,
+                    style: TextStyle(
+                      fontFamily: "AppleSDGothicNeoM",
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget cardSwiper() {
+    return Flexible(
+      child: ScrollConfiguration(
+        behavior: ScrollBehavior(),
+        child: Swiper(
+          itemBuilder: (BuildContext context, int index) => mainCard(meetingDetailController.memberListToShow[index]),
+          loop: false,
+          scale: 0.78,
+          fade: 0.55,
+          itemCount: meetingDetailController.memberListToShow.length,
+          viewportFraction: 0.8,
+        ),
+      ),
+    );
+  }
+
+  Widget mainCard(Map<String, dynamic> member) {
+    return ScrollConfiguration(
+      behavior: ScrollBehavior(),
+      child: GlowingOverscrollIndicator(
+        axisDirection: AxisDirection.down,
+        color: Colors.red[50],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: Card(
+              margin: EdgeInsets.all(0),
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+
+                    //주선자 정보
+                    buildOppositeProfile(member),
+
+                    //소개
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15.0, bottom: 10),
+                      child: Text(
+                        '멤버 소개',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "AppleSDGothicNeoB",
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          member['introduce']??'',
+                          style: TextStyle(
+                            fontFamily: "AppleSDGothicNeoM",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -537,4 +711,5 @@ class MeetingDetailPage extends StatelessWidget {
       ),
     );
   }
+
 }

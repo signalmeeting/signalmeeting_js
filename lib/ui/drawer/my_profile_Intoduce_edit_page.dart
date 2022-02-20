@@ -21,7 +21,6 @@ class _MyProfileIntroduceEditPageState extends State<MyProfileIntroduceEditPage>
   UserModel get user => _controller.user.value;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final TextEditingController _selfIntroductionController = TextEditingController();
 
   @override
