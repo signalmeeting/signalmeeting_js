@@ -22,9 +22,8 @@ class MeetingOppositeProfilePage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Obx(
-            () => MemberCards(
+              () => MemberCards(
                 memberList: memberListToShow,
-                loaded: memberListToShow.isNotEmpty,
                 deleted: false,
                 meetingId: meeting.id,
                 meeting: meeting,
@@ -33,7 +32,6 @@ class MeetingOppositeProfilePage extends StatelessWidget {
               ),
             ),
             Obx(() =>  meeting.process == 0 ? acceptOrNot() : Container()),
-
           ],
         ),
       ),

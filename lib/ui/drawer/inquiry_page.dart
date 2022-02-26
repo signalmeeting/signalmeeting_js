@@ -117,8 +117,7 @@ class _InquiryPageState extends State<InquiryPage> {
                     fontSize: 17, decoration: TextDecoration.underline),
                 onTap: () {
                   //클립보드로 복사
-                  Clipboard.setData(
-                      ClipboardData(text: 'byule@gmail.com'));
+                  Clipboard.setData(ClipboardData(text: 'signalmeeting@gmail.com'));
 
                   CustomedFlushBar(context, '이메일이 복사 되었습니다');
                 },

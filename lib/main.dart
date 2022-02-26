@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:byule/binding/bindings.dart';
+import 'package:byule/splash_animation.dart';
 import 'package:byule/ui/meeting/opposite_profile/meeting_opposite_profile_page.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -108,17 +109,18 @@ class Splash extends StatelessWidget {
                   future: Future.wait([DatabaseService.instance.checkAuth(uid, phone), checkForceUpdate()]),
                   builder: (context, AsyncSnapshot<List<bool>> snapshot) {
                     print('no snapshot?? ${snapshot.data}');
-                    if (snapshot.connectionState == ConnectionState.waiting ||
-                        !snapshot.hasData)
-                      return Center(child: CircularProgressIndicator());
-                    else if (snapshot.data[0]) {
+                    if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+                      print('1111 ${snapshot.hasData}');
+                      return SplashAnimation(snapshot.hasData);
+                    } else if (snapshot.data[0]) {
                       MainController _mainController = Get.find();
                       _mainController.needForceUpdate = snapshot.data[1];
                       print('???? ${_mainController.needForceUpdate}');
                       if (_mainController.user.value.stop)
                         return InquiryPage(); // 이용문의 페이지
                       else {
-                        return LobbyPage();
+                        print('2222 ${snapshot.hasData}');
+                        return SplashAnimation(snapshot.hasData);
                       }
                     } else {
                       // auth 는 있는데 db 에 userData 없음 => 프로필입력페이지로
