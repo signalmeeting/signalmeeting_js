@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:byule/model/memberModel.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +59,7 @@ class Util {
     final image = await ImagePicker()
         .getImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
-      File croppedFile = await ImageCropper.cropImage(
+      File croppedFile = await ImageCropper().cropImage(
           sourcePath: image.path,
           aspectRatioPresets: [CropAspectRatioPreset.square],
           androidUiSettings: AndroidUiSettings(
@@ -74,4 +76,10 @@ class Util {
     return Future<File>.value(null);
   }
 
+
+  static String getRandString(int len) {
+    var random = Random.secure();
+    var values = List<int>.generate(len, (i) =>  random.nextInt(255));
+    return base64UrlEncode(values);
+  }
 }

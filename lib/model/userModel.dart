@@ -39,7 +39,10 @@ class UserModel {
       this.memberList,
       });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    json["memberList"] = Util.mapMembers(json["memberList"]);
+    return _$UserModelFromJson(json);
+  }
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 

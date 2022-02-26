@@ -462,7 +462,6 @@ class DatabaseService {
         ///Todo 매핑 왜하쥐?? 로그인 에러뜸
         ///리스트가 디비에 맵일 때는 ㄱㅊ
         ///근데 리스트에 왜 맵이 되는경우가 있음??
-        data["memberList"] = Util.mapMembers(data["memberList"]);
 
         UserModel user = UserModel.fromJson(data);
         _controller.updateUser(user);
@@ -562,7 +561,8 @@ class DatabaseService {
   }
 
   Future<String> uploadMemberImage(String filePath, int memberIndex) async {
-    Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + memberIndex.toString()}');
+
+    Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + Util.getRandString(6)}');
     UploadTask uploadTask = storageReference.putFile(File(filePath));
     String returnURL;
     await uploadTask.whenComplete(() async {
@@ -893,11 +893,27 @@ class DatabaseService {
     await userCollection.doc(_user.uid).update({"memberList.${newMember.index}" : newMember.toJson()});
   }
 
+  reorderMember(int index1, int index2, MemberModel member1, MemberModel member2) async {
+    await userCollection.doc(_user.uid).update({"memberList.$index1" : member2.toJson(), "memberList.$index2" : member1.toJson()});
+  }
+
   deleteMember(MemberModel newMember) async {
-    if(newMember.url != null && newMember.url.contains('https://firebasestorage.googleapis.com')) {
-      Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + newMember.index.toString()}');
-      storageReference.delete();
-    }
+    // if(newMember.url != null && newMember.url.contains('https://firebasestorage.googleapis.com')) {
+    //   Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + newMember.url[-1]}');
+    //   storageReference.delete();
+    // }
+
+    int lastMemberIndex = _user.memberList.length - 1;
+
     await userCollection.doc(_user.uid).update({"memberList.${newMember.index}" : FieldValue.delete()});
+    for (int i=newMember.index + 1; i < _user.memberList.length; i++)
+      await userCollection.doc(_user.uid).update({"memberList.${i - 1}" : (_user.memberList[i]..index = i -1).toJson()});
+    if(newMember.index != lastMemberIndex) {
+      await userCollection.doc(_user.uid).update({"memberList.$lastMemberIndex": FieldValue.delete()});
+      // if(_user.memberList[lastMemberIndex].url != null && _user.memberList[lastMemberIndex].url.contains('https://firebasestorage.googleapis.com')) {
+      //   Reference storageReference = FirebaseStorage.instance.ref().child('user/${_user.uid + 'member' + _user.memberList[lastMemberIndex].url[-1]}');
+      //   storageReference.delete();
+      // }
+    }
   }
 }

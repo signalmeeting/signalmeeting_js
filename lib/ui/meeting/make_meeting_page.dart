@@ -13,11 +13,6 @@ import 'package:byule/util/style/btStyle.dart';
 import 'package:byule/util/util.dart';
 import 'package:smart_select/smart_select.dart';
 
-class MakeMeetingController extends GetxController {
-  RxList<int> pickedMemberIndexList = <int>[].obs;
-  RxInt needMemberNum = 0.obs;
-}
-
 class MakeMeetingPage extends StatefulWidget {
   @override
   _MakeMeetingPageState createState() => _MakeMeetingPageState();
@@ -26,7 +21,6 @@ class MakeMeetingPage extends StatefulWidget {
 class _MakeMeetingPageState extends State<MakeMeetingPage> {
   MainController _mainController = Get.find();
   UserModel get user => _mainController.user.value;
-  final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
 
   final GlobalKey<FormState> _formKeyTitle = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
@@ -37,9 +31,13 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
   final GlobalKey<FormState> _formKeyIntroduce = GlobalKey<FormState>();
   final TextEditingController _introduceController = TextEditingController();
 
+  RxList<int> pickedMemberIndexList = <int>[].obs;
+  RxInt needMemberNum = 0.obs;
+
   bool confirmTitle = false;
   bool confirmLocation = false;
   bool confirmIntroduce = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -352,8 +350,8 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                             ),
                                                             SizedBox(width:5),
                                                             Obx(() => Text(
-                                                                  '(${_makeMeetingController.pickedMemberIndexList.length}/${_makeMeetingController.needMemberNum})',
-                                                                  style: TextStyle(color: _makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value && _makeMeetingController.needMemberNum.value != 0 ?  AppColor.sub300 : Colors.grey),
+                                                                  '(${pickedMemberIndexList.length}/$needMemberNum)',
+                                                                  style: TextStyle(color: pickedMemberIndexList.length == needMemberNum.value && needMemberNum.value != 0 ?  AppColor.sub300 : Colors.grey),
                                                                 ))
                                                           ],
                                                         ),
@@ -363,7 +361,13 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                         child: Container(
                                                           width: Get.width*0.3 + 1,
                                                           // height: Get.width*0.3,
-                                                          child: MemberPickList()
+                                                          child: MemberPickList(pickedMemberIndexList, (index) {
+                                                            if(pickedMemberIndexList.contains(index)) {
+                                                              pickedMemberIndexList.remove(index);
+                                                            } else {
+                                                              pickedMemberIndexList.add(index);
+                                                            }
+                                                          })
                                                           // MemberList(int.parse(number == null ? '0' : number[0]),),
                                                         ),),
                                                     ],
@@ -372,10 +376,10 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                               ),
                                               Obx(
                                                 () {
-                                                  print('for obx : ${_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value}');
+                                                  print('for obx : ${pickedMemberIndexList.length == needMemberNum.value}');
                                                   return Icon(
                                                   Icons.check_circle_outline,
-                                                  color: imageFile != null && _makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value ? AppColor.sub300 : Colors.grey[400],
+                                                  color: imageFile != null && pickedMemberIndexList.length == needMemberNum.value ? AppColor.sub300 : Colors.grey[400],
                                                 );
                                                 },
                                               ),
@@ -446,9 +450,9 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                           height: 45,
                           child: Obx(
                             () {
-                              print('for obx : ${_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value}');
+                              print('for obx : ${pickedMemberIndexList.length == needMemberNum.value}');
                               return TextButton(
-                              child: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value)
+                              child: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (pickedMemberIndexList.length == needMemberNum.value)
                                   ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -479,7 +483,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                 ),
                               ),
                               style: BtStyle.sideLine,
-                              onPressed: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value)
+                              onPressed: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (pickedMemberIndexList.length == needMemberNum.value)
                                   ? () async {
                                 await DatabaseService.instance.makeMeeting(
                                   title: this._titleController.text,
@@ -489,7 +493,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                   loc3: this._locationController.text,
                                   introduce: this._introduceController.text,
                                   imageFile: imageFile,
-                                  memberList: _makeMeetingController.pickedMemberIndexList.map((memberIndex) => user.memberList[memberIndex]).toList()
+                                  memberList: pickedMemberIndexList.map((memberIndex) => user.memberList[memberIndex]).toList()
                                 );
 
                                 Map<String, dynamic> meeting = {
@@ -513,7 +517,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                       ),
                       Obx(
                         () {
-                          print('for obx : ${_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value}');
+                          print('for obx : ${pickedMemberIndexList.length == needMemberNum.value}');
                           return AnimatedCrossFade(
                           firstChild: Padding(
                             padding: EdgeInsets.only(left: Get.width*0.05, right: Get.width*0.05, bottom: 8),
@@ -547,7 +551,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                             ),
                           ),
                           secondChild: Container(),
-                          crossFadeState: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (_makeMeetingController.pickedMemberIndexList.length == _makeMeetingController.needMemberNum.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          crossFadeState: confirmTitle && (city1 != null) && (city2 != null) && (number != null) && (imageFile != null) && (pickedMemberIndexList.length == needMemberNum.value) ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: const Duration(milliseconds: 100),
                         );
                         },
@@ -817,7 +821,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
       choiceItems: Platform.isAndroid ? optionsForAndroid : optionsForIOS,
       onChange: (state) => setState(() {
         number = state.value;
-        _makeMeetingController.needMemberNum.value = int.parse(state.value[0]) - 1;
+        needMemberNum.value = int.parse(state.value[0]) - 1;
       }),
     );
   }

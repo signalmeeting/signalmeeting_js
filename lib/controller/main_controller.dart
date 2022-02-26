@@ -170,6 +170,19 @@ class MainController extends GetxController {
     user.update((val) => val.memberList[newMember.index] = newMember);
   }
 
+  reorderMember(int index1, int index2) async {
+    //index 1 <-> 2
+    MemberModel member1 = user.value.memberList[index1];
+    MemberModel member2 = user.value.memberList[index2];
+    member1.index = index2;
+    member2.index = index1;
+    user.update((val) {
+      val.memberList[index1] = member2;
+      val.memberList[index2] = member1;
+    });
+    await DatabaseService.instance.reorderMember(index1, index2, member1, member2);
+  }
+
   deleteMember(MemberModel newMember) async {
     await DatabaseService.instance.deleteMember(newMember);
     user.update((val) => val.memberList.removeAt(newMember.index));

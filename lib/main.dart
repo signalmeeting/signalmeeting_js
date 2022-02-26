@@ -101,6 +101,8 @@ class Splash extends StatelessWidget {
             if (snapshot.data == null) {
               return StartPage();
             } else {
+              // String uid = "5jdAKihWAVhEcNjLTD909wI8EHy1";
+              // String phone =  "01066192550";
               String uid = snapshot.data.uid;
               String phone =  snapshot.data.phoneNumber;
               print(snapshot.data);

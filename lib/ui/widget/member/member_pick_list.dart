@@ -10,39 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reorderables/reorderables.dart';
 
-class MemberPickList extends StatefulWidget {
-  @override
-  _MemberPickListState createState() => _MemberPickListState();
-}
+class MemberPickList extends StatelessWidget {
+  final RxList pickedMemberIndexList;
+  final Function onTap;
+  MemberPickList(this.pickedMemberIndexList, this.onTap);
 
-class _MemberPickListState extends State<MemberPickList> {
   final MainController _mainController = Get.find();
   UserModel get _user => _mainController.user.value;
-  final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
-  List<int> get pickedMemberIndexList => _makeMeetingController.pickedMemberIndexList;
 
   final double _avatarRadius = Get.width * 0.13 / 2 - 1;
   final double _spaceSize = Get.width * 0.04;
 
   List<MemberModel> get _memberList => _user.memberList ?? [];
-  // RxList<Widget> _tiles = <Widget>[].obs;
 
-
-  @override
-  void initState() {
-    super.initState();
-    // _tiles.value = <Widget>[
-    //   if (_memberList.isNotEmpty)
-    //     for (int i = 0; i < _memberList.length; i++) memberAvatar(i),
-    // ];
-  }
-
-  void _onReorder(int oldIndex, int newIndex) {
-    // setState(() {
-    //   Widget row = _tiles.removeAt(oldIndex);
-    //   _tiles.insert(newIndex, row);
-    // });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +44,9 @@ class _MemberPickListState extends State<MemberPickList> {
                 if (_memberList.isNotEmpty)
                   for (int i = 0; i < _memberList.length; i++) memberAvatar(i),
               ],
-              onReorder: _onReorder,
+              onReorder: (int oldIndex, int newIndex) {
+                _mainController.reorderMember(oldIndex, newIndex);
+              },
               onNoReorder: (int index) {
                 //this callback is optional
                 debugPrint('${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
@@ -88,18 +70,7 @@ class _MemberPickListState extends State<MemberPickList> {
       clipBehavior: Clip.none,
       children: [
         GestureDetector(
-          onTap: () {
-            if(pickedMemberIndexList.contains(index)) {
-              pickedMemberIndexList.remove(index);
-            } else {
-              pickedMemberIndexList.add(index);
-            }
-
-            // _tiles.removeAt(index);
-            // _tiles.insert(index, memberAvatar(index));
-
-            setState(() {});
-          },
+          onTap: () => onTap(index),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7),
@@ -117,7 +88,7 @@ class _MemberPickListState extends State<MemberPickList> {
           right: 1,
           top: 1,
           child: GestureDetector(
-            onTap: () => Get.to(() => MemberEditPage(_memberList[index], true)),
+            onTap: () => Get.to(() => MemberEditPage(_memberList[index], true, pickedMemberIndexList)),
             child: Container(
               width: 20,
               height: 20,
@@ -142,7 +113,7 @@ class _MemberPickListState extends State<MemberPickList> {
 
   Widget memberAddAvatar() {
     return GestureDetector(
-      onTap: () => Get.to(() => MemberEditPage(MemberModel(index: _memberList.length), false)),
+      onTap: () => Get.to(() => MemberEditPage(MemberModel(index: _memberList.length), false, pickedMemberIndexList)),
       child: Container(
         width: _avatarRadius * 2 + 2,
         height: _avatarRadius * 2 + 2,

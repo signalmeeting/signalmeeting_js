@@ -1,8 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:auto_animated/auto_animated.dart';
+import 'package:byule/controller/main_controller.dart';
+import 'package:byule/ui/member/member_edit_page.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/ui/widget/meeting/meetingGrid.dart';
-import 'package:byule/ui/widget/member/member_myMeeting_list';
 import 'package:byule/ui/widget/member/member_pick_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,8 @@ class MyMeetingPage extends StatefulWidget {
 
 class _MyMeetingPageState extends State<MyMeetingPage> {
   final MyMeetingController _controller = Get.find();
+  final MainController _mainController = Get.find();
+  UserModel get _user => _mainController.user.value;
 
   final double _memberItemSize = 120;
 
@@ -55,7 +58,9 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
                       categoryText('내 멤버'),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01, vertical: 10),
-                        child: MemberPickList(),
+                        child: MemberPickList([].obs, (index) {
+                          Get.to(() => MemberEditPage(_user.memberList[index], true, [].obs));
+                        }),
                       ),
                       categoryText('데일리 미팅'),
                       _controller.todayConnectionList.length != 0
@@ -73,15 +78,6 @@ class _MyMeetingPageState extends State<MyMeetingPage> {
           )
         ],
       ),
-    );
-  }
-
-  Widget buildMemberList() {
-    return Row(
-      children: [
-        ///Todo 이거는 미팅 생성 및 신청용
-        MemberPickList(),
-      ],
     );
   }
 

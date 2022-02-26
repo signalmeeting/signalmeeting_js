@@ -22,8 +22,9 @@ import 'package:byule/util/style/appColor.dart';
 class MemberEditPage extends StatefulWidget {
   final MemberModel member;
   final bool isEdit; // true => 수정, false => 추가
+  final RxList pickedMemberIndexList;
 
-  MemberEditPage(this.member, this.isEdit);
+  MemberEditPage(this.member, this.isEdit, this.pickedMemberIndexList);
 
   @override
   State<MemberEditPage> createState() => _MemberEditPageState();
@@ -186,9 +187,8 @@ class _MemberEditPageState extends State<MemberEditPage> {
                               contents: "정말 삭제하시겠습니까?",
                               buttonText: '삭제',
                               onPressed: () {
-                                final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
-                                if(_makeMeetingController.pickedMemberIndexList.contains(_newMember.index)) {
-                                  _makeMeetingController.pickedMemberIndexList.remove(_newMember.index);
+                                if(widget.pickedMemberIndexList.contains(_newMember.index)) {
+                                  widget.pickedMemberIndexList.remove(_newMember.index);
                                 }
                                 return _mainController.deleteMember(_newMember);
                               },

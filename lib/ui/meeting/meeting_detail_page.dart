@@ -43,6 +43,9 @@ class MeetingDetailController extends GetxController {
 
   final MeetingModel initialMeeting;
 
+  RxList<int> pickedMemberIndexList = <int>[].obs;
+  RxInt needMemberNum = 0.obs;
+
   MeetingDetailController(this.initialMeeting);
 
   @override
@@ -53,7 +56,6 @@ class MeetingDetailController extends GetxController {
     Map<String, dynamic> data = snapshot.data();
     if (data == null) data = {"deleted": true};
 
-    data["memberList"] = Util.mapMembers(data["memberList"]);
     meetingOwner = UserModel.fromJson(data);
     userLoaded.value = true;
 
@@ -73,7 +75,6 @@ class MeetingDetailController extends GetxController {
 class MeetingDetailPage extends StatelessWidget {
   // final MeetingModel meeting;
   final MeetingDetailController meetingDetailController;
-  final MakeMeetingController _makeMeetingController = Get.put(MakeMeetingController());
 
   MeetingDetailPage(this.meetingDetailController);
 
@@ -202,11 +203,11 @@ class MeetingDetailPage extends StatelessWidget {
                             ? () => Get.dialog(NoCoinDialog())
                             : () async {
                                 ///멤버를 인원에 맞게 설정해주세요
-                                if (_makeMeetingController.pickedMemberIndexList.length + 1 != meeting.number) {
+                                if (meetingDetailController.pickedMemberIndexList.length + 1 != meeting.number) {
                                   Get.dialog(NotificationDialog(
                                     title: "잠깐!",
                                     contents: "미팅 인원에 맞도록 멤버를 선택해주세요",
-                                    contents2: "( ${_makeMeetingController.pickedMemberIndexList.length} / ${meeting.number - 1} )",
+                                    contents2: "( ${meetingDetailController.pickedMemberIndexList.length} / ${meeting.number - 1} )",
                                   ));
                                   return;
                                 }
@@ -246,7 +247,13 @@ class MeetingDetailPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                 child: Column(
                   children: [
-                    MemberPickList(),
+                    MemberPickList(meetingDetailController.pickedMemberIndexList, (index) {
+                      if(meetingDetailController.pickedMemberIndexList.contains(index)) {
+                        meetingDetailController.pickedMemberIndexList.remove(index);
+                      } else {
+                        meetingDetailController.pickedMemberIndexList.add(index);
+                      }
+                    }),
                     SizedBox(height: 8),
                     TextField(
                       cursorColor: Colors.red[200],
@@ -294,6 +301,7 @@ class MeetingDetailPage extends StatelessWidget {
   Widget seeTheOppositeBt() {
     return Row(
       children: [
+        if(meeting.isMine)
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -302,14 +310,9 @@ class MeetingDetailPage extends StatelessWidget {
                 style: BtStyle.textMain200,
                 onPressed: () async {
                   DocumentSnapshot snapshot;
-                  if (meeting.isMine) {
-                    snapshot = await meeting.apply.user.get();
-                  } else {
-                    snapshot = await meeting.user.get();
-                  }
+                  snapshot = await meeting.apply.user.get();
                   Map<String, dynamic> data = snapshot.data();
 
-                  data["memberList"] = Util.mapMembers(data["memberList"]);
                   meetingDetailController.oppositeUser = UserModel.fromJson(data);
                   Get.toNamed('/meeting_opposite_profile', arguments:  {"meetingId": meeting.id, "user": meetingDetailController.oppositeUser}, preventDuplicates: false);
                 }),
@@ -317,9 +320,9 @@ class MeetingDetailPage extends StatelessWidget {
         ),
         if (meeting.process == 1)
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: meeting.isMine ? EdgeInsets.only(right: 8.0) : EdgeInsets.symmetric(horizontal : 8.0),
             child: Container(
-              width: 75,
+              width:  meeting.isMine ?  75 : Get.width - 16,
               child: TextButton(
                 style: BtStyle.textSub200,
                 onPressed: () async {
@@ -330,7 +333,6 @@ class MeetingDetailPage extends StatelessWidget {
                     snapshot = await meeting.user.get();
                   }
                   Map<String, dynamic> data = snapshot.data();
-                  data["memberList"] = Util.mapMembers(data["memberList"]);
                   MainController.goToChatPage(meeting.id, UserModel.fromJson(data), 'meeting');
                 },
                 child: Container(
