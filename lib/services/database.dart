@@ -462,11 +462,7 @@ class DatabaseService {
         ///Todo 매핑 왜하쥐?? 로그인 에러뜸
         ///리스트가 디비에 맵일 때는 ㄱㅊ
         ///근데 리스트에 왜 맵이 되는경우가 있음??
-        print("member list before mapped : ${data["memberList"]}");
-        if(data["memberList"] !=null && data["memberList"].length >0) {
-          Map<String, dynamic> memberMap = data["memberList"];
-          data["memberList"] = memberMap.values.map((e) => e).toList();
-        }
+        data["memberList"] = Util.mapMembers(data["memberList"]);
 
         UserModel user = UserModel.fromJson(data);
         _controller.updateUser(user);

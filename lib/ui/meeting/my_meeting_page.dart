@@ -11,7 +11,7 @@ import 'package:byule/controller/my_meeting_controller.dart';
 import 'package:byule/model/meetingModel.dart';
 import 'package:byule/model/userModel.dart';
 import 'package:byule/services/database.dart';
-import 'package:byule/ui/home/opposite_profile.dart';
+import 'package:byule/ui/home/opposite_profile_page.dart';
 import 'package:byule/ui/widget/cached_image.dart';
 import 'package:byule/ui/widget/deletedUser.dart';
 import 'package:byule/ui/widget/dialog/confirm_dialog.dart';

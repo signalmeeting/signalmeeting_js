@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:byule/model/memberModel.dart';
+import 'package:byule/util/util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -21,7 +22,7 @@ class UserModel {
   var free;
   bool dailyMeetingActivation;
   var deleted;
-  List<MemberModel> memberList = <MemberModel>[];
+  List<MemberModel> memberList = [];
 
   UserModel(
       {this.uid,

@@ -1,5 +1,6 @@
 
 import 'package:byule/model/memberModel.dart';
+import 'package:byule/util/util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -44,7 +45,7 @@ class MeetingModel {
   List<Map<String, dynamic>> banList = [];
   @JsonKey(ignore: true)
   DateTime deletedTime;
-  List<Map<String, dynamic>> memberList;
+  List<MemberModel> memberList;
 
   factory MeetingModel.fromJson(Map<String, dynamic> json) => _$MeetingModelFromJson(json);
 

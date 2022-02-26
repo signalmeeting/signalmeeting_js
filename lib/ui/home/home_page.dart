@@ -11,7 +11,7 @@ import 'package:byule/ui/widget/cached_image.dart';
 import 'package:byule/ui/widget/deletedUser.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/ui/widget/dialog/simple_alarm_dialog.dart';
-import 'opposite_profile.dart';
+import 'opposite_profile_page.dart';
 
 const SCALE_FRACTION = 0.75;
 const FULL_SCALE = 1.0;

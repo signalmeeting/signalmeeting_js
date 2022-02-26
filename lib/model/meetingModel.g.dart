@@ -36,7 +36,8 @@ MeetingModel _$MeetingModelFromJson(Map<String, dynamic> json) {
         ?.map((e) => e as Map<String, dynamic>)
         ?.toList()
     ..memberList = (json['memberList'] as List)
-        ?.map((e) => e as Map<String, dynamic>)
+        ?.map((e) =>
+            e == null ? null : MemberModel.fromJson(e as Map<String, dynamic>))
         ?.toList();
 }
 

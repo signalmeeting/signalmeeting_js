@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:byule/controller/chat_controller.dart';
 import 'package:byule/model/messageModel.dart';
 import 'package:byule/model/userModel.dart';
-import 'package:byule/ui/home/opposite_profile.dart';
+import 'package:byule/ui/home/opposite_profile_page.dart';
 import 'package:byule/ui/widget/cached_image.dart';
 
 class ChatPage extends StatelessWidget {

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:byule/binding/bindings.dart';
+import 'package:byule/ui/meeting/opposite_profile/meeting_opposite_profile_page.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +80,9 @@ class MyApp extends StatelessWidget {
             Get.put(MainController(app)),
           }),
       home: Splash(),
+      getPages: [
+        GetPage(name: '/meeting_opposite_profile', page: () => MeetingOppositeProfilePage(), binding: MeetingOppositeProfileBinding()),
+      ],
     );
   }
 }
@@ -97,7 +102,7 @@ class Splash extends StatelessWidget {
               return StartPage();
             } else {
               String uid = snapshot.data.uid;
-              String phone = snapshot.data.phoneNumber;
+              String phone =  snapshot.data.phoneNumber;
               print(snapshot.data);
               return FutureBuilder<List<bool>>(
                   future: Future.wait([DatabaseService.instance.checkAuth(uid, phone), checkForceUpdate()]),

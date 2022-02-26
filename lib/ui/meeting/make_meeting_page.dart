@@ -489,7 +489,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                   loc3: this._locationController.text,
                                   introduce: this._introduceController.text,
                                   imageFile: imageFile,
-                                  memberList: _makeMeetingController.pickedMemberIndexList.map((memberIndex) => user.memberList[memberIndex].toJson()).toList()
+                                  memberList: _makeMeetingController.pickedMemberIndexList.map((memberIndex) => user.memberList[memberIndex]).toList()
                                 );
 
                                 Map<String, dynamic> meeting = {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:byule/model/memberModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -28,6 +29,29 @@ class Util {
     list.removeAt(index);
     list.insert(index, object);
   }
+  
+  static mapMembers(dynamic memberList) {
+    if(memberList !=null && memberList.length >0) {
+      Map<String, dynamic> memberMap = memberList;
+      memberList = memberMap.values.map((e) => e).toList();
+      return memberList;
+    } else return [];
+  }
+
+  static MemberModel userToMemberModel(Map<dynamic, dynamic> profileInfo) => MemberModel(
+    index: null,
+    url: profileInfo['pics'][0],
+    age: profileInfo['age'].toString(),
+    tall: profileInfo['tall'].toString(),
+    career: profileInfo['career'],
+    loc1: profileInfo['loc1'],
+    loc2: profileInfo['loc2'],
+    bodyType: profileInfo['bodyType'],
+    smoke: profileInfo['smole'],
+    drink: profileInfo['drink'],
+    mbti: profileInfo['mbti'],
+    introduce: profileInfo['introduce'],
+  );
   
   static getImage() async {
     final image = await ImagePicker()
