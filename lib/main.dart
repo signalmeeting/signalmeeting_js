@@ -21,7 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:byule/ui/start/start_page_3.dart';
 import 'package:package_info/package_info.dart';
-
+import 'package:byule/util/style/appColor.dart';
 
 import 'model/userModel.dart';
 import 'services/inAppManager.dart';
@@ -59,6 +59,22 @@ void main() async {
   runApp(MyApp(app));
 }
 
+const MaterialColor kPrimaryColor = const MaterialColor(
+  0xfff39595,
+  const <int, Color>{
+    50: const Color(0xfff39595),
+    100: const Color(0xfff39595),
+    200: const Color(0xfff39595),
+    300: const Color(0xfff39595),
+    400: const Color(0xfff39595),
+    500: const Color(0xfff39595),
+    600: const Color(0xfff39595),
+    700: const Color(0xfff39595),
+    800: const Color(0xfff39595),
+    900: const Color(0xfff39595),
+  },
+);
+
 class MyApp extends StatelessWidget {
   final FirebaseApp app;
   MyApp(this.app);
@@ -74,7 +90,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "AppleSDGothicNeoM",
-        primaryColor: Colors.black,
+        // primaryColor: AppColor.main200,
+        primarySwatch: kPrimaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialBinding: BindingsBuilder(() => {

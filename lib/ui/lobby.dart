@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:byule/ui/meeting/make_meeting_page.dart';
 import 'package:byule/ui/meeting/my_meeting_page.dart';
+import 'package:byule/ui/test/adminPage.dart';
 import 'package:byule/ui/widget/dialog/main_dialog.dart';
 import 'package:byule/ui/widget/dialog/noCoinDialog.dart';
 import 'package:byule/util/style/appColor.dart';
@@ -157,6 +158,7 @@ class LobbyPage extends StatelessWidget {
           style: TextStyle(color: Colors.black, fontFamily: "AppleSDGothicNeoM"),
         ),
         actions: <Widget>[
+          //TextButton(child: Text("admin"), onPressed : () => Get.to(() => AdminPage())),
           Padding(
             padding: EdgeInsets.only(right: Get.height * 0.02),
             child: GestureDetector(
