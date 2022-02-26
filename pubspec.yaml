@@ -54,7 +54,7 @@ dependencies:
   flutter_switch: 0.3.2
   top_snackbar_flutter: ^1.0.2
   flutter_inapp_purchase:
-
+  shared_preferences: ^2.0.0
   package_info: 2.0.2
   reorderables:
     git: https://github.com/hanshengchiu/reorderables

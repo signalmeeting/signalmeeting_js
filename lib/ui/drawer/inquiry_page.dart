@@ -81,7 +81,7 @@ class _InquiryPageState extends State<InquiryPage> {
                       title: '회원 탈퇴',
                       text: '21일간 재가입 불가하며,\n탈퇴하시면 복구가 불가능합니다.\n정말로 탈퇴하시겠습니까?',
                       onConfirmed: () {
-                        Get.dialog(Center(child: CircularProgressIndicator()));
+                        //Get.dialog(Center(child: CircularProgressIndicator()));
                         DatabaseService.instance.withDraw();
                       },
                       confirmText: '탈퇴',

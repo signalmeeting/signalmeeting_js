@@ -37,6 +37,12 @@ class _MeetingPageState extends State<MeetingPage> {
   bool get isFiltered => _loc1 != '전체' || _loc2 != '전체' || _type != 0;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Obx(
       () => Stack(
@@ -109,6 +115,7 @@ class _MeetingPageState extends State<MeetingPage> {
 
   Widget selectLocation1() => SmartSelect<String>.single(
         tileBuilder: (context, state) {
+          state.value = _loc1;
           return InkWell(
             onTap: state.showModal,
             child: Container(
@@ -144,7 +151,7 @@ class _MeetingPageState extends State<MeetingPage> {
         },
         modalType: S2ModalType.popupDialog,
         title: '시/도',
-        value: '전체',
+        value: _loc1,
         choiceItems:
             List.generate(CityListDialog().options.length + 1, (index) {
           if (index == 0)
@@ -168,6 +175,8 @@ class _MeetingPageState extends State<MeetingPage> {
         //City1이 변경 된 후, City2 필터의 현재 값을 재설정 해주고 가야함.
         if (_loc2 == '전체') {
           state.value = '전체';
+        } else {
+          state.value = _loc2;
         }
         return InkWell(
           onTap: state.showModal,
@@ -204,7 +213,7 @@ class _MeetingPageState extends State<MeetingPage> {
       },
       modalType: S2ModalType.popupDialog,
       title: '시/군/구',
-      value: '전체',
+      value: _loc2,
       choiceItems: List.generate(cityList.length, (index) {
         if (index == 0)
           return S2Choice<String>(value: '전체', title: '전체');
@@ -218,9 +227,10 @@ class _MeetingPageState extends State<MeetingPage> {
   }
 
   Widget selectType() {
-    List<String> _typeOptions = ['전체', '신청 가능'];
+    List<String> _typeOptions = ['전체', '남자만', '여자만'];
     return SmartSelect<int>.single(
         tileBuilder: (context, state) {
+          state.value = _type;
           return GestureDetector(
             onTap: state.showModal,
             child: Container(
@@ -254,7 +264,7 @@ class _MeetingPageState extends State<MeetingPage> {
           );
         },
         modalType: S2ModalType.popupDialog,
-        title: '신청 상태',
+        title: '성별',
         value: _type,
         choiceItems: List.generate(_typeOptions.length,
             (index) => S2Choice(value: index, title: _typeOptions[index])),
@@ -302,9 +312,11 @@ class _MeetingPageState extends State<MeetingPage> {
         if (isFiltered) {
           if ((this._loc1 == '전체' || this._loc1 == meeting["loc1"]) &&
               (this._loc2 == '전체' || this._loc2 == meeting["loc2"]) &&
-              (this._type == 0 ||
-                  (user.profileInfo['man'] ? meeting["man"] == false : meeting["man"] == true) && meeting["process"] == null ||
-                  (user.profileInfo['man'] ? meeting["man"] == false : meeting["man"] == true) && meeting["process"] == 2))
+              (this._type == 0 || this._type == 1 && meeting['man'] == true || this._type == 2 && meeting['man'] == false)
+              // (this._type == 0 ||
+              //     (user.profileInfo['man'] ? meeting["man"] == false : meeting["man"] == true) && meeting["process"] == null ||
+              //     (user.profileInfo['man'] ? meeting["man"] == false : meeting["man"] == true) && meeting["process"] == 2)
+          )
             {
               meetingList.add(MeetingModel.fromJson(meeting));
             }
