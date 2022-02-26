@@ -176,7 +176,7 @@ class _MenuPageState extends State<MenuPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),
                 child: Obx(
-                  () => FlutterSwitch(
+                      () => FlutterSwitch(
                     width: 50,
                     height: 30,
                     activeColor: AppColor.sub,
@@ -199,7 +199,7 @@ class _MenuPageState extends State<MenuPage> {
         Padding(
           padding: const EdgeInsets.only(left: 22.0, right: 22, bottom: 10),
           child: Text('비활성화 시 데일리 미팅에서 추천이 되지도 받지도 않습니다.\n(자정 이후 업데이트)',
-            style: TextStyle(color: Colors.grey[400], fontSize: 13)),
+              style: TextStyle(color: Colors.grey[400], fontSize: 13)),
         )
       ],
     );

@@ -113,11 +113,10 @@ Widget meetingGridItem(MeetingModel item, {bool isMine = false, bool didIApplied
           closedElevation: 0,
           closedBuilder: (context, action) => closedItem(item),
           onClosed: (Null) async {
-            await 1.delay();
+            await 0.5.delay();
             Get.delete<MeetingDetailController>(tag: item.id);
           },
           openBuilder: (context, action) {
-            //print('gridItem clicked : $item');
             MeetingDetailController _meetingDetailController = Get.put(MeetingDetailController(item), tag: item.id);
             return MeetingDetailPage(_meetingDetailController);
           }

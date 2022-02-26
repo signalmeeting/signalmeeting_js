@@ -916,4 +916,103 @@ class DatabaseService {
       // }
     }
   }
+
+  //Admin
+  Future adminWithDraw(String uid) async {
+    //await FirebaseAuth.instance.currentUser.delete();
+    DocumentSnapshot data = await userCollection.doc(uid).get();
+    Map<String, dynamic> user = data.data();
+    Map<String, dynamic> withDrawUser = {
+      "withDrawTime": DateTime.now(),
+      "phone": user['phone'],
+    };
+    await DatabaseService.instance.withDrawCollection.add(withDrawUser);
+    await DatabaseService.instance.userCollection.doc(uid).delete();
+
+    //update today match
+    QuerySnapshot snapshot =
+    await todayMatchCollection.doc(today).collection("matches").where(user['profileInfo']['man'] ? "men" : "women", arrayContains: uid).get();
+    snapshot.docs.forEach((element) async {
+      List<dynamic> uidList = user['profileInfo']['man'] ? element.data()["men"] : element.data()["women"];
+      int index = uidList.indexWhere((element) => element == uid);
+      List<dynamic> profileList = user['profileInfo']['man'] ? element.data()["menProfile"] : element.data()["womenProfile"];
+      Map<String, dynamic> myProfile = profileList[index];
+      myProfile["deleted"] = true;
+      profileList[index] = myProfile;
+      Map<String, dynamic> updateQuery = {"${user['profileInfo']['man'] ? "menProfile" : "womenProfile"}": profileList};
+      await todayMatchCollection.doc(today).collection("matches").doc(element.id).update(updateQuery);
+    });
+
+    //get my meeting list
+    List<String> meetingDocList = [];
+    List<String> applyDocList = [];
+    QuerySnapshot myMeetingSnapshot = await meetingCollection
+        .where("deletedTime", isNull: true)
+        .where("userId", isEqualTo: uid)
+        .orderBy("createdAt", descending: true)
+        .get();
+
+    myMeetingSnapshot.docs.forEach((element) {
+      meetingDocList.add(element.id);
+      if (element.data()["apply"] != null) applyDocList.add(element.data()["apply"]["applyId"]);
+    });
+
+    //delete my meeting
+    for (int i = 0; i < meetingDocList.length; i++) {
+      await deleteMeeting(meetingDocList[i]);
+    }
+
+    //나한테 apply 다 거절
+    for (int i = 0; i < applyDocList.length; i++) {
+      await meetingApplyCollection.doc(applyDocList[i]).update({"process": 2});
+    }
+
+    //내가 보낸 apply 다 삭제
+    List<String> myApplyDocList = [];
+    //네기 보낸 apply 해당하는 meeting 의 apply 삭제
+    List<String> myApplyMeetingDocList = [];
+    QuerySnapshot myApplySnapshot =
+    await meetingApplyCollection.where("userId", isEqualTo: uid).orderBy("createdAt", descending: true).get();
+
+    myApplySnapshot.docs.forEach((e) {
+      myApplyDocList.add(e.id);
+      myApplyMeetingDocList.add(e.data()["meeting"]);
+    });
+
+    for (int i = 0; i < myApplyDocList.length; i++) {
+      await deleteApply(myApplyDocList[i]);
+    }
+
+    for (int i = 0; i < myApplyMeetingDocList.length; i++) {
+      await meetingCollection.doc(myApplyMeetingDocList[i]).update({"apply": null, "process": null});
+    }
+
+    //Get.offAll(() => Splash());
+  }
+
+  Future<List> findUid(String nick) async{
+    List searchedUser = [];
+    QuerySnapshot snapshot = await userCollection.get();
+    snapshot.docs.forEach((e) {
+     if( e.data()['profileInfo']['name'] == nick){
+       searchedUser.add(e.data());
+     }
+    });
+    return searchedUser;
+  }
+
+  adminAddCoin(String uid) async{
+    DocumentSnapshot data = await userCollection.doc(uid).get();
+    Map<String ,dynamic> newCoinLog = {
+      "userid": uid,
+      "coin": 25,
+      "usage": "하트 충전",
+      "oppositeUserid": "",
+      "meeting": {},
+      "date": DateTime.now(),
+      "userCoin": data.data()['coin'] + 25,
+    };
+    await coinLogCollection.add(newCoinLog);
+    await userCollection.doc(uid).update({"coin" : FieldValue.increment(25)});
+  }
 }

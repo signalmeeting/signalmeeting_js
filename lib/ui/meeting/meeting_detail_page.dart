@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'dart:ui';
-
+import 'package:animator/animator.dart';
 import 'package:byule/model/memberModel.dart';
 import 'package:byule/ui/meeting/make_meeting_page.dart';
-import 'package:byule/ui/meeting/opposite_profile/meeting_opposite_profile_page.dart';
 import 'package:byule/ui/meeting/widgets/member_cards.dart';
 import 'package:byule/ui/widget/dialog/meeting_letter_dialog.dart';
 import 'package:byule/ui/widget/member/member_pick_list.dart';
@@ -12,20 +10,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
-import 'package:byule/controller/chat_controller.dart';
 import 'package:byule/controller/main_controller.dart';
 import 'package:byule/model/meetingModel.dart';
 import 'package:byule/model/userModel.dart';
 import 'package:byule/services/database.dart';
-import 'package:byule/ui/chat/chat_page.dart';
-import 'package:byule/ui/home/opposite_profile_page.dart';
-import 'package:byule/ui/widget/cached_image.dart';
-import 'package:byule/ui/widget/deletedUser.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/ui/widget/dialog/noCoinDialog.dart';
-import 'package:byule/ui/widget/dialog/notification_dialog.dart';
 import 'package:byule/ui/widget/dialog/report_dialog.dart';
 import 'package:byule/util/style/appColor.dart';
 import 'package:byule/util/style/btStyle.dart';
@@ -65,8 +56,6 @@ class MeetingDetailController extends GetxController {
     if (meeting.value.memberList != null) {
       meeting.value.memberList.forEach((member) => memberListToShow.add(member));
     }
-
-    0.5.delay(() => Get.dialog(MeetingLetterDialog(meeting.value.introduce)));
 
     super.onInit();
   }
@@ -129,13 +118,12 @@ class MeetingDetailPage extends StatelessWidget {
                       titleCard(),
                       MemberCards(
                         memberList: meetingDetailController.memberListToShow,
-                        loaded: meetingDetailController.userLoaded.value,
                         deleted: meetingOwner.deleted != null,
                         meetingId: meetingDetailController.meeting.value.id,
                         meeting: meeting,
                         meetingOwner: meetingOwner,
-                        onTapReport:  () => Get.dialog(ReportDialog(meeting.id, ReportType.meeting, meetingDetailController: meetingDetailController)),
-                        // meetingDetailController: meetingDetailController,
+                        onTapReport: () =>
+                            Get.dialog(ReportDialog(meeting.id, ReportType.meeting, meetingDetailController: meetingDetailController)),
                       ),
                       // introduceCard(),
 
@@ -157,7 +145,7 @@ class MeetingDetailPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Obx(() => appliedNoti(context))
+                // Obx(() => appliedNoti(context))
               ],
             ),
           ),
@@ -175,7 +163,7 @@ class MeetingDetailPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Container(
                   width: Get.width - 16,
-                  child: TextButton(
+                  child: ElevatedButton(
                     style: BtStyle.changeState(buttonClicked),
                     child: buttonClicked
                         ? Row(
@@ -248,7 +236,7 @@ class MeetingDetailPage extends StatelessWidget {
                 child: Column(
                   children: [
                     MemberPickList(meetingDetailController.pickedMemberIndexList, (index) {
-                      if(meetingDetailController.pickedMemberIndexList.contains(index)) {
+                      if (meetingDetailController.pickedMemberIndexList.contains(index)) {
                         meetingDetailController.pickedMemberIndexList.remove(index);
                       } else {
                         meetingDetailController.pickedMemberIndexList.add(index);
@@ -301,29 +289,30 @@ class MeetingDetailPage extends StatelessWidget {
   Widget seeTheOppositeBt() {
     return Row(
       children: [
-        if(meeting.isMine)
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: TextButton(
-                child: Text('상대방 확인'),
-                style: BtStyle.textMain200,
-                onPressed: () async {
-                  DocumentSnapshot snapshot;
-                  snapshot = await meeting.apply.user.get();
-                  Map<String, dynamic> data = snapshot.data();
+        if (meeting.isMine)
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05, vertical: 6),
+              child: ElevatedButton(
+                  child: Text('상대방 확인'),
+                  style: BtStyle.textMain200,
+                  onPressed: () async {
+                    DocumentSnapshot snapshot;
+                    snapshot = await meeting.apply.user.get();
+                    Map<String, dynamic> data = snapshot.data();
 
-                  meetingDetailController.oppositeUser = UserModel.fromJson(data);
-                  Get.toNamed('/meeting_opposite_profile', arguments:  {"meetingId": meeting.id, "user": meetingDetailController.oppositeUser}, preventDuplicates: false);
-                }),
+                    meetingDetailController.oppositeUser = UserModel.fromJson(data);
+                    Get.toNamed('/meeting_opposite_profile',
+                        arguments: {"meetingId": meeting.id, "user": meetingDetailController.oppositeUser}, preventDuplicates: false);
+                  }),
+            ),
           ),
-        ),
         if (meeting.process == 1)
           Padding(
-            padding: meeting.isMine ? EdgeInsets.only(right: 8.0) : EdgeInsets.symmetric(horizontal : 8.0),
+            padding: meeting.isMine ? EdgeInsets.only(right: 8.0) : EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
-              width:  meeting.isMine ?  75 : Get.width - 16,
-              child: TextButton(
+              width: meeting.isMine ? 75 : Get.width - 16,
+              child: ElevatedButton(
                 style: BtStyle.textSub200,
                 onPressed: () async {
                   DocumentSnapshot snapshot;
@@ -375,9 +364,9 @@ class MeetingDetailPage extends StatelessWidget {
 
   Widget titleCard() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
       child: Card(
-        margin: EdgeInsets.all(8),
+        margin: EdgeInsets.all(0),
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -420,7 +409,21 @@ class MeetingDetailPage extends StatelessWidget {
                     onTap: () => Get.dialog(MeetingLetterDialog(meeting.introduce)),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 4.0),
-                      child: Image.asset('assets/love_letter.png', height: 20, width: 20),
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 26,
+                            height: 26,
+                          ),
+                          Animator(
+                              duration: Duration(milliseconds: 1000),
+                              cycles: 0,
+                              curve: Curves.elasticOut,
+                              tween: Tween<double>(begin: 18.0, end: 24.0),
+                              builder: (context, animatorState, child) =>
+                                  Image.asset('assets/love_letter.png', height: animatorState.value, width: animatorState.value)),
+                        ],
+                      ),
                     ),
                   )
                 ],

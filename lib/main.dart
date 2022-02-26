@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:byule/binding/bindings.dart';
+import 'package:byule/splash_animation.dart';
 import 'package:byule/ui/meeting/opposite_profile/meeting_opposite_profile_page.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -20,7 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:byule/ui/start/start_page_3.dart';
 import 'package:package_info/package_info.dart';
-
+import 'package:byule/util/style/appColor.dart';
 
 import 'model/userModel.dart';
 import 'services/inAppManager.dart';
@@ -58,6 +59,22 @@ void main() async {
   runApp(MyApp(app));
 }
 
+const MaterialColor kPrimaryColor = const MaterialColor(
+  0xfff39595,
+  const <int, Color>{
+    50: const Color(0xfff39595),
+    100: const Color(0xfff39595),
+    200: const Color(0xfff39595),
+    300: const Color(0xfff39595),
+    400: const Color(0xfff39595),
+    500: const Color(0xfff39595),
+    600: const Color(0xfff39595),
+    700: const Color(0xfff39595),
+    800: const Color(0xfff39595),
+    900: const Color(0xfff39595),
+  },
+);
+
 class MyApp extends StatelessWidget {
   final FirebaseApp app;
   MyApp(this.app);
@@ -73,7 +90,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: "AppleSDGothicNeoM",
-        primaryColor: Colors.black,
+        // primaryColor: AppColor.main200,
+        primarySwatch: kPrimaryColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialBinding: BindingsBuilder(() => {
@@ -110,17 +128,18 @@ class Splash extends StatelessWidget {
                   future: Future.wait([DatabaseService.instance.checkAuth(uid, phone), checkForceUpdate()]),
                   builder: (context, AsyncSnapshot<List<bool>> snapshot) {
                     print('no snapshot?? ${snapshot.data}');
-                    if (snapshot.connectionState == ConnectionState.waiting ||
-                        !snapshot.hasData)
-                      return Center(child: CircularProgressIndicator());
-                    else if (snapshot.data[0]) {
+                    if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+                      print('1111 ${snapshot.hasData}');
+                      return SplashAnimation(snapshot.hasData);
+                    } else if (snapshot.data[0]) {
                       MainController _mainController = Get.find();
                       _mainController.needForceUpdate = snapshot.data[1];
                       print('???? ${_mainController.needForceUpdate}');
                       if (_mainController.user.value.stop)
                         return InquiryPage(); // 이용문의 페이지
                       else {
-                        return LobbyPage();
+                        print('2222 ${snapshot.hasData}');
+                        return SplashAnimation(snapshot.hasData);
                       }
                     } else {
                       // auth 는 있는데 db 에 userData 없음 => 프로필입력페이지로
