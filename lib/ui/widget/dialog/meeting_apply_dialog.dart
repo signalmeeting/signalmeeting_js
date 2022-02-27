@@ -145,6 +145,7 @@ class MeetingApplyDialog extends StatelessWidget {
       };
       await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting, oppositeUserid: meeting.userId);
     }
+    Get.back();
   }
 
 }

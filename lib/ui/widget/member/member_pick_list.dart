@@ -74,7 +74,7 @@ class MemberPickList extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7),
-              border: Border.all(color: pickedMemberIndexList.contains(index) ? AppColor.sub300 : Colors.grey),
+              border: Border.all(color: pickedMemberIndexList.contains(index) ? AppColor.main200 : Colors.grey),
             ),
             child: cachedImage(
               _memberList[index].url ?? '',

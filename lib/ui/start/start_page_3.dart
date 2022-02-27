@@ -226,7 +226,7 @@ class _StartPage3State extends State<StartPage3> {
     List<String> genderList = <String>['남자', '여자'];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -246,7 +246,7 @@ class _StartPage3State extends State<StartPage3> {
 
   void AgePick() {
     return showMaterialNumberPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       context: context,
       title: '나이',
@@ -267,7 +267,7 @@ class _StartPage3State extends State<StartPage3> {
 
   void tallPick() {
     return showMaterialNumberPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       context: context,
       title: '키',
@@ -296,7 +296,7 @@ class _StartPage3State extends State<StartPage3> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -347,7 +347,7 @@ class _StartPage3State extends State<StartPage3> {
     }
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -373,7 +373,7 @@ class _StartPage3State extends State<StartPage3> {
       '의료직', '기타',];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",

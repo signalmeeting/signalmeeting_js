@@ -52,7 +52,6 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: AppColor.main100,
             elevation: 0,
@@ -103,7 +102,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                   },
                                   child: Card(
                                     margin: EdgeInsets.all(0),
-                                    elevation: 3,
+                                    elevation: 10,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -164,7 +163,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                           children: <Widget>[
                                                             Icon(
                                                               Icons.check_circle_outline,
-                                                              color: confirmTitle ? AppColor.sub300 : Colors.grey[400],
+                                                              color: confirmTitle ? AppColor.main200 : Colors.grey[400],
                                                             ),
                                                           ],
                                                         ),
@@ -275,7 +274,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                           //                   /*
                                           //                   Icon(
                                           //                     Icons.check_circle_outline,
-                                          //                     color: confirmLocation ? AppColor.sub300 : Colors.grey[400],
+                                          //                     color: confirmLocation ? AppColor.main200 : Colors.grey[400],
                                           //                   ),
                                           //
                                           //                    */
@@ -351,7 +350,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                             SizedBox(width:5),
                                                             Obx(() => Text(
                                                                   '(${pickedMemberIndexList.length}/$needMemberNum)',
-                                                                  style: TextStyle(color: pickedMemberIndexList.length == needMemberNum.value && needMemberNum.value != 0 ?  AppColor.sub300 : Colors.grey),
+                                                                  style: TextStyle(color: pickedMemberIndexList.length == needMemberNum.value && needMemberNum.value != 0 ?  AppColor.main200 : Colors.grey),
                                                                 ))
                                                           ],
                                                         ),
@@ -379,7 +378,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                                   print('for obx : ${pickedMemberIndexList.length == needMemberNum.value}');
                                                   return Icon(
                                                   Icons.check_circle_outline,
-                                                  color: imageFile != null && pickedMemberIndexList.length == needMemberNum.value ? AppColor.sub300 : Colors.grey[400],
+                                                  color: imageFile != null && pickedMemberIndexList.length == needMemberNum.value ? AppColor.main200 : Colors.grey[400],
                                                 );
                                                 },
                                               ),
@@ -492,7 +491,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                                   loc3: this._locationController.text,
                                   introduce: this._introduceController.text,
                                   imageFile: imageFile,
-                                  memberList: pickedMemberIndexList.map((memberIndex) => user.memberList[memberIndex]).toList()
+                                  memberList: pickedMemberIndexList.map((memberIndex) => user.memberList[memberIndex].toJson()).toList()
                                 );
 
                                 Map<String, dynamic> meeting = {
@@ -531,7 +530,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                               maxLines: 10,
                               decoration: InputDecoration(
                                 counterText: '',
-                                hintText: '미팅을 소개해주세요.',
+                                hintText: '미팅을 소개해주세요!',
                                 hintStyle: TextStyle(
                                   fontFamily: "AppleSDGothicNeoM",
                                 ),
@@ -583,7 +582,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 children: <Widget>[
                   Icon(
                     Icons.check_circle_outline,
-                    color: city1 != null ? AppColor.sub300 : Colors.grey[400],
+                    color: city1 != null ? AppColor.main200 : Colors.grey[400],
                   ),
                 ],
               ),
@@ -739,7 +738,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 children: <Widget>[
                   Icon(
                     Icons.check_circle_outline,
-                    color: city2 != null ? AppColor.sub300 : Colors.grey[400],
+                    color: city2 != null ? AppColor.main200 : Colors.grey[400],
                   ),
                 ],
               ),
@@ -798,7 +797,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 children: <Widget>[
                   Icon(
                     Icons.check_circle_outline,
-                    color: number != null ? AppColor.sub300 : Colors.grey[400],
+                    color: number != null ? AppColor.main200 : Colors.grey[400],
                   ),
                 ],
               ),
@@ -843,7 +842,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: imageFile == null ? Colors.grey : AppColor.sub300, width: 1)),
+                    border: Border.all(color: imageFile == null ? Colors.grey : AppColor.main200, width: 1)),
                 width: Get.width*0.3,
                 height: Get.width*0.3,
                 child: imageFile == null ? Column(

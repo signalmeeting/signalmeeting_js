@@ -268,7 +268,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
                   alignment: Alignment.centerRight,
                   child: Icon(
                     Icons.check_circle_outline,
-                    color: text != null ? AppColor.sub300 : Colors.grey[400],
+                    color: text != null ? AppColor.main200 : Colors.grey[400],
                     // color: AppColor.sub300,
                   ),
                 ) : Container(width: Get.width * 0.1,)
@@ -293,7 +293,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
 
   void agePick() {
     return showMaterialNumberPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       context: context,
       title: '나이',
@@ -313,7 +313,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
 
   void tallPick() {
     return showMaterialNumberPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       context: context,
       title: '키',
@@ -346,7 +346,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -385,7 +385,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -528,7 +528,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     }
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -566,7 +566,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -590,7 +590,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -615,7 +615,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -653,7 +653,7 @@ class _MemberEditPageState extends State<MemberEditPage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",

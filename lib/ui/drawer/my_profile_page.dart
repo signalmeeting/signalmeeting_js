@@ -228,7 +228,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   void agePick() {
     return showMaterialNumberPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       context: context,
       title: '나이',
@@ -245,7 +245,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
 
   void tallPick() {
     return showMaterialNumberPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       context: context,
       title: '키',
@@ -275,7 +275,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -311,7 +311,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -453,7 +453,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     }
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -488,7 +488,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -510,7 +510,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -533,7 +533,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -558,7 +558,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
@@ -594,7 +594,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
     ];
 
     return showMaterialScrollPicker(
-      headerColor: AppColor.sub200,
+      headerColor: AppColor.main100,
       headerTextColor: Colors.white,
       maxLongSide: 400,
       confirmText: "확인",
