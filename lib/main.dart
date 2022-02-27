@@ -129,7 +129,6 @@ class Splash extends StatelessWidget {
                   builder: (context, AsyncSnapshot<List<bool>> snapshot) {
                     print('no snapshot?? ${snapshot.data}');
                     if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-                      print('1111 ${snapshot.hasData}');
                       return SplashAnimation(snapshot.hasData);
                     } else if (snapshot.data[0]) {
                       MainController _mainController = Get.find();
@@ -138,7 +137,6 @@ class Splash extends StatelessWidget {
                       if (_mainController.user.value.stop)
                         return InquiryPage(); // 이용문의 페이지
                       else {
-                        print('2222 ${snapshot.hasData}');
                         return SplashAnimation(snapshot.hasData);
                       }
                     } else {

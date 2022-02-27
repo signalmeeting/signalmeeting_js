@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 
+
 class MemberCards extends StatelessWidget {
   final List<MemberModel> memberList;
   final bool deleted;
@@ -42,7 +43,7 @@ class MemberCards extends StatelessWidget {
             child: Swiper(
               itemBuilder: (BuildContext context, int index) => mainCard(memberList[index]),
               loop: false,
-              scale: 0.9,
+              scale: 0.90,
               fade: 0.75,
               itemCount: memberList.length,
               viewportFraction: 0.9,
@@ -76,21 +77,43 @@ class MemberCards extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
             child: Divider(thickness: 2, color: Colors.grey[100],),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  member.introduce ?? '',
-                  style: TextStyle(
-                    fontFamily: "AppleSDGothicNeoM",
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 8),
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                member.introduce ?? '',
+                                style: TextStyle(
+                                  fontFamily: "AppleSDGothicNeoM",
+                                  // overflow: TextOverflow.ellipsis
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

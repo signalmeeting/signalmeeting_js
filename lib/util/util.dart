@@ -59,7 +59,7 @@ class Util {
     final image = await ImagePicker()
         .getImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
-      File croppedFile = await ImageCropper().cropImage(
+      File croppedFile = await ImageCropper.cropImage(
           sourcePath: image.path,
           aspectRatioPresets: [CropAspectRatioPreset.square],
           androidUiSettings: AndroidUiSettings(

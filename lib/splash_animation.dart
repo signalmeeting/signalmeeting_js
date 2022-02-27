@@ -80,18 +80,18 @@ class _SplashAnimationState extends State<SplashAnimation> with TickerProviderSt
               child: AnimatedContainer(
                 curve: Curves.fastLinearToSlowEaseIn,
                 duration: Duration(seconds: 2),
-                height: _value ? 50 : 200,
-                width: _value ? 50 : 200,
+                height: _value ? 100 : 300,
+                width: _value ? 100 : 300,
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.red.withOpacity(.2),
-                      blurRadius: 100,
-                      spreadRadius: 10,
+                      color: Colors.red.withOpacity(.3),
+                      blurRadius: 300,
+                      spreadRadius: 20,
                     ),
                   ],
                   // color: Colors.blue,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(300),
                 ),
                 child: Image.asset('assets/start_page.png'),
                 // child: Center(

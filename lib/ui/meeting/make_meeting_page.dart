@@ -52,6 +52,7 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
       child: SafeArea(
         top: false,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: AppColor.main100,
             elevation: 0,
@@ -83,7 +84,6 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
               Column(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Spacer(),
                   Expanded(
                     child: ScrollConfiguration(
                       behavior: ScrollBehavior(),
@@ -437,7 +437,6 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                       ),
                     ),
                   ),
-                  // Spacer(),
                   Container(
                     color: Colors.grey[300],
                     height: 1,
@@ -532,12 +531,12 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
                               maxLines: 10,
                               decoration: InputDecoration(
                                 counterText: '',
-                                hintText: '상대에게 보낼 메세지를 작성해주세요.',
+                                hintText: '미팅을 소개해주세요.',
                                 hintStyle: TextStyle(
                                   fontFamily: "AppleSDGothicNeoM",
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey[100],
+                                fillColor: Colors.grey[50],
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.grey[300]),

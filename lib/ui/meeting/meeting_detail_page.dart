@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:animator/animator.dart';
 import 'package:byule/model/memberModel.dart';
 import 'package:byule/ui/meeting/make_meeting_page.dart';
 import 'package:byule/ui/meeting/widgets/member_cards.dart';
+import 'package:byule/ui/widget/dialog/meeting_apply_dialog.dart';
 import 'package:byule/ui/widget/dialog/meeting_letter_dialog.dart';
 import 'package:byule/ui/widget/member/member_pick_list.dart';
 import 'package:byule/util/util.dart';
@@ -125,7 +127,6 @@ class MeetingDetailPage extends StatelessWidget {
                         onTapReport: () =>
                             Get.dialog(ReportDialog(meeting.id, ReportType.meeting, meetingDetailController: meetingDetailController)),
                       ),
-                      // introduceCard(),
 
                       //전자는 들어 갔을 때, 수락 거절 버튼이 있어야됨 //후자는 상대방 프로필만
                       if ((meeting.process == 0 && meeting.isMine == true) || meeting.process == 1)
@@ -162,7 +163,7 @@ class MeetingDetailPage extends StatelessWidget {
               firstChild: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Container(
-                  width: Get.width - 16,
+                  width: Get.width*0.9,
                   child: ElevatedButton(
                     style: BtStyle.changeState(buttonClicked),
                     child: buttonClicked
@@ -189,39 +190,8 @@ class MeetingDetailPage extends StatelessWidget {
                     onPressed: buttonClicked
                         ? (user.coin < 5)
                             ? () => Get.dialog(NoCoinDialog())
-                            : () async {
-                                ///멤버를 인원에 맞게 설정해주세요
-                                if (meetingDetailController.pickedMemberIndexList.length + 1 != meeting.number) {
-                                  Get.dialog(NotificationDialog(
-                                    title: "잠깐!",
-                                    contents: "미팅 인원에 맞도록 멤버를 선택해주세요",
-                                    contents2: "( ${meetingDetailController.pickedMemberIndexList.length} / ${meeting.number - 1} )",
-                                  ));
-                                  return;
-                                }
-
-                                FocusScope.of(context).unfocus();
-
-                                ///최근에 거절당한 미팅 있는지 확인
-                                bool refusedExist = await DatabaseService.instance.checkRefusedBeforeApply(this.meeting.id);
-                                if (refusedExist) return;
-
-                                bool result = await DatabaseService.instance.applyMeeting(
-                                    this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id);
-                                if (result) {
-                                  meetingDetailController.meeting.update((meeting) => meeting.process = 0);
-                                  Map<String, dynamic> applyMeeting = {
-                                    "title": meeting.title,
-                                    "loc1": meeting.loc1,
-                                    "loc2": meeting.loc2,
-                                    "loc3": meeting.loc3,
-                                    "number": meeting.number,
-                                    "introduce": meeting.introduce,
-                                  };
-                                  await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting, oppositeUserid: meeting.userId);
-                                }
-                              }
-                        : () => meetingDetailController.buttonClicked.value = true,
+                            : () => Get.dialog(MeetingApplyDialog(meeting, meetingDetailController))
+                        : () => Get.dialog(MeetingApplyDialog(meeting, meetingDetailController)),
                   ),
                 ),
               ),
@@ -259,7 +229,7 @@ class MeetingDetailPage extends StatelessWidget {
                           fontFamily: "AppleSDGothicNeoM",
                         ),
                         filled: true,
-                        fillColor: Colors.grey.withOpacity(0.1),
+                        fillColor: Colors.grey[50],
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           borderSide: BorderSide(color: Colors.grey[300]),
@@ -302,14 +272,13 @@ class MeetingDetailPage extends StatelessWidget {
                     Map<String, dynamic> data = snapshot.data();
 
                     meetingDetailController.oppositeUser = UserModel.fromJson(data);
-                    Get.toNamed('/meeting_opposite_profile',
-                        arguments: {"meetingId": meeting.id, "user": meetingDetailController.oppositeUser}, preventDuplicates: false);
+                    Get.toNamed('/meeting_opposite_profile', arguments: {"meetingId": meeting.id, "user": meetingDetailController.oppositeUser}, preventDuplicates: false);
                   }),
             ),
           ),
         if (meeting.process == 1)
           Padding(
-            padding: meeting.isMine ? EdgeInsets.only(right: 8.0) : EdgeInsets.symmetric(horizontal: 8.0),
+            padding: meeting.isMine ? EdgeInsets.only(right: Get.width*0.05) : EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
               width: meeting.isMine ? 75 : Get.width - 16,
               child: ElevatedButton(
@@ -364,7 +333,7 @@ class MeetingDetailPage extends StatelessWidget {
 
   Widget titleCard() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
+      padding: EdgeInsets.only(left: Get.width * 0.05, right: Get.width * 0.05, top: Platform.isAndroid ? 8 : 0),
       child: Card(
         margin: EdgeInsets.all(0),
         elevation: 3,
@@ -442,56 +411,6 @@ class MeetingDetailPage extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget introduceCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-      child: Card(
-        margin: EdgeInsets.all(8),
-        elevation: 3,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          padding: EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 0.0, bottom: 10),
-                child: Text(
-                  '미팅 소개',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: "AppleSDGothicNeoB",
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    meeting.introduce,
-                    style: TextStyle(
-                      fontFamily: "AppleSDGothicNeoM",
-                    ),
-                  ),
-                ),
               ),
             ],
           ),

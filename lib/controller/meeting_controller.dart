@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:byule/controller/main_controller.dart';
 import 'package:byule/model/meetingModel.dart';
 import 'package:byule/model/userModel.dart';
-import 'package:byule/services/database.dart';
 
 class MeetingController extends GetxController {
   MainController _mainController = Get.find();
