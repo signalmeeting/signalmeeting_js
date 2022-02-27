@@ -5,7 +5,7 @@ Widget cachedImage(String url, {double width = 90.0, double height = 90.0, doubl
   if (url == null) return Center(child: CircularProgressIndicator());
   return CachedNetworkImage(
       placeholder: (context, url) => Container(width: width, height: height),
-      imageUrl: url,
+      imageUrl: url??'',
       imageBuilder: (context, imageProvider) => Container(
             width: width,
             height: height,

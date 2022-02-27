@@ -77,7 +77,7 @@ class MemberPickList extends StatelessWidget {
               border: Border.all(color: pickedMemberIndexList.contains(index) ? AppColor.main200 : Colors.grey),
             ),
             child: cachedImage(
-              _memberList[index].url ?? '',
+              _memberList[index].url,
               width: _avatarRadius * 2,
               height: _avatarRadius * 2,
               radius: 6,

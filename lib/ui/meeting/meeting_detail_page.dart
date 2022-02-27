@@ -278,9 +278,9 @@ class MeetingDetailPage extends StatelessWidget {
           ),
         if (meeting.process == 1)
           Padding(
-            padding: meeting.isMine ? EdgeInsets.only(right: Get.width*0.05) : EdgeInsets.symmetric(horizontal: 8.0),
+            padding: meeting.isMine ? EdgeInsets.only(right: Get.width*0.05) : EdgeInsets.symmetric(horizontal: Get.width*0.05, vertical: 8),
             child: Container(
-              width: meeting.isMine ? 75 : Get.width - 16,
+              width: meeting.isMine ? 75 : Get.width*0.9,
               child: ElevatedButton(
                 style: BtStyle.textSub200,
                 onPressed: () async {

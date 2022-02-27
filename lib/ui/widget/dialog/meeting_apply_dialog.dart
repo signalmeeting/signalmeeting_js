@@ -2,6 +2,7 @@ import 'package:byule/model/meetingModel.dart';
 import 'package:byule/services/database.dart';
 import 'package:byule/ui/meeting/meeting_detail_page.dart';
 import 'package:byule/ui/widget/dialog/notification_dialog.dart';
+import 'package:byule/ui/widget/flush_bar.dart';
 import 'package:byule/ui/widget/member/member_pick_list.dart';
 import 'package:byule/util/style/btStyle.dart';
 import 'package:flutter/material.dart';
@@ -146,6 +147,7 @@ class MeetingApplyDialog extends StatelessWidget {
       await DatabaseService.instance.useCoin(5, 2, newMeeting: applyMeeting, oppositeUserid: meeting.userId);
     }
     Get.back();
+    CustomedFlushBar(Get.context, '미팅 신청이 완료되었습니다!');
   }
 
 }

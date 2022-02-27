@@ -127,7 +127,7 @@ class MemberCards extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8,8,8,0),
       child: meetingOwner.pics.length > 0
           ? Stack(children: [
-              BluredImage(member.url, meetingId),
+              BluredImage(member.url??'', meetingId),
               Positioned(
                 left: 10,
                 right: 10,
