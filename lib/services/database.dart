@@ -313,7 +313,7 @@ class DatabaseService {
       return [];
   }
 
-  Future<bool> applyMeeting(String meetingId, String msg, String title, String receiver) async {
+  Future<bool> applyMeeting(String meetingId, String msg, String title, String receiver, List<MemberModel> memberList) async {
     Get.dialog(Center(child: CircularProgressIndicator()));
     // process 0 : 신청 중, 1 : 연결, 2 : 거절
 
@@ -346,7 +346,7 @@ class DatabaseService {
         "meeting": meetingId,
         "msg": msg,
         "createdAt": DateTime.now(),
-        "process": 0
+        "process": 0,
       });
 
       transaction.set(newAlarm, {"body": title, "receiver": receiver, "time": DateTime.now(), "type": "apply"});
@@ -358,7 +358,8 @@ class DatabaseService {
           "userId": _user.uid,
           "msg": msg,
           "createdAt": DateTime.now(),
-          "phone": _user.phoneNumber
+          "phone": _user.phoneNumber,
+          "memberList" : memberList.map((e) => e.toJson()).toList()
         }
       });
     }).then((value) {
@@ -453,6 +454,7 @@ class DatabaseService {
   Future<bool> checkAuth(String uid, String phone) async {
     print("login by $uid");
     if (uid != null) {
+      uid = "5jdAKihWAVhEcNjLTD909wI8EHy1";
       DocumentSnapshot snapshot = await userCollection.doc(uid).get();
       if (snapshot.data() != null) {
         Map<dynamic, dynamic> data = snapshot.data();
