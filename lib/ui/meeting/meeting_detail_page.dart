@@ -29,7 +29,7 @@ class MeetingDetailController extends GetxController {
   RxBool applied = false.obs;
   RxBool buttonClicked = false.obs;
   RxBool userLoaded = false.obs;
-  UserModel meetingOwner = UserModel();
+  UserModel meetingOwner = UserModel.initUser();
   Rx<MeetingModel> meeting = MeetingModel().obs;
   UserModel oppositeUser;
   List<MemberModel> memberListToShow = <MemberModel>[];
