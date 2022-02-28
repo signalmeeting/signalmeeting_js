@@ -1,3 +1,4 @@
+import 'package:byule/model/memberModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:byule/model/meetingModel.dart';
@@ -13,7 +14,7 @@ class ApplyModel {
   @JsonKey(fromJson: firestoreDocRefFromJson, toJson: firestoreDocRefToJson)
   DocumentReference user;
   String userId;
-  List<Map<String, dynamic>> memberList;
+  List<MemberModel> memberList;
 
   ApplyModel({this.applyId, this.msg, this.phone, this.user, this.userId});
 

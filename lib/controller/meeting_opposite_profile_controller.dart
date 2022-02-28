@@ -29,8 +29,8 @@ class MeetingOppositeProfileController extends GetxController {
 
     memberListToShow.add(Util.userToMemberModel(user.profileInfo));
 
-    if (user.memberList != null) {
-      user.memberList.forEach((member) => memberListToShow.add(member));
+    if (meeting.apply.memberList != null) {
+      meeting.apply.memberList.forEach((member) => memberListToShow.add(member));
     }
 
     super.onInit();
