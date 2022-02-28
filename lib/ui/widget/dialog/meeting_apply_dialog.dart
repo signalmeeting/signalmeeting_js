@@ -135,8 +135,7 @@ class MeetingApplyDialog extends StatelessWidget {
     bool refusedExist = await DatabaseService.instance.checkRefusedBeforeApply(this.meeting.id);
     if (refusedExist) return;
 
-    bool result = await DatabaseService.instance.applyMeeting(
-        this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id, meetingDetailController.pickedMemberIndexList.map((memberIndex) => _mainController.user.value.memberList[memberIndex]).toList());
+    bool result = await DatabaseService.instance.applyMeeting(this.meeting.id, _selfIntroductionController.text, this.meeting.title, this.meeting.user.id, meetingDetailController.pickedMemberIndexList.map((memberIndex) => _mainController.user.value.memberList[memberIndex]).toList());
     if (result) {
       meetingDetailController.meeting.update((meeting) => meeting.process = 0);
       Map<String, dynamic> applyMeeting = {

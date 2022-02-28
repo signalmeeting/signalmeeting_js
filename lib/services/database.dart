@@ -454,7 +454,6 @@ class DatabaseService {
   Future<bool> checkAuth(String uid, String phone) async {
     print("login by $uid");
     if (uid != null) {
-      uid = "5jdAKihWAVhEcNjLTD909wI8EHy1";
       DocumentSnapshot snapshot = await userCollection.doc(uid).get();
       if (snapshot.data() != null) {
         Map<dynamic, dynamic> data = snapshot.data();
