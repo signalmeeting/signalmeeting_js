@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 Widget cachedImage(String url, {double width = 90.0, double height = 90.0, double radius = 8.0}) {
-  if (url == null) return Center(child: CircularProgressIndicator());
+  if (url == null) url = '';
   return CachedNetworkImage(
       placeholder: (context, url) => Container(width: width, height: height),
       imageUrl: url??'',

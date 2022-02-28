@@ -671,7 +671,11 @@ class _MemberEditPageState extends State<MemberEditPage> {
 
   void introducePick() async {
     String introduce = await Get.dialog(MemberIntroduceDialog(_newMember.introduce??''));
-    _newMember.introduce = introduce;
+    print('introduce : $introduce');
+    if(introduce!=null) {
+      _newMember.introduce = introduce;
+    }
+
     setState(() {});
   }
 }

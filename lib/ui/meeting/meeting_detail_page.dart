@@ -336,7 +336,7 @@ class MeetingDetailPage extends StatelessWidget {
       padding: EdgeInsets.only(left: Get.width * 0.05, right: Get.width * 0.05, top: Platform.isAndroid ? 8 : 0),
       child: Card(
         margin: EdgeInsets.all(0),
-        elevation: 3,
+        elevation: 6,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
@@ -368,7 +368,7 @@ class MeetingDetailPage extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          '${meeting.loc1} ${meeting.loc2} - ${meeting.loc3}, ${meeting.number} : ${meeting.number}',
+                          '${meeting.loc1} ${meeting.loc2} ${meeting.loc3}, ${meeting.number} : ${meeting.number}',
                           style: TextStyle(color: Colors.black45, fontSize: 17, fontFamily: "AppleSDGothicNeoM", height: 1),
                         ),
                       ],

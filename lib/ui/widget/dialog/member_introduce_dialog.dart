@@ -12,6 +12,7 @@ class MemberIntroduceDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _textController.text = letter;
     return MainDialog(
       title: '멤버 소개',
       buttonText: '완료',

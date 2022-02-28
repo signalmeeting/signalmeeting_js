@@ -61,7 +61,7 @@ class MemberCards extends StatelessWidget {
   Widget mainCard(MemberModel member) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: Get.width*0.03),
-      elevation: 3,
+      elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
