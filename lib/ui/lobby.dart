@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:byule/ui/meeting/make_meeting_page.dart';
 import 'package:byule/ui/meeting/my_meeting_page.dart';
@@ -61,7 +62,8 @@ class LobbyPage extends StatelessWidget {
   final List inactiveIcons = [Icons.favorite, Icons.group, Icons.notifications];
 
   final List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
+    if(Platform.isAndroid)
+      HomePage(),
     MeetingPage(),
     MyMeetingPage(),
     MenuPage(),
@@ -111,7 +113,7 @@ class LobbyPage extends StatelessWidget {
           top: false,
           child: Obx(
             () => Scaffold(
-              floatingActionButton: _lobbyController.selectedIndex.value == 1 && _lobbyController.isFabVisible.value
+              floatingActionButton: (Platform.isAndroid ? _lobbyController.selectedIndex.value == 1 : _lobbyController.selectedIndex.value == 0) && _lobbyController.isFabVisible.value
                   ? FloatingActionButton(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 4.0),
@@ -130,14 +132,21 @@ class LobbyPage extends StatelessWidget {
               bottomNavigationBar: SizedBox(
                   height: 60,
                   child: Obx(
-                        () => Row(
-                      children: <Widget>[
-                        buildTabbar('데일리', 0),
-                        buildTabbar('미팅', 1),
-                        buildTabbar('내 미팅', 2),
-                        buildTabbar('설정', 3),
-                      ],
-                    ),
+                        () => Platform.isAndroid ? Row(
+                            children: <Widget>[
+                              buildTabbar('데일리', 0),
+                              buildTabbar('미팅', 1),
+                              buildTabbar('내 미팅', 2),
+                              buildTabbar('설정', 3),
+                            ],
+                          )
+                        : Row(
+                            children: <Widget>[
+                              buildTabbar('미팅', 0),
+                              buildTabbar('내 미팅', 1),
+                              buildTabbar('설정', 2),
+                            ],
+                          ),
                   )),
             ),
           ),
@@ -190,7 +199,8 @@ class LobbyPage extends StatelessWidget {
   }
 
   Widget buildTabbar(String tabName, int index) {
-    var tabbarWidth = Get.width / 4;
+    var tabbarWidth = Platform.isAndroid ? Get.width / 4 : Get.width / 3;
+
     return Container(
       color: Colors.white,
       width: tabbarWidth,

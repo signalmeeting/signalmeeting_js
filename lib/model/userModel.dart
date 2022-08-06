@@ -1,9 +1,7 @@
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:byule/model/memberModel.dart';
 import 'package:byule/util/util.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'userModel.g.dart';
@@ -23,6 +21,7 @@ class UserModel {
   bool dailyMeetingActivation;
   var deleted;
   List<MemberModel> memberList = [];
+  bool isAndroid = Platform.isAndroid;
 
   UserModel(
       {this.uid,
@@ -37,6 +36,7 @@ class UserModel {
       this.dailyMeetingActivation,
       this.deleted,
       this.memberList,
+      this.isAndroid,
       });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +57,7 @@ class UserModel {
         free: null,
         dailyMeetingActivation: true,
         memberList: [],
+        isAndroid: Platform.isAndroid,
     );
   }
 

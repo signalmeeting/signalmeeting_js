@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:byule/ui/alarm/alarmPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -89,7 +91,8 @@ class _MenuPageState extends State<MenuPage> {
                 divider(0.3),
                 menuItemWithIcon('리뷰 쓰기', 'review', () => inAppReview.openStoreListing(appStoreId: '1605322676')),
                 divider(0.3),
-                toggleItem(),
+                if(Platform.isAndroid)
+                  toggleItem(),
                 divider(8),
                 menuItem('문의 및 계정', 'store', () => Get.to(() => InquiryPage())),
                 divider(0.3),

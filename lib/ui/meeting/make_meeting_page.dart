@@ -772,15 +772,15 @@ class _MakeMeetingPageState extends State<MakeMeetingPage> {
       S2Choice<String>(value: '2:2', title: '2:2'),
       S2Choice<String>(value: '3:3', title: '3:3'),
       S2Choice<String>(value: '4:4', title: '4:4'),
-      S2Choice<String>(value: '5:5', title: '5:5'),
+      // S2Choice<String>(value: '5:5', title: '5:5'),
     ];
 
     List<S2Choice<String>> optionsForIOS = [
-      S2Choice<String>(value: '1:1 (소개팅)', title: '1:1 (소개팅)'),
+      // S2Choice<String>(value: '1:1 (소개팅)', title: '1:1 (소개팅)'),
       S2Choice<String>(value: '2:2', title: '2:2'),
       S2Choice<String>(value: '3:3', title: '3:3'),
       S2Choice<String>(value: '4:4', title: '4:4'),
-      S2Choice<String>(value: '5:5', title: '5:5'),
+      // S2Choice<String>(value: '5:5', title: '5:5'),
     ];
 
     return SmartSelect<String>.single(

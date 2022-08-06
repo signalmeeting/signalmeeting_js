@@ -25,6 +25,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : MemberModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    isAndroid: json['isAndroid'] as bool,
   )..pushInfo = json['pushInfo'] as Map<String, dynamic>;
 }
 
@@ -42,4 +43,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'dailyMeetingActivation': instance.dailyMeetingActivation,
       'deleted': instance.deleted,
       'memberList': instance.memberList,
+      'isAndroid': instance.isAndroid,
     };

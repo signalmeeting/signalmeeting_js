@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animations/animations.dart';
 import 'package:byule/controller/main_controller.dart';
 import 'package:byule/ui/widget/meeting/meetingGrid.dart';
@@ -156,10 +158,57 @@ Widget closedItem(MeetingModel item) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(3.0),
-          //임시 이미지
-          child: cachedImage(item.meetingImageUrl??'', width: 30, height: imageSize, radius: 7.0),
+        Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: cachedImage(item.meetingImageUrl??'', width: 30, height: imageSize, radius: 7.0),
+                ),
+              ],
+            ),
+            if(item.memberList!=null)
+            for(int i = 0; i < item.memberList.length; i++)
+              Positioned(
+                bottom: 8,
+                right: 4,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0 + i*20),
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(100)),
+                        child: cachedImage(item.memberList[i].url ?? '',
+                            width: 35, height: 35, radius: 100.0),
+                      ),
+                      Positioned.fill(
+                        left: 1,
+                        right: 1,
+                        bottom: 1,
+                        top: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+                            child: Container(
+                              color: Colors.grey.withOpacity(0.20),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ),
         Expanded(
           child: Padding(

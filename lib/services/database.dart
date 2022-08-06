@@ -805,7 +805,12 @@ class DatabaseService {
   }
 
   Future withDraw() async {
-    await FirebaseAuth.instance.currentUser.delete();
+    // var result = await FirebaseAuth.instance.currentUser.reauthenticateWithCredential(
+    //     PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode));
+    // result.user.delete();
+
+
+    await FirebaseAuth.instance.signOut();
     Map<String, dynamic> withDrawUser = {
       "withDrawTime": DateTime.now(),
       "phone": _controller.user.value.phone,

@@ -136,7 +136,10 @@ class MeetingDetailPage extends StatelessWidget {
                             seeTheOppositeBt(),
                           ],
                         ),
-                      if (user.man != meeting.man && !meeting.isMine && meeting.process == null)
+                      if (
+                      // user.man != meeting.man &&
+                          !meeting.isMine &&
+                          meeting.process == null)
                         Column(
                           children: [
                             Container(color: Colors.grey[300], height: 1),

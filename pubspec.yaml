@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.0.0+13
+version: 2.1.0+15
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -57,8 +57,11 @@ dependencies:
   animator: ^3.1.0
   shared_preferences: 2.0.0
   package_info: 2.0.2
-  reorderables:
-    git: https://github.com/hanshengchiu/reorderables
+  reorderables: ^0.4.4
+
+#  reorderables:
+#    git: https://github.com/hanshengchiu/reorderables
+
 
 #dependency_overrides:
 #  meta: 1.6.0

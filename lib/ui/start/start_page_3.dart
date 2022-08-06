@@ -36,79 +36,81 @@ class _StartPage3State extends State<StartPage3> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 15.0, top: 50),
-              child: Text(
-                '계정 정보',
-                style: TextStyle(
-                    color: AppColor.sub,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          //낙네임만 텍스트폼 입력 받음
-          //나머지는 onTap 통해 alertdialog 느낌으로(연속적으로 넘어가게)
-          Nickname(context),
-          ProfilForm(gender, confirmGender, GenderPick),
-          ProfilForm(age, confirmAge, AgePick),
-          ProfilForm(tall, confirmtall, tallPick),
-          ProfilForm(residence, confirmResidence, ResidencePick),
-          ProfilForm(residence2, confirmResidence2, ResidencePick2),
-          ProfilForm(career, confirmCareer, CareerPick),
-          //다 입력 받았을 시 넘어가도록(순서대로 입력 안가는 경우를 위해)
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 16.0),
-            child: TextButton(
-              child: Container(
-                width: Get.width * 0.9 - 16,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.transparent,
-                        size: 15,
-                      ),
-                    ),
-                    Text(
-                      '다음',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                        size: 15,
-                      ),
-                    ),
-                  ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15.0, top: 50),
+                child: Text(
+                  '계정 정보',
+                  style: TextStyle(
+                      color: AppColor.sub,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-              style: BtStyle.start,
-              onPressed: (confirmNickname &&
-                  confirmGender &&
-                  confirmAge &&
-                  confirmtall &&
-                  confirmResidence &&
-                  confirmResidence2 &&
-                  confirmCareer)
-                  ? () => Get.to(StartPage4())
-                  : null,
             ),
-          ),
-        ],
+            //낙네임만 텍스트폼 입력 받음
+            //나머지는 onTap 통해 alertdialog 느낌으로(연속적으로 넘어가게)
+            Nickname(context),
+            ProfilForm(gender, confirmGender, GenderPick),
+            ProfilForm(age, confirmAge, AgePick),
+            ProfilForm(tall, confirmtall, tallPick),
+            ProfilForm(residence, confirmResidence, ResidencePick),
+            ProfilForm(residence2, confirmResidence2, ResidencePick2),
+            ProfilForm(career, confirmCareer, CareerPick),
+            //다 입력 받았을 시 넘어가도록(순서대로 입력 안가는 경우를 위해)
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 16.0),
+              child: TextButton(
+                child: Container(
+                  width: Get.width * 0.9 - 16,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.transparent,
+                          size: 15,
+                        ),
+                      ),
+                      Text(
+                        '다음',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 12.0),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                style: BtStyle.start,
+                onPressed: (confirmNickname &&
+                    confirmGender &&
+                    confirmAge &&
+                    confirmtall &&
+                    confirmResidence &&
+                    confirmResidence2 &&
+                    confirmCareer)
+                    ? () => Get.to(StartPage4())
+                    : null,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -220,8 +222,8 @@ class _StartPage3State extends State<StartPage3> {
   }
 
   //닉네임 입력 후 실행될 Picker 들
+  var selectedGender = "남자";
   void GenderPick() {
-    var selected = "";
 
     List<String> genderList = <String>['남자', '여자'];
 
@@ -234,9 +236,10 @@ class _StartPage3State extends State<StartPage3> {
       context: context,
       title: "성별",
       items: genderList,
-      selectedItem: selected,
+      selectedItem: selectedGender,
       onChanged: (value) => setState(() => gender = value),
       onConfirmed: () {
+        selectedGender = gender;
         _controller.updateUser(user..profileInfo['man'] = gender == '남자');
         confirmGender = true;
         AgePick();
@@ -244,6 +247,7 @@ class _StartPage3State extends State<StartPage3> {
     );
   }
 
+  var selectedAge = 20;
   void AgePick() {
     return showMaterialNumberPicker(
       headerColor: AppColor.main100,
@@ -254,10 +258,11 @@ class _StartPage3State extends State<StartPage3> {
       minNumber: 20,
       confirmText: "확인",
       cancelText: "취소",
-      selectedNumber: null,
+      selectedNumber: selectedAge,
       maxLongSide: 400,
       onChanged: (value) => setState(() => age = value.toString()),
       onConfirmed: () {
+        selectedAge = int.parse(age);
         _controller.updateUser(user..profileInfo['age'] = age);
         confirmAge = true;
         tallPick();
@@ -265,6 +270,7 @@ class _StartPage3State extends State<StartPage3> {
     );
   }
 
+  var selectedTall = 140;
   void tallPick() {
     return showMaterialNumberPicker(
       headerColor: AppColor.main100,
@@ -275,10 +281,11 @@ class _StartPage3State extends State<StartPage3> {
       minNumber: 140,
       confirmText: "확인",
       cancelText: "취소",
-      selectedNumber: null,
+      selectedNumber: selectedTall,
       maxLongSide: 400,
       onChanged: (value) => setState(() => tall = value.toString()),
       onConfirmed: () {
+        selectedAge = int.parse(tall);
         _controller.updateUser(user..profileInfo['tall'] = int.parse(tall));
         confirmtall = true;
         ResidencePick();
@@ -287,8 +294,8 @@ class _StartPage3State extends State<StartPage3> {
   }
 
 
+  var selectedResidence = "서울";
   void ResidencePick() {
-    var selected = "";
 
     List<String> genderList = <String>[
       '서울', '부산', '대구', '인천', '광주', '대전', '울산', '경기', '강원',
@@ -304,9 +311,10 @@ class _StartPage3State extends State<StartPage3> {
       context: context,
       title: "지역",
       items: genderList,
-      selectedItem: selected,
+      selectedItem: selectedResidence,
       onChanged: (value) => setState(() => residence = value),
       onConfirmed: () {
+        selectedResidence = residence;
         _controller.updateUser(user..profileInfo['loc1'] = residence);
         confirmResidence = true;
 
@@ -355,7 +363,7 @@ class _StartPage3State extends State<StartPage3> {
       context: context,
       title: "지역",
       items: cityList,
-      selectedItem: selected,
+      selectedItem: cityList[0],
       onChanged: (value) => setState(() => residence2 = value),
       onConfirmed: () {
         _controller.updateUser(user..profileInfo['loc2'] = residence2);
@@ -365,8 +373,8 @@ class _StartPage3State extends State<StartPage3> {
     );
   }
 
+  var selectedCareer = "회사원";
   void CareerPick() {
-    var selected = "";
 
     List<String> genderList = <String>[
       '회사원', '학생', '아르바이트', '취업준비생', '전문직', '공무원', '자영업', '금융직',
@@ -381,9 +389,10 @@ class _StartPage3State extends State<StartPage3> {
       context: context,
       title: "직업",
       items: genderList,
-      selectedItem: selected,
+      selectedItem: selectedCareer,
       onChanged: (value) => setState(() => career = value),
       onConfirmed: () async {
+        selectedCareer = career;
         _controller.updateUser(user..profileInfo['career'] = career);
         confirmCareer = true;
         if (confirmNickname &&
