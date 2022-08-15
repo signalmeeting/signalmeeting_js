@@ -19,15 +19,15 @@ class ReportDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainDialog(
-      title: '신고하기',
-      buttonText: '신고하기',
+      title: '신고 및 차단하기',
+      buttonText: '신고 및 차단하기',
       contents: reportContents(),
       onPressed: () async {
         Get.back();
         Get.back();
         DatabaseService.instance.updateBanList(_mainController.user.value.uid, uidOrId, reportType);
         _mainController.updateBanList(_mainController.user.value.uid, uidOrId, reportType, meetingDetailController);
-        CustomedFlushBar(Get.context, '신고가 접수되었습니다');
+        CustomedFlushBar(Get.context, '신고 및 차단이 접수되었습니다 \n신고당한 계정은 3회 이상 신고시 앱이용이 정지됩니다. ');
       },
     );
   }
